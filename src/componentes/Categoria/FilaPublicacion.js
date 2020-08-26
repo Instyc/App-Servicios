@@ -81,7 +81,9 @@ export default function FilaPublicacion() {
         <Grid item item xs={3} direction="row"  alignItems="flex-start">
           <Button variant="outlined" color="secondary">Contactar</Button>
         </Grid>
-         
+        <Grid item item xs={3} direction="row"  alignItems="flex-start">
+          <Button variant="outlined" color="Primary">Leer màs</Button>
+        </Grid>
       </Grid>
     </Card>
   );
