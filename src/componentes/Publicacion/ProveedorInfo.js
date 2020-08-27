@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
 import PhoneIcon from '@material-ui/icons/Phone';
+import Button from '@material-ui/core/Button';
 
 
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -18,12 +19,14 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
+    display: 'scroll',
+    position: 'sticky',
+    top: 10,
     flexWrap: 'wrap',
     '& > *': {
       margin: theme.spacing(1),
     },
-    padding: 15
+    marginBottom: 9,
   },
   imagenPerfil: {
     width: theme.spacing(30),
@@ -31,11 +34,13 @@ const useStyles = makeStyles((theme) => ({
   },
   lista: {
     width: '100%',
-    maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
   },
   itemLista: {
     paddingLeft: theme.spacing(4),
+  },
+  grid: {
+    padding: 20,
   },
 }));
 
@@ -43,8 +48,8 @@ export default function PublicacionInfo() {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <Paper elevation={3} >
-        <Grid container direction="row" justify="space-between" alignItems="center">
+      <Paper elevation={5}>
+        <Grid className={classes.grid} container direction="row" justify="space-between" alignItems="center">
             <Grid item xs={12}>
               <div align="center">
                 <Avatar alt="Remy Sharp" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR7Mt8wp9lo-dd73xpvjzPMcspQ8uwAThLitQ&usqp=CAU" className={classes.imagenPerfil} />
@@ -89,7 +94,9 @@ export default function PublicacionInfo() {
                Ubicacion
            </Grid>
            <Grid item xs={12}>
-            <Typography variant="h5" align="center" component="p"><PhoneIcon>PhoneIcon</PhoneIcon>+54 9 3735 448855</Typography>
+              <Button startIcon={<PhoneIcon/>}>
+                  +54 9 3735 448855
+              </Button>
            </Grid>
         </Grid>
       </Paper>
@@ -117,10 +124,10 @@ function Categorias({nombre}) {
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                     <Divider/>
-                    <Typography variant="h6" component="h5">Servicio 1</Typography>
-                    <Typography variant="h6" component="h5">Servicio 2</Typography>
-                    <Typography variant="h6" component="h5">Servicio 3</Typography>
-                    <Typography variant="h6" component="h5">Servicio 4</Typography>
+                    <Typography variant="h6" component="h5" align="left">Servicio 1</Typography>
+                    <Typography variant="h6" component="h5" align="left">Servicio 2</Typography>
+                    <Typography variant="h6" component="h5" align="left">Servicio 3</Typography>
+                    <Typography variant="h6" component="h5" align="left">Servicio 4</Typography>
                     <Divider/>
                 </List>
             </Collapse>

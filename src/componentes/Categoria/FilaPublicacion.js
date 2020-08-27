@@ -9,7 +9,7 @@ import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 
-import Rating from '@material-ui/lab/Rating';
+import Estrellas from '../Estrellas.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,7 +76,7 @@ export default function FilaPublicacion() {
           <Chip clickable variant="outlined" color="primary" label="Servicio"/>
         </Grid>  
         <Grid item item xs={3} direction="row"  alignItems="flex-start">
-          <Puntuacion/>
+          <Estrellas/>
         </Grid>   
         <Grid item item xs={3} direction="row"  alignItems="flex-start">
           <Button variant="outlined" color="secondary">Contactar</Button>
@@ -92,23 +92,5 @@ export default function FilaPublicacion() {
 
 
 
-const useStyle = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    '& > * + *': {
-      marginTop: theme.spacing(1),
-    },
-  },
-}));
 
-function Puntuacion() {
-  const classes = useStyle();
-
-  return (
-    <div className={classes.root}>
-      <Rating name="half-rating" defaultValue={2.5} precision={0.5} />
-    </div>
-  );
-}
 

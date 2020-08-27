@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
 import ImageGallery from 'react-image-gallery';
+import Estrellas from '../Estrellas.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,8 +14,12 @@ const useStyles = makeStyles((theme) => ({
     '& > *': {
       margin: theme.spacing(1),
     },
-    padding: 15
+    position: "sticky"
   },
+  grid: {
+    padding: 20
+  }
+  
 }));
 
 export default function PublicacionInfo() {
@@ -37,21 +42,21 @@ export default function PublicacionInfo() {
 
   return (
     <div className={classes.root}>
-      <Paper elevation={3} >
-        <Grid container direction="row" justify="space-between" alignItems="center">
-            <Grid item xs={4}>
-                <Typography variant="h5" component="h1">
+      <Paper elevation={5} >
+        <Grid className={classes.grid} container direction="row" justify="space-between" alignItems="center">
+            <Grid item xs={6}>
+                <Typography variant="h5" component="h1" align="left">
                     Titulo de la publicacion
                 </Typography>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={6}>
                 <Typography variant="h6" component="h3">
-                    Precio estimado: $500
+                    <Estrellas/>
                 </Typography>
             </Grid>
-            <Grid item xs={4}>
-                <Typography variant="h6" component="h3">
-                    *Estrellas de valoracion*
+            <Grid item xs={12}>
+                <Typography variant="h6" component="h3" color="secondary" align="left">
+                    Precio estimado: $500
                 </Typography>
             </Grid>
             <Grid item xs={12}>
