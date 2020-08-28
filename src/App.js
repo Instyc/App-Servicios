@@ -4,7 +4,8 @@ import Categoria from './componentes/Categoria/Categoria.js';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import './App.css';
-
+import Registrar from './componentes/Sesion/Registrar.js';
+import InicioSesion from './componentes/Sesion/InicioSesion.js';
 import Inicio from './componentes/Inicio/Inicio.js';
 import Publicacion from './componentes/Publicacion/Publicacion.js';
 function App() {
@@ -15,7 +16,8 @@ function App() {
       <React.Fragment>
         <CssBaseline />
         <Container fixed maxWidth="xl">
-          <Publicacion/>
+          <InicioSesion/>
+          <Registrar/>
         </Container>
       </React.Fragment>
       

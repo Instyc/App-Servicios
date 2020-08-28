@@ -6,7 +6,6 @@ import Opiniones from './Opiniones';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import Fab from '@material-ui/core/Fab';
 import Button from '@material-ui/core/Button';
 import Mail from '@material-ui/icons/MailOutlined';
 
