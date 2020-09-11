@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 
-import FiltroServicio from './FiltroServicios.js';
+import SeleccionarServicio from '../SeleccionarServicio.js';
 
 const useStyles = makeStyles((theme) =>({
   root: {
@@ -70,7 +70,7 @@ export default function Filtro() {
           {
             arrayServicios.map((servicio,i) => (
               <Grid item xs={6} sm={4} md={3} lg={2}  key={i} >
-                <FiltroServicio key={i} servicio={servicio.label} />
+                <SeleccionarServicio key={i} servicio={servicio.label} />
               </Grid>
             ))
           }

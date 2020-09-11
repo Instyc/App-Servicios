@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function FiltroServicios({servicio}) {
+export default function SeleccioanrServicio({servicio}) {
   const classes = useStyles();
   const [hecho_noHecho, setHecho_noHecho] = useState((<div><ClearIcon/></div>));
   const [seleccion, setSeleccion] = useState(0);

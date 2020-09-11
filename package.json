@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^7.2.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-dropzone": "^11.1.0",
     "react-image-gallery": "^1.0.8",
     "react-images-upload": "^1.2.8",
     "react-scripts": "^3.4.3"

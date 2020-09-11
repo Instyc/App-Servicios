@@ -63,12 +63,7 @@ export default function PublicacionInfo() {
            <Grid item xs={12}>
            <Divider/> 
               <Typography variant="body1" component="p" align="justify"> 
-                ¿Otra vez con mi ropa interior oni-chan?
-                Me parece un poco desagradable que te metas a mi habitación solo para robar mis bragas y es repulsivo pensar lo que haces con ellas. No se lo he dicho a nuestros padres por miedo a que te obliguen a irte de casa, después de todo tienes 22 años y es bastante raro que tengas esas intenciones con tu hermanita de 15 años.
-                Encontrar mi ropa interior toda pegajosa debajo de tu cama no es lindo oni-chan, tampoco es lindo que me espies mientras me baño o que guardes toda mi basura en tu habitación, mucho menos que tengas fotografías mías pegadas en revistas eroticas.
-                Me das miedo oni-chan, yo te quiero mucho pero me das demasiado miedo... El otro día te metiste a mi cama en la madrugada y olfateaste mi cabello, besaste en mi cuello, acariciaste mis piernas y no parabas de repetirme al oído lo hermosa que era, todo mientras dormía; las cartas de amor que he encontrado debajo de mi almohada se que son tuyas, los chocolates, el dinero...
-                Se que deseas mi cuerpo pero no recuerda que somos familia baka, así que lo nuestro no puede ser... No te hagas falsas esperanzas conmigo, lo que tu necesitas es conseguir una novia y olvidarte de mi, soy tu hermana y nada más.
-                Me dueles oni-chan, me das un poco de lástima.
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Molestias et commodi iste, inventore a fugiat? Asperiores minima corrupti magnam expedita laborum, quidem accusamus, repudiandae voluptate dolore, dicta blanditiis totam in?
               </Typography>
            </Grid>   
            <Grid item xs={12}>
