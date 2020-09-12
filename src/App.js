@@ -8,7 +8,10 @@ import Registrar from './componentes/Sesion/Registrar.js';
 import InicioSesion from './componentes/Sesion/InicioSesion.js';
 import Inicio from './componentes/Inicio/Inicio.js';
 import Publicacion from './componentes/Publicacion/Publicacion.js';
-import ModificarPerfil from './componentes/Proveedor/ModificarPerfil.js';
+import ModificarPerfilProveedor from './componentes/ModificarDatos/ModificarPerfilProveedor.js';
+import ModificarPerfilUsuario from './componentes/ModificarDatos/ModificarPerfilUsuario.js';
+
+import GestionarReportes from './componentes/GestionAdministrador/GestionarReportes.js';
 function App() {
   return (
     <div className="App">
@@ -17,7 +20,7 @@ function App() {
       <React.Fragment>
         <CssBaseline />
         <Container fixed maxWidth="xl">
-          <ModificarPerfil/>
+          <GestionarReportes/>
         </Container>
       </React.Fragment>
       

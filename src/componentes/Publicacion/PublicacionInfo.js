@@ -6,6 +6,11 @@ import Typography from '@material-ui/core/Typography';
 
 import ImageGallery from 'react-image-gallery';
 import Estrellas from '../Estrellas.js';
+import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
+
+import ReportarPublicacion from './ReportarPublicacion.js'
+import Breadcrumbs from '../Breadcrumbs.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,7 +19,6 @@ const useStyles = makeStyles((theme) => ({
     '& > *': {
       margin: theme.spacing(1),
     },
-    position: "sticky"
   },
   grid: {
     padding: 20
@@ -43,19 +47,30 @@ export default function PublicacionInfo() {
   return (
     <div className={classes.root}>
       <Paper elevation={5} >
-        <Grid className={classes.grid} container direction="row" justify="space-between" alignItems="center">
-            <Grid item xs={6}>
+        <Grid className={classes.grid} container direction="row" justify="space-around" alignItems="center">
+            <Grid item container xs={12} alignItems="flex-end" direction="column">
+              <Grid item>
+                <ReportarPublicacion/>
+              </Grid>
+            </Grid>
+            
+            <Grid item xs={5}>
                 <Typography variant="h5" component="h1" align="left">
                     Titulo de la publicacion
                 </Typography>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={3}>
                 <Typography variant="h6" component="h3">
                     <Estrellas/>
                 </Typography>
             </Grid>
+
+            <Grid item xs={4} alignItems="right">
+                <Breadcrumbs/>
+            </Grid>
+
             <Grid item xs={12}>
-                <Typography variant="h6" component="h3" color="secondary" align="left">
+                <Typography variant="h6" component="h3" align="left">
                     Precio estimado: $500
                 </Typography>
             </Grid>
