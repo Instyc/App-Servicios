@@ -1,23 +1,13 @@
 import React from 'react';
 import {useState} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import DoneIcon from '@material-ui/icons/Done';
 import ClearIcon from '@material-ui/icons/Clear';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    '& > *': {
-      margin: theme.spacing(0.5),
-    },
-  },
-}));
+import Estilos from './Estilos.js';
 
 export default function SeleccioanrServicio({servicio}) {
-  const classes = useStyles();
+  const classes = Estilos();
   const [hecho_noHecho, setHecho_noHecho] = useState((<div><ClearIcon/></div>));
   const [seleccion, setSeleccion] = useState(0);
 
@@ -32,7 +22,7 @@ export default function SeleccioanrServicio({servicio}) {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={classes.mostrarFlex}>
       <Chip clickable variant="outlined" color="primary" label={servicio} icon={hecho_noHecho} onClick={handleClick}/>
     </div>
   );
