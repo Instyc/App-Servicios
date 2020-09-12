@@ -1,5 +1,4 @@
 import { makeStyles } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const Estilos = makeStyles((theme) => ({
     mostrarFlex: {
@@ -7,13 +6,27 @@ const Estilos = makeStyles((theme) => ({
         justifyContent: 'center',
         alignItems: 'center',
         flexWrap: 'wrap',
-        padding: 20
+        padding: 10
+    },
+    proveedorSticky:{
+        display: 'scroll',
+        position: 'sticky',
+        top: 10,
+        flexWrap: 'wrap',
+        marginBottom: 10,
+        marginTop:10
     },
     margenArriba:{
         marginTop: 10,
     },
+    padding:{
+        padding: 20
+    },
+    padding2:{
+        padding: 10
+    },
     filaPublicacion:{
-        padding: 20,
+        padding: 10,
         marginTop: 10,
     },
     imagenPublicacion:{
@@ -37,7 +50,18 @@ const Estilos = makeStyles((theme) => ({
         border: '1px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
-    }
+    },
+    pantallaMedia:{
+        maxWidth: 800,
+        minWidth: 360,
+    },
+    botonFijo: {
+        left: "43%",
+        top: "90%",
+        display: "scroll",
+        position: "fixed",
+    },
+
     
 }));
 

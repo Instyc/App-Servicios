@@ -6,28 +6,13 @@ import Typography from '@material-ui/core/Typography';
 
 import ImageGallery from 'react-image-gallery';
 import Estrellas from '../Estrellas.js';
-import Button from '@material-ui/core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
 
 import ReportarPublicacion from './ReportarPublicacion.js'
-import Breadcrumbs from '../Breadcrumbs.js';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-  grid: {
-    padding: 20
-  }
-  
-}));
+import Estilos from '../Estilos.js';
 
 export default function PublicacionInfo() {
-  const classes = useStyles();
+  const classes = Estilos();
 
   const images = [
     {
@@ -45,30 +30,30 @@ export default function PublicacionInfo() {
   ];
 
   return (
-    <div className={classes.root}>
+    <div className={classes.mostrarFlex}>
       <Paper elevation={5} >
-        <Grid className={classes.grid} container direction="row" justify="space-around" alignItems="center">
+        <Grid className={classes.padding} container direction="row" justify="space-around" alignItems="center">
             <Grid item container xs={12} alignItems="flex-end" direction="column">
-              <Grid item>
-                <ReportarPublicacion/>
-              </Grid>
+              
             </Grid>
             
-            <Grid item xs={5}>
+            <Grid item xs={6} sm={5}>
                 <Typography variant="h5" component="h1" align="left">
                     Titulo de la publicacion
                 </Typography>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={6} sm={4}>
                 <Typography variant="h6" component="h3">
                     <Estrellas/>
                 </Typography>
             </Grid>
 
-            <Grid item xs={4} alignItems="right">
-                <Breadcrumbs/>
+            <Grid item xs={6} sm={2}>
+              Falta Breadcrumbs
             </Grid>
-
+            <Grid item xs={6} sm={1}>
+                <ReportarPublicacion/>
+            </Grid>
             <Grid item xs={12}>
                 <Typography variant="h6" component="h3" align="left">
                     Precio estimado: $500

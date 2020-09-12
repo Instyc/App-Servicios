@@ -1,34 +1,21 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import ProveedorInfo from './ProveedorInfo';
-import PublicacionInfo from './PublicacionInfo';
-import Opiniones from './Opiniones';
-
-import { makeStyles } from '@material-ui/core/styles';
-
 import Button from '@material-ui/core/Button';
 import Mail from '@material-ui/icons/MailOutlined';
 
-const useStyles = makeStyles((theme) => ({ 
-  root:{
-      
-  },
-  boton: {
-    left: "43%",
-    top: "90%",
-    display: "scroll",
-    position: "fixed",
-  }
-}));
+import ProveedorInfo from './ProveedorInfo.js';
+import PublicacionInfo from './PublicacionInfo.js';
+import Opiniones from './Opiniones.js';
+
+import Estilos from '../Estilos.js';
 
 export default function Publicacion() {
-    const classes = useStyles();
     return (
         <div>
             <Grid  container direction="row" justify="center" alignItems="stretch">
                 <Grid item md={8} xs={12}>
-                    <PublicacionInfo/>
-                    <Opiniones/>
+                  <PublicacionInfo/>
+                  <Opiniones/>
                 </Grid>  
                 <Grid item md={4} xs={12} >
                     <ProveedorInfo/>
@@ -40,10 +27,10 @@ export default function Publicacion() {
 }
 
 function Contratar() {
-  const classes = useStyles();
+  const classes = Estilos();
 
   return (
-    <div className={classes.boton}>
+    <div className={classes.botonFijo}>
        <Button
         variant="contained"
         color="primary"

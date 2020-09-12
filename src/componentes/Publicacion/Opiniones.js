@@ -9,25 +9,14 @@ import Dislike from '@material-ui/icons/ThumbDownAltTwoTone';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-  grid: {
-    padding: 20,
-  }
-}));
+import Estilos from '../Estilos.js';
 
 export default function Opiniones() {
-  const classes = useStyles();
+  const classes = Estilos();
   return (
-    <div className={classes.root}>
+    <div className={classes.mostrarFlex}>
       <Paper elevation={5}>
-        <Grid className={classes.grid} container direction="row" justify="flex-start" alignItems="center">
+        <Grid className={classes.padding} container direction="row" justify="flex-start" alignItems="center">
             <Grid item xs={12}>
                 <Typography variant="h4" component="h2" align="left">
                     Reseñas
@@ -52,16 +41,16 @@ export default function Opiniones() {
 
 
 function Reseña() {
-    const classes = useStyles();
+    const classes = Estilos();
     return (
         <Paper variant="outlined" square>
-            <Grid className={classes.grid} container direction="row" justify="space-around" alignItems="baseline">
-                <Grid item xs={12}>
+            <Grid className={classes.padding} container direction="row" justify="space-around" alignItems="baseline">
+                <Grid item xs={6}>
                     <Typography variant="h5" component="h2" align="left">
                         Titulo de la reseña
                     </Typography>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                     <Estrellas/>
                 </Grid>
                 <Grid item xs={12}>

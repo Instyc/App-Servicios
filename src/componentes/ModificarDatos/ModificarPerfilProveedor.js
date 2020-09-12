@@ -1,5 +1,4 @@
 import React,{useState} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
@@ -13,37 +12,10 @@ import SubirImagenes from '../SubirImagen.js';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import SeleccionarServicio from '../SeleccionarServicio.js';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: 10,
-  },
-  grid:{
-    padding: 20,
-    maxWidth: 800,
-    minWidth: 360
-  },
-  inputAncho:{
-    width: "95%",
-    margin: 10,
-    textAlign: "left"
-  },
-  alinearInputs: {
-    width: "97.5%",
-    margin: 10,
-    justify: "center" 
-  },
-  botones: {
-    margin: 30,
-    alignItems: "center"
-  }
-}));
-
+import Estilos from '../Estilos.js';
 
 export default function Registrar() {
-    const classes = useStyles();
+    const classes = Estilos();
     const [pictures,setPictures] = useState([]);
 
     function onDrop(pictureFiles, pictureDataURLs){
@@ -66,10 +38,10 @@ export default function Registrar() {
       ];
 
   return (
-    <div className={classes.root}>
-        <Paper elevation={3} >
+    <div className= {classes.mostrarFlex}>
+        <Paper elevation={3} className= {classes.pantallaMedia}>
             <FormControl color="primary" fullWidth>
-                <Grid className={classes.grid} container direction="row" justify="center" alignItems="center">
+                <Grid className={classes.filaPublicacion} container direction="row" justify="space-around" alignItems="center">
                     <Grid item xs={12}>
                         <Typography variant="h5" component="h1" align="center">
                             Modificar datos de proveedor
@@ -85,10 +57,10 @@ export default function Registrar() {
                     </Grid>
                     
                     <Grid item xs={12}>
-                        <TextField className={classes.alinearInputs} id="filled-basic" label="Descripción" multiline variant="filled" multiline/>
+                        <TextField className={classes.inputAncho} id="filled-basic" label="Descripción" multiline variant="filled" multiline/>
                     </Grid>
 
-                    <Grid item xs={12} className={classes.alinearInputs}>
+                    <Grid item xs={12} className={classes.inputAncho}>
                         <SubirImagenes/>
                     </Grid>
 
@@ -107,10 +79,10 @@ export default function Registrar() {
                     </Grid>
 
                     <Grid item xs={6}>
-                        <Button className={classes.botones} size="large" variant="contained" color="primary">Guardar</Button>
+                        <Button size="large" variant="contained" color="primary">Guardar</Button>
                     </Grid>
                     <Grid item xs={6}>
-                        <Button className={classes.botones} size="large" variant="contained" color="secondary">Cancelar</Button>
+                        <Button size="large" variant="contained" color="secondary">Cancelar</Button>
                     </Grid>
                 </Grid>
             </FormControl>
@@ -121,7 +93,6 @@ export default function Registrar() {
 
 
 const CategoriaSeleccion = () => {
-    const classes = useStyles();
     const [arrayServicios, setArrayServicios] = useState(
         [
           {
@@ -152,7 +123,7 @@ const CategoriaSeleccion = () => {
 
     return (
         <div>
-            <Grid container justify="flex-start" className={classes.alinearInputs}>
+            <Grid container justify="flex-start">
                 <FormControlLabel
                     control={<Checkbox onChange={manejarCambio} checked={seleccionado} name="checkedA" />}
                     label="Categoría 1"

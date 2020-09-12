@@ -10,6 +10,7 @@ import Inicio from './componentes/Inicio/Inicio.js';
 import Publicacion from './componentes/Publicacion/Publicacion.js';
 import ModificarPerfilProveedor from './componentes/ModificarDatos/ModificarPerfilProveedor.js';
 import ModificarPerfilUsuario from './componentes/ModificarDatos/ModificarPerfilUsuario.js';
+import CrearPublicacion from './componentes/Publicacion/CrearPublicacion.js';
 
 import GestionarReportes from './componentes/GestionAdministrador/GestionarReportes.js';
 function App() {
@@ -20,7 +21,7 @@ function App() {
       <React.Fragment>
         <CssBaseline />
         <Container fixed maxWidth="xl">
-          <Registrar/>
+          <CrearPublicacion/>
         </Container>
       </React.Fragment>
       

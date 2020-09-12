@@ -1,9 +1,7 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import Estrellas from '../Estrellas.js';
 import Like from '@material-ui/icons/ThumbUpAltTwoTone';
 import Dislike from '@material-ui/icons/ThumbDownAltTwoTone';
 import Button from '@material-ui/core/Button';
@@ -15,27 +13,14 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 
-
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-  },
-  grid: {
-    padding: 20,
-  }
-}));
+import Estilos from '../Estilos.js'
 
 export default function GestionarReportes() {
-  const classes = useStyles();
+  const classes = Estilos();
   return (
-    <div className={classes.root}>
+    <div className={classes.margenArriba}>
       <Paper elevation={5}>
-        <Grid className={classes.grid} container justify="flex-start">
+        <Grid className={classes.filaPublicacion} container justify="flex-start">
             <Grid item xs={12}>
                 <Typography variant="h4" component="h1" align="left">
                     Reportes
@@ -55,7 +40,7 @@ export default function GestionarReportes() {
 
 
 function Reporte() {
-    const classes = useStyles();
+    const classes = Estilos();
     const motivos = [
         "Motivo 1",
         "Motivo 2",
@@ -65,8 +50,8 @@ function Reporte() {
         "Motivo 6",
     ]
     return (
-        <Paper variant="outlined" square>
-            <Grid className={classes.grid} container direction="row" justify="space-around">
+        <Paper className={classes.filaPublicacion} variant="outlined" square>
+            <Grid container direction="row" justify="space-around">
                 <Grid item xs={12}>
                     <Typography variant="h5" component="h2" align="left">
                         Publicacion X

@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -7,7 +6,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
 import PhoneIcon from '@material-ui/icons/Phone';
 import Button from '@material-ui/core/Button';
-
 
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
@@ -17,42 +15,17 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'scroll',
-    position: 'sticky',
-    top: 10,
-    flexWrap: 'wrap',
-    '& > *': {
-      margin: theme.spacing(1),
-    },
-    marginBottom: 9,
-  },
-  imagenPerfil: {
-    width: theme.spacing(30),
-    height: theme.spacing(30),
-  },
-  lista: {
-    width: '100%',
-    backgroundColor: theme.palette.background.paper,
-  },
-  itemLista: {
-    paddingLeft: theme.spacing(4),
-  },
-  grid: {
-    padding: 20,
-  },
-}));
+import Estilos from '../Estilos.js';
 
-export default function PublicacionInfo() {
-  const classes = useStyles();
+export default function ProveedorInfo() {
+  const classes = Estilos();
   return (
-    <div className={classes.root}>
+    <div className={classes.proveedorSticky}>
       <Paper elevation={5}>
-        <Grid className={classes.grid} container direction="row" justify="space-between" alignItems="center">
+        <Grid className={classes.padding} container direction="row" justify="space-between" alignItems="center">
             <Grid item xs={12}>
               <div align="center">
-                <Avatar alt="Remy Sharp" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR7Mt8wp9lo-dd73xpvjzPMcspQ8uwAThLitQ&usqp=CAU" className={classes.imagenPerfil} />
+                <Avatar alt="Remy Sharp" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR7Mt8wp9lo-dd73xpvjzPMcspQ8uwAThLitQ&usqp=CAU" className={classes.imagenPublicacion} />
               </div>
             </Grid>
             <Grid item xs={12}>
@@ -76,7 +49,6 @@ export default function PublicacionInfo() {
                         Servicios ofrecidos
                     </ListSubheader>
                 }
-                className={classes.lista}
                 >
                     <Divider/> 
                     <Categorias nombre="Categoria 1" />   
@@ -103,7 +75,6 @@ export default function PublicacionInfo() {
 
 
 function Categorias({nombre}) {
-    const classes = useStyles();
     const [open, setOpen] = React.useState(true);
 
     const handleClick = () => {
