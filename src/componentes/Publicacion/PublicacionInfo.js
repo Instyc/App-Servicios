@@ -10,6 +10,9 @@ import Estrellas from '../Estrellas.js';
 import ReportarPublicacion from './ReportarPublicacion.js'
 
 import Estilos from '../Estilos.js';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Link from '@material-ui/core/Link';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 export default function PublicacionInfo() {
   const classes = Estilos();
@@ -32,31 +35,35 @@ export default function PublicacionInfo() {
   return (
     <div className={classes.mostrarFlex}>
       <Paper elevation={5} >
-        <Grid className={classes.padding} container direction="row" justify="space-around" alignItems="center">
+        <Grid className={classes.padding} container direction="row" justify="space-between" alignItems="center">
             <Grid item container xs={12} alignItems="flex-end" direction="column">
               
             </Grid>
             
-            <Grid item xs={6} sm={5}>
+            <Grid item xs={6} sm={7}>
                 <Typography variant="h5" component="h1" align="left">
                     Titulo de la publicacion
                 </Typography>
             </Grid>
-            <Grid item xs={6} sm={4}>
-                <Typography variant="h6" component="h3">
-                    <Estrellas/>
-                </Typography>
-            </Grid>
 
-            <Grid item xs={6} sm={2}>
-              Falta Breadcrumbs
+            <Grid item xs={6} sm={4} align-items="last baseline">
+              <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+                <Link color="inherit">Categoría</Link>
+                <Link color="inherit">Servicio</Link>
+              </Breadcrumbs>
             </Grid>
+            
             <Grid item xs={6} sm={1}>
                 <ReportarPublicacion/>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
                 <Typography variant="h6" component="h3" align="left">
                     Precio estimado: $500
+                </Typography>
+            </Grid>
+            <Grid item xs={6} sm={6}>
+                <Typography variant="h6" component="h3">
+                    <Estrellas/>
                 </Typography>
             </Grid>
             <Grid item xs={12}>

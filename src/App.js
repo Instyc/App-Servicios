@@ -3,6 +3,7 @@ import Nav from './componentes/Nav.js';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import './App.css';
+
 import Categoria from './componentes/Categoria/Categoria.js';
 import Registrar from './componentes/Sesion/Registrar.js';
 import InicioSesion from './componentes/Sesion/InicioSesion.js';
@@ -11,9 +12,10 @@ import Publicacion from './componentes/Publicacion/Publicacion.js';
 import ModificarPerfilProveedor from './componentes/ModificarDatos/ModificarPerfilProveedor.js';
 import ModificarPerfilUsuario from './componentes/ModificarDatos/ModificarPerfilUsuario.js';
 import CrearPublicacion from './componentes/Publicacion/CrearPublicacion.js';
-
 import GestionarReportes from './componentes/GestionAdministrador/GestionarReportes.js';
-function App() {
+import RealizarOpinion from './componentes/Notificaciones/RealizarOpinion.js';
+
+function App() { 
   return (
     <div className="App">
       <Nav/>
@@ -21,7 +23,7 @@ function App() {
       <React.Fragment>
         <CssBaseline />
         <Container fixed maxWidth="xl">
-          <CrearPublicacion/>
+          <RealizarOpinion/>
         </Container>
       </React.Fragment>
       

@@ -52,7 +52,7 @@ const Estilos = makeStyles((theme) => ({
         padding: theme.spacing(2, 4, 3),
     },
     pantallaMedia:{
-        maxWidth: 800,
+        maxWidth: 800, 
         minWidth: 360,
     },
     botonFijo: {
@@ -61,6 +61,12 @@ const Estilos = makeStyles((theme) => ({
         display: "scroll",
         position: "fixed",
     },
+    contactarProveedor:{
+        backgroundColor: "white",
+        border: '1px solid #000',
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+    }
 
     
 }));
