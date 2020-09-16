@@ -55,9 +55,9 @@ function Reseña() {
                 </Grid>
                 <Grid item xs={12}>
                     <Typography variant="body1" component="p" align="justify"> 
-                        ¿Otra vez con mi ropa interior oni-chan?
-                        Me parece un poco desagradable que te metas a mi habitación solo para robar mis bragas y es repulsivo pensar lo que haces con ellas. No se lo he dicho a nuestros padres por miedo a que te obliguen a irte de casa, después de todo tienes 22 años y es bastante raro que tengas esas intenciones con tu hermanita de 15 años.
-                        Encontrar mi ropa interior toda pegajosa debajo de tu cama no es lindo oni-chan, tampoco es lindo que me espies mientras me baño o que guardes toda mi basura en tu habitación, mucho menos que tengas fotografías mías pegadas en revistas eroticas.
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. In aperiam amet quaerat rem quo repellendus vitae ad labore nam facere! Magnam numquam sit recusandae tenetur harum! Animi facilis natus minima!
+                        Labore omnis sint quis nisi, porro atque minus consequatur eius sed alias odit explicabo rerum mollitia laboriosam excepturi. Rerum, numquam tenetur! Asperiores sequi magni error quis blanditiis voluptate. Animi, maxime.
+                        Veniam facilis eaque hic cum voluptatum doloribus fuga debitis dolore doloremque ut, voluptatem consequatur, accusantium fugit blanditiis laborum autem similique optio quas dolor. Consequuntur soluta officia eius natus facilis reiciendis!
                     </Typography> 
                 </Grid>
                 <Grid item xs={6}>

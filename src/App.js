@@ -26,7 +26,7 @@ function App() {
       <React.Fragment>
         <CssBaseline />
         <Container fixed maxWidth="xl">
-          <PestanaReportes/>
+          <Publicacion/>
         </Container>
       </React.Fragment>
       
