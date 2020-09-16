@@ -46,6 +46,7 @@ export default function IniciarSesion() {
         BackdropProps={{
           timeout: 500,
         }}
+        
       >
         <Fade in={open}>
           <div>

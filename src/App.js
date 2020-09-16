@@ -13,6 +13,8 @@ import ModificarPerfilProveedor from './componentes/ModificarDatos/ModificarPerf
 import ModificarPerfilUsuario from './componentes/ModificarDatos/ModificarPerfilUsuario.js';
 import CrearPublicacion from './componentes/Publicacion/CrearPublicacion.js';
 import GestionarReportes from './componentes/GestionAdministrador/GestionarReportes.js';
+import VerificarIdentidad from './componentes/GestionAdministrador/VerificarIdentidad.js';
+
 import RealizarOpinion from './componentes/Notificaciones/RealizarOpinion.js';
 
 function App() { 
@@ -23,7 +25,7 @@ function App() {
       <React.Fragment>
         <CssBaseline />
         <Container fixed maxWidth="xl">
-          <RealizarOpinion/>
+          <VerificarIdentidad/>
         </Container>
       </React.Fragment>
       

@@ -7,13 +7,13 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 
-import AlertaMensaje from '../AlertaMensaje.js';
+import AlertaMensaje from './AlertaMensaje.js';
 export default function ContactarProveedor() {
     const classes = Estilos();
     
 
     return (
-        <div >
+        <div>
             <Grid  container direction="row" justify="center" alignItems="stretch">
                 <Grid item xs={12}>
                     <div align="center">

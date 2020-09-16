@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
 
-function Alert(props) {
+function Alerta(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 export default function AlertaMensaje() {
@@ -30,9 +30,9 @@ export default function AlertaMensaje() {
                 <Button className={classes.inputAncho} size="large" variant="contained" color="primary" onClick={handleClick}>Enviar</Button>
 
                 <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
-                    <Alert onClose={handleClose} severity="success">
+                    <Alerta onClose={handleClose} severity="success">
                         ¡Mensaje enviado con éxito!
-                    </Alert>
+                    </Alerta>
                 </Snackbar>
             </Grid>
        </div>

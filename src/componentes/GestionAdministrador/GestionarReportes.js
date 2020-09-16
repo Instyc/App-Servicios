@@ -13,7 +13,19 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Collapse from '@material-ui/core/Collapse';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import Ojo from '@material-ui/icons/Visibility';
+import Flechita from '@material-ui/icons/ArrowForwardIos';
+
 import Estilos from '../Estilos.js'
+
+import Aceptar from '@material-ui/icons/Check';
+import Rechazar from '@material-ui/icons/Clear';
 
 export default function GestionarReportes() {
   const classes = Estilos();
@@ -51,16 +63,24 @@ function Reporte() {
     ]
     return (
         <Paper className={classes.filaPublicacion} variant="outlined" square>
-            <Grid container direction="row" justify="space-around">
-                <Grid item xs={12}>
-                    <Typography variant="h5" component="h2" align="left">
-                        Publicacion X
-                    </Typography>
-                    <Typography variant="h5" component="h3" align="left">
-                        Proveedor de servicios Y
-                    </Typography>
-                </Grid>
+            <Grid container direction="row" alignItems="center">             
+                <Typography variant="h5" component="h2" align="left" >
+                    Publicacion X
+                </Typography>
+            
+                <Tooltip title="Vista previa">
+                    <Button><Ojo color="primary" /></Button>
+                </Tooltip>
+                <Button disabled>
+                    <Flechita/>
+                </Button>
                 
+                <Button className={classes.button}>
+                    <Typography variant="h6" component="h5" align="left">
+                        Proveedor de servicios
+                    </Typography>
+                </Button>               
+           
                 <Grid item xs={12}>
                     <Typography variant="h6" component="h5" align="left">
                         Opciones señaladas
@@ -80,40 +100,61 @@ function Reporte() {
                         ))
                     }
                 </Grid>
-                <Grid item xs={12}>
-                    <Typography variant="body1" component="p" align="justify"> 
-                        ¿Otra vez con mi ropa interior oni-chan?
-                        Me parece un poco desagradable que te metas a mi habitación solo para robar mis bragas y es repulsivo pensar lo que haces con ellas. No se lo he dicho a nuestros padres por miedo a que te obliguen a irte de casa, después de todo tienes 22 años y es bastante raro que tengas esas intenciones con tu hermanita de 15 años.
-                        Encontrar mi ropa interior toda pegajosa debajo de tu cama no es lindo oni-chan, tampoco es lindo que me espies mientras me baño o que guardes toda mi basura en tu habitación, mucho menos que tengas fotografías mías pegadas en revistas eroticas.
-                    </Typography> 
-                </Grid>
-
-                <FormControl component="fieldset" align="left">
-                    <FormLabel component="legend">Acción</FormLabel>
-                    <RadioGroup aria-label="Accion">
-                        <FormControlLabel value="Pausar" control={<Radio />} label="Pausar publicacion" />
-                        <FormControlLabel value="Nada" control={<Radio />} label="No hacer nada" />
-                    </RadioGroup>
-                </FormControl>
-                <Grid item xs={12}>
-                    <TextField id="outlined-basic" label="Agregar mensaje" multiline variant="outlined" size="medium" fullWidth > 
-                        
-                    </TextField> 
-                </Grid>
-
-                <Grid item xs={12}>
-                    <Tooltip title="Aceptar reclamo">
-                        <Button startIcon={<Like/>}>
-                            Aceptar reclamo
-                        </Button>
-                    </Tooltip>
-                    <Tooltip title="Descartar reclamo">
-                        <Button color="secondary" startIcon={<Dislike/>}>
-                            Descartar reclamo
-                        </Button>
-                    </Tooltip>
-                </Grid>
+                
+                <DesplegarInformacion className={classes.inputAncho}/>
             </Grid>
         </Paper>
     );
-  }
+}
+
+  
+function DesplegarInformacion() {
+    const [open, setOpen] = React.useState(false);
+
+    const handleClick = () => {
+        setOpen(!open);
+    };
+    return (
+        <div>
+            
+            <ListItem button onClick={handleClick}>
+                <ListItemText primary="Desplegar información"/>
+                {open ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                    <Grid item xs={12}>
+                        <Typography variant="body1" component="p" align="justify"> 
+                            ¿Otra vez con mi ropa interior oni-chan?
+                            Me parece un poco desagradable que te metas a mi habitación solo para robar mis bragas y es repulsivo pensar lo que haces con ellas. No se lo he dicho a nuestros padres por miedo a que te obliguen a irte de casa, después de todo tienes 22 años y es bastante raro que tengas esas intenciones con tu hermanita de 15 años.
+                            Encontrar mi ropa interior toda pegajosa debajo de tu cama no es lindo oni-chan, tampoco es lindo que me espies mientras me baño o que guardes toda mi basura en tu habitación, mucho menos que tengas fotografías mías pegadas en revistas eroticas.
+                        </Typography> 
+                    </Grid>
+
+                    <FormControl component="fieldset" align="left">
+                        <FormLabel component="legend">Acción</FormLabel>
+                        <RadioGroup aria-label="Accion">
+                            <FormControlLabel value="Pausar" control={<Radio />} checked label="Pausar publicacion" />
+                            <FormControlLabel value="Nada" control={<Radio />} label="No hacer nada" />
+                        </RadioGroup>
+                    </FormControl>
+                    <Grid item xs={12}>
+                        <TextField id="outlined-basic" label="Agregar mensaje" multiline variant="outlined" size="medium" fullWidth > 
+                            
+                        </TextField> 
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <Button startIcon={<Aceptar/>}>
+                            Aceptar reclamo
+                        </Button>
+                        <Button color="secondary" startIcon={<Rechazar/>}>
+                            Descartar reclamo
+                        </Button>
+                    </Grid>
+                </List>
+            </Collapse>
+            
+        </div>
+    )
+}
