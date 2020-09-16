@@ -14,6 +14,7 @@ import ModificarPerfilUsuario from './componentes/ModificarDatos/ModificarPerfil
 import CrearPublicacion from './componentes/Publicacion/CrearPublicacion.js';
 import GestionarReportes from './componentes/GestionAdministrador/GestionarReportes.js';
 import VerificarIdentidad from './componentes/GestionAdministrador/VerificarIdentidad.js';
+import PestanaReportes from './componentes/GestionAdministrador/PestanaReportes.js';
 
 import RealizarOpinion from './componentes/Notificaciones/RealizarOpinion.js';
 
@@ -25,7 +26,7 @@ function App() {
       <React.Fragment>
         <CssBaseline />
         <Container fixed maxWidth="xl">
-          <VerificarIdentidad/>
+          <PestanaReportes/>
         </Container>
       </React.Fragment>
       

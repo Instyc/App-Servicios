@@ -10,6 +10,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -32,7 +33,7 @@ export default function GestionarReportes() {
       <Paper elevation={5}>
         <Grid className={classes.filaPublicacion} container justify="center">
             <Typography variant="h4" component="h1" align="left">
-                Reportes nuevos
+                Historial de reportes
             </Typography>
             <Grid item xs={12}>
                 <Reporte/>
@@ -58,7 +59,7 @@ function Reporte() {
         "Motivo 6",
     ]
     return (
-        <Paper className={classes.filaPublicacion} variant="outlined" square>
+        <Paper className={classes.fondoAceptado} variant="outlined" square>
             <Grid container direction="row" justify="center">             
                 <Grid item xs={9}>
                     <Button disabled>
@@ -69,7 +70,6 @@ function Reporte() {
                     <Tooltip title="Vista previa">
                         <Button><Ojo color="primary" /></Button>
                     </Tooltip>
-                    
                         
                     <Button disabled>
                         <Flechita/>
@@ -108,7 +108,6 @@ function Reporte() {
                         ))
                     }
                 </Grid>
-                
                 <Grid item xs={12}>
                     <DesplegarInformacion/>
                 </Grid>
@@ -121,13 +120,11 @@ function Reporte() {
 function DesplegarInformacion() {
     const [open, setOpen] = React.useState(false);
     const classes = Estilos();
-
     const handleClick = () => {
         setOpen(!open);
     };
     return (
         <div>
-            
             <ListItem button onClick={handleClick}>
                 <ListItemText primary="Desplegar información"/>
                 {open ? <ExpandLess /> : <ExpandMore />}
@@ -141,30 +138,28 @@ function DesplegarInformacion() {
                         </Typography> 
                     </Grid>
                     <hr/>
-                        <FormControl component="fieldset" align="left">
-                            <FormLabel component="legend">Acción</FormLabel>
-                                <RadioGroup row aria-label="Accion">
-                                    <FormControlLabel value="valor1" control={<Radio />} label="Pausar publicacion" />
-                                    <FormControlLabel value="valor2" control={<Radio />} label="No hacer nada" />
-                                </RadioGroup>
-                        </FormControl>
-                    <Grid item xs={12}>
-                        <TextField id="outlined-basic" label="Agregar mensaje" multiline variant="outlined" size="medium" fullWidth> 
-                            
-                        </TextField> 
-                    </Grid>
 
-                    <div align="center">
-                        <Button startIcon={<Aceptar/>}>
-                            Aceptar reclamo
-                        </Button>
-                        <Button color="secondary" startIcon={<Rechazar/>}>
-                            Descartar reclamo
-                        </Button>
-                    </div>
+                    <FormControl component="fieldset" align="left">
+                        <FormLabel component="legend" >Acción</FormLabel>
+                        <RadioGroup row aria-label="Acción elegida">
+                            <FormControlLabel value="Pausar" control={<Radio />} label="Pausar publicacion" />
+                            <FormControlLabel value="Nada" control={<Radio />} label="No hacer nada" />
+                        </RadioGroup>
+                    </FormControl>
+                    
+                    <Typography color="secondary" variant="h5" component="h4" align="left" >
+                        Mensajes del administrador:
+                    </Typography>
+                    <hr/>
+                    <Grid item xs={12}>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat provident tempore incidunt eaque, dolor aliquid placeat architecto quaerat commodi distinctio dignissimos id dicta voluptatem fuga laborum vel sunt. Aspernatur, libero.Soluta vero vitae voluptas molestiae facere laborum laudantium at numquam assumenda perspiciatis nisi ipsum, ullam reprehenderit quae pariatur asperiores fugiat sequi delectus molestias neque. Fugit minus debitis possimus magni laborum!
+                    </Grid>
+                    <hr/>
+                    <Grid item xs={12}>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat provident tempore incidunt eaque, dolor aliquid placeat architecto quaerat commodi distinctio dignissimos id dicta voluptatem fuga laborum vel sunt. Aspernatur, libero.Soluta vero vitae voluptas molestiae facere laborum laudantium at numquam assumenda perspiciatis nisi ipsum, ullam reprehenderit quae pariatur asperiores fugiat sequi delectus molestias neque. Fugit minus debitis possimus magni laborum!
+                    </Grid>
                 </List>
             </Collapse>
-            
         </div>
     )
 }

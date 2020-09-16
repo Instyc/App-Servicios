@@ -47,7 +47,6 @@ export default function GestionarReportes() {
                         inputProps={{ 'aria-label': 'primary checkbox' }}
                     />
                 </Tooltip>
-                
             </Grid>
             
             <Grid item xs={12}>

@@ -69,6 +69,19 @@ const Estilos = makeStyles((theme) => ({
     },
     button:{
         textTransform: "none"
+    },
+    margenAuto:{
+        margin: "auto"
+    },
+    fondoAceptado:{
+        background: "#D6FFD3",
+        padding: 10,
+        marginTop: 10,
+    },
+    fondoRechazado:{
+        background: "#FFDED3",
+        padding: 10,
+        marginTop: 10,
     }
 
     
