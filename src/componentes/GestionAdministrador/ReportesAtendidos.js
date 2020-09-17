@@ -26,7 +26,7 @@ import Aceptar from '@material-ui/icons/Check';
 import Rechazar from '@material-ui/icons/Clear';
 import Switch from '@material-ui/core/Switch';
 
-export default function GestionarReportes() {
+export default function ReportesAtendidos() {
   const classes = Estilos();
   return (
     <div className={classes.margenArriba}>
@@ -36,10 +36,10 @@ export default function GestionarReportes() {
                 Historial de reportes
             </Typography>
             <Grid item xs={12}>
-                <Reporte/>
-                <Reporte/>
-                <Reporte/>
-                <Reporte/>
+                <Reporte color="#FFDED3"/>
+                <Reporte color="#D6FFD3"/>
+                <Reporte color="#FFDED3"/>
+                <Reporte color="#D6FFD3"/>
             </Grid>
         </Grid>
       </Paper>
@@ -48,7 +48,7 @@ export default function GestionarReportes() {
 }
 
 
-function Reporte() {
+function Reporte({color}) {
     const classes = Estilos();
     const motivos = [
         "Motivo 1",
@@ -59,7 +59,7 @@ function Reporte() {
         "Motivo 6",
     ]
     return (
-        <Paper className={classes.fondoAceptado} variant="outlined" square>
+        <Paper className={classes.reporte} style={{background: color}} variant="outlined" square>
             <Grid container direction="row" justify="center">             
                 <Grid item xs={9}>
                     <Button disabled>
@@ -151,10 +151,20 @@ function DesplegarInformacion() {
                         Mensajes del administrador:
                     </Typography>
                     <hr/>
+                    <Grid item xs={3}>
+                        <Typography variant="h6" component="h5" align="left">
+                            Enviado 05/05/2020
+                        </Typography>
+                    </Grid>
                     <Grid item xs={12}>
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat provident tempore incidunt eaque, dolor aliquid placeat architecto quaerat commodi distinctio dignissimos id dicta voluptatem fuga laborum vel sunt. Aspernatur, libero.Soluta vero vitae voluptas molestiae facere laborum laudantium at numquam assumenda perspiciatis nisi ipsum, ullam reprehenderit quae pariatur asperiores fugiat sequi delectus molestias neque. Fugit minus debitis possimus magni laborum!
                     </Grid>
                     <hr/>
+                    <Grid item xs={3}>
+                        <Typography variant="h6" component="h5" align="left">
+                            Enviado 05/05/2020
+                        </Typography>
+                    </Grid>
                     <Grid item xs={12}>
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat provident tempore incidunt eaque, dolor aliquid placeat architecto quaerat commodi distinctio dignissimos id dicta voluptatem fuga laborum vel sunt. Aspernatur, libero.Soluta vero vitae voluptas molestiae facere laborum laudantium at numquam assumenda perspiciatis nisi ipsum, ullam reprehenderit quae pariatur asperiores fugiat sequi delectus molestias neque. Fugit minus debitis possimus magni laborum!
                     </Grid>

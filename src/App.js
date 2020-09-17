@@ -22,11 +22,10 @@ function App() {
   return (
     <div className="App">
       <Nav/>
-
       <React.Fragment>
-        <CssBaseline />
+        <CssBaseline/>
         <Container fixed maxWidth="xl">
-          <Publicacion/>
+          <PestanaReportes/>
         </Container>
       </React.Fragment>
       

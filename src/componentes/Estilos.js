@@ -73,16 +73,10 @@ const Estilos = makeStyles((theme) => ({
     margenAuto:{
         margin: "auto"
     },
-    fondoAceptado:{
-        background: "#D6FFD3",
+    reporte:{
         padding: 10,
         marginTop: 10,
     },
-    fondoRechazado:{
-        background: "#FFDED3",
-        padding: 10,
-        marginTop: 10,
-    }
 
     
 }));

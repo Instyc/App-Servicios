@@ -15,7 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 import GestionarReportes from './GestionarReportes.js'
-import HistorialReportes from './HistorialReportes.js'
+import ReportesAtendidos from './ReportesAtendidos.js'
 
 import Estilos from '../Estilos.js'
 import Nuevo from '@material-ui/icons/Announcement';
@@ -94,11 +94,11 @@ export default function ScrollableTabsButtonForce() {
       </TabPanel>
 
       <TabPanel value={value} index={1}>
-        
+        <ReportesAtendidos/>
       </TabPanel>
 
       <TabPanel value={value} index={2}>
-        <HistorialReportes/>
+        <ReportesAtendidos/>
       </TabPanel>
     </div>
   );
