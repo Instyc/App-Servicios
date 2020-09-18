@@ -7,8 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
-import Link from '@material-ui/core/Link';
-
+import {Link} from "react-router-dom";
 import Estilos from '../Estilos.js'
 
 export default function IniciarSesion() {
@@ -66,11 +65,9 @@ export default function IniciarSesion() {
                     <Button className={classes.margenArriba} size="large" variant="contained" color="primary">Iniciar Sesión</Button>
 
                     <Divider/>
-                    <Typography variant="body1" align="center">
-                        ¿Sos nuevo acá?|
-                        <Link href="#">
-                            Crear cuenta
-                        </Link>
+                    <Typography onClick={handleClose} variant="body1" align="center">
+                      {`¿Sos nuevo acá? `}
+                      <Link to="/registrar">Crear cuenta</Link>
                     </Typography>
                 </FormControl>
           </div>

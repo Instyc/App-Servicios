@@ -9,26 +9,42 @@ import Registrar from './componentes/Sesion/Registrar.js';
 import InicioSesion from './componentes/Sesion/InicioSesion.js';
 import Inicio from './componentes/Inicio/Inicio.js';
 import Publicacion from './componentes/Publicacion/Publicacion.js';
-import ModificarPerfilProveedor from './componentes/ModificarDatos/ModificarPerfilProveedor.js';
+import Button from '@material-ui/core/Button';
 import ModificarPerfilUsuario from './componentes/ModificarDatos/ModificarPerfilUsuario.js';
 import CrearPublicacion from './componentes/Publicacion/CrearPublicacion.js';
 import GestionarReportes from './componentes/GestionAdministrador/GestionarReportes.js';
 import VerificarIdentidad from './componentes/GestionAdministrador/VerificarIdentidad.js';
 import PestanaReportes from './componentes/GestionAdministrador/PestanaReportes.js';
+import RegistrarSesion from './componentes/Sesion/Registrar.js';
 
 import RealizarOpinion from './componentes/Notificaciones/RealizarOpinion.js';
+import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 
 function App() { 
   return (
     <div className="App">
-      <Nav/>
-      <React.Fragment>
-        <CssBaseline/>
-        <Container fixed maxWidth="xl">
-          <PestanaReportes/>
-        </Container>
-      </React.Fragment>
-      
+      <Router>
+        <Nav/>
+        <React.Fragment>
+          <CssBaseline/>
+          <Container fixed>
+            <Switch>
+              <Route path="/publicaciones">
+                <Inicio/>
+              </Route>
+              <Route path="/proveedores">
+
+              </Route>
+              <Route path="/solicitados">
+                <Publicacion/>
+              </Route>
+              <Route path="/registrar">
+                <RegistrarSesion/>
+              </Route>
+            </Switch>
+          </Container>
+        </React.Fragment>
+      </Router>
     </div>
   );
 }

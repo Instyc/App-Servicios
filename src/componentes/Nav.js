@@ -19,6 +19,8 @@ import Button from '@material-ui/core/Button';
 //Importamos componentes (Logica)
 import Inicio from "./Inicio/Inicio.js";
 import Publicacion from "./Publicacion/Publicacion.js";
+import InicioSesion from "./Sesion/InicioSesion.js";
+
 import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 
 export default function PrimarySearchAppBar() {
@@ -123,27 +125,14 @@ export default function PrimarySearchAppBar() {
             borderColor: '#0063cc'
             }}>
             App Servicios</Button>
-          
-          <Router>
 
-            <div>
-              <Button style={{padding:"20px"}}><Link to="/publicaciones">Publicaciones</Link></Button>
-              <Button style={{padding:"20px"}}><Link to="/proveedores">Proveedores</Link></Button>
-              <Button style={{padding:"20px"}}><Link to="/solicitados">Servicios solicitados</Link></Button>
-            </div>
-
-            <Switch>
-              <Route path="/publicaciones">
-                <Inicio/>
-              </Route>
-              <Route path="/proveedores">
-                
-              </Route>
-              <Route path="/solicitados">
-                <Publicacion/>
-              </Route>
-            </Switch>
-          </Router>
+              <div>
+                <Button style={{padding:"20px"}}><Link to="/publicaciones">Publicaciones</Link></Button>
+                <Button style={{padding:"20px"}}><Link to="/proveedores">Proveedores</Link></Button>
+                <Button style={{padding:"20px"}}><Link to="/solicitados">Servicios solicitados</Link></Button>
+                <Button style={{padding:"20px"}}><Link to="/registrar">Registrar cuenta</Link></Button>
+                <InicioSesion/>
+              </div>
 
           {/*----------------------------Iconos de sesión------------------------------------*/}
           <div className={classes.grow} />

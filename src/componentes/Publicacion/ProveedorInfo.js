@@ -24,12 +24,10 @@ export default function ProveedorInfo() {
       <Paper elevation={5}>
         <Grid className={classes.padding} container direction="row" justify="space-between" alignItems="center">
             <Grid item xs={12}>
-              <div align="center">
-                <Avatar alt="Remy Sharp" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR7Mt8wp9lo-dd73xpvjzPMcspQ8uwAThLitQ&usqp=CAU" className={classes.imagenPublicacion} />
-              </div>
+              <Avatar alt="Remy Sharp" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR7Mt8wp9lo-dd73xpvjzPMcspQ8uwAThLitQ&usqp=CAU" className={classes.imagenPublicacion} />
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="h5" component="h3">
+              <Typography variant="h5" component="h3" align="center">
                 Andres Manuel Lopez Obrador
               </Typography>
            </Grid>
