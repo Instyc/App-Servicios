@@ -127,11 +127,13 @@ export default function PrimarySearchAppBar() {
             App Servicios</Button>
 
               <div>
-                <Button style={{padding:"20px"}}><Link to="/publicaciones">Publicaciones</Link></Button>
+                <Button style={{padding:"20px"}}><Link to="/">Publicaciones</Link></Button>
                 <Button style={{padding:"20px"}}><Link to="/proveedores">Proveedores</Link></Button>
                 <Button style={{padding:"20px"}}><Link to="/solicitados">Servicios solicitados</Link></Button>
                 <Button style={{padding:"20px"}}><Link to="/registrar">Registrar cuenta</Link></Button>
-                <InicioSesion/>
+                <Button style={{padding:"20px"}}>
+                  <InicioSesion mensaje="Iniciar sesión"/>
+                </Button>
               </div>
 
           {/*----------------------------Iconos de sesión------------------------------------*/}

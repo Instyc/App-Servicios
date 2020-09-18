@@ -7,10 +7,12 @@ import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
+import LinkMUI from '@material-ui/core/Link';
+
 import {Link} from "react-router-dom";
 import Estilos from '../Estilos.js'
 
-export default function IniciarSesion() {
+export default function IniciarSesion({mensaje}) {
   const classes = Estilos();
   const [open, setOpen] = React.useState(false);
 
@@ -24,13 +26,9 @@ export default function IniciarSesion() {
 
   return (
     <div>
-        <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpen}
-        >
-        Iniciar Sesión
-      </Button>
+      <LinkMUI href="#" onClick={handleOpen}>
+        {mensaje}
+      </LinkMUI>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

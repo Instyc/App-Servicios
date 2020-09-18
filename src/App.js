@@ -29,7 +29,7 @@ function App() {
           <CssBaseline/>
           <Container fixed>
             <Switch>
-              <Route path="/publicaciones">
+              <Route exact path="/">
                 <Inicio/>
               </Route>
               <Route path="/proveedores">

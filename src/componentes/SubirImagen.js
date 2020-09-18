@@ -1,71 +1,47 @@
-import React, {useMemo} from 'react';
-import {useDropzone} from 'react-dropzone';
+import React from 'react';
+import 'react-dropzone-uploader/dist/styles.css'
+import Dropzone from 'react-dropzone-uploader'
 
-const baseStyle = {
-  flex: 1,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: '20px',
-  borderWidth: 2,
-  borderRadius: 2,
-  borderColor: '#eeeeee',
-  borderStyle: 'dashed',
-  backgroundColor: '#fafafa',
-  color: '#bdbdbd',
-  outline: 'none',
-  transition: 'border .24s ease-in-out'
-};
-
-const activeStyle = {
-  borderColor: '#2196f3'
-};
-
-const acceptStyle = {
-  borderColor: '#00e676'
-};
-
-const rejectStyle = {
-  borderColor: '#ff1744'
-};
-
-export default function SubirImagen(props) {
-  const {
-    getRootProps,
-    acceptedFiles,
-    getInputProps,
-    isDragActive,
-    isDragAccept,
-    isDragReject
-  } = useDropzone({accept: 'image/*'});
-
-  const style = useMemo(() => ({
-    ...baseStyle,
-    ...(isDragActive ? activeStyle : {}),
-    ...(isDragAccept ? acceptStyle : {}),
-    ...(isDragReject ? rejectStyle : {})
-  }), [
-    isDragActive,
-    isDragReject,
-    isDragAccept
-  ]);
+const SingleFileAutoSubmit = ({cantidad}) => {
+    const toast = (innerHTML) => {
+      const el = document.getElementById('toast')
+      el.innerHTML = innerHTML
+      el.className = 'show'
+      setTimeout(() => { el.className = el.className.replace('show', '') }, 3000)
+    }
   
-  const files = acceptedFiles.map(file => (
-    <li key={file.path}>
-      {file.path}
-    </li>
-  ));
+    const getUploadParams = () => {
+      return { url: 'https://httpbin.org/post' }
+    }
+  
+    const handleChangeStatus = ({ meta, remove }, status) => {
+      /*if (status === 'headers_received') {
+        toast(`${meta.name} uploaded!`)
+        remove()
+      } else if (status === 'aborted') {
+        toast(`${meta.name}, upload failed...`)
+      }*/
+    }
+  
+    return (
+      <React.Fragment>
+        <Dropzone
+          getUploadParams={getUploadParams}
+          onChangeStatus={handleChangeStatus}
+          maxFiles={cantidad}
+          multiple={true}
+          canCancel={false}
+          accept="image/*"
+          inputWithFilesContent={'Subir otra imagen'}
+          inputContent={()=>(cantidad===1?`Selecciona ${cantidad} imagen`:`Selecciona ${cantidad} imágenes`)}
+          //submitButtonContent=null to remove el botón submit
+          styles={{
+            dropzone: { width: "100%", height: "100%", overflow:"auto"},
+            dropzoneActive: { borderColor: 'green' },
+          }}
+        />
+      </React.Fragment>
+    )
+  }
 
-  return (
-    <section className="container">
-      <div {...getRootProps({style})}>
-        <input {...getInputProps()} />
-        <p>Arrastra las imágenes aquí, o clickea para seleccionar los archivos</p>
-      </div>
-      <aside>
-        <h4>Imágenes</h4>
-        <ul>{files}</ul>
-      </aside>
-    </section>
-  );
-}
+  export default SingleFileAutoSubmit;

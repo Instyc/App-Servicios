@@ -41,11 +41,10 @@ const Estilos = makeStyles((theme) => ({
     gridRegistro:{
         width:550, 
         padding: 20,
-        marginTop: 10,
+        marginBottom: 10,
     },
     inputAncho:{
         width: "100%",
-        padding: 10
     },
     papelFondo:{
         backgroundColor: "white",
