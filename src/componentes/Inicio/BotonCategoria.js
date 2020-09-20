@@ -8,10 +8,10 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 345
+    maxWidth: 345,
+    background: "pink"
   },
   media: {
-    height: 140,
     margin: "auto"
   },
 });
@@ -29,7 +29,7 @@ export default function BotonCategoria({nombre, imagen}) {
           title={nombre}
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
+          <Typography gutterBottom variant="h6" component="h4">
             {nombre}
           </Typography>
         </CardContent>

@@ -38,6 +38,9 @@ function App() {
               <Route path="/solicitados">
                 <Publicacion/>
               </Route>
+              <Route path="/publicaciones">
+                <Categoria/>
+              </Route>
               <Route path="/registrar">
                 <RegistrarSesion/>
               </Route>

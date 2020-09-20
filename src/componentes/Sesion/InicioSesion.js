@@ -26,7 +26,7 @@ export default function IniciarSesion({mensaje}) {
 
   return (
     <div>
-      <LinkMUI href="#" onClick={handleOpen}>
+      <LinkMUI href="#" style={{color:"black",padding: "10px"}} onClick={handleOpen}>
         {mensaje}
       </LinkMUI>
       <Modal

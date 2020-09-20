@@ -33,8 +33,8 @@ const Estilos = makeStyles((theme) => ({
         borderRadius: "50%",
         objectFit: "cover",
         border: "2px solid #000",
-        width: 250,
-        height: 250,
+        width: 200,
+        height: 200,
         margin: "auto",
         marginBottom: 15
     },

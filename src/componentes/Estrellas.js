@@ -8,7 +8,7 @@ export default function Puntuacion() {
 
     return (
         <div className={classes.mostrarFlex}>
-            <Rating name="half-rating" defaultValue={2.5} precision={0.5} />
+            <Rating name="half-rating" disabled defaultValue={2.5} precision={0.5} />
         </div>
     );
 }

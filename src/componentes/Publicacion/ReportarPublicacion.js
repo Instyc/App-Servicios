@@ -78,7 +78,7 @@ export default function ReportarPublicacion() {
             />
             </FormGroup>
             
-            <TextField id="filled-basic" label="Informacion adicional" variant="filled"/>
+            <TextField id="filled-basic" label="Informacion adicional" variant="filled" multiline/>
             <Divider/>
             <Button className={classes.margenArriba} size="large" variant="contained" color="primary">Reportar</Button>   
           </div>

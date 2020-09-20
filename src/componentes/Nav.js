@@ -16,6 +16,15 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Grid
+} from "@material-ui/core";
+
 //Importamos componentes (Logica)
 import Inicio from "./Inicio/Inicio.js";
 import Publicacion from "./Publicacion/Publicacion.js";
@@ -26,155 +35,95 @@ import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 export default function PrimarySearchAppBar() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [sesionIniciada, setSesionIniciada] = React.useState(false);
 
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  const handleProfileMenuOpen = (event) => {
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
-
-  const handleMenuClose = () => {
+  const handleClose = () => {
     setAnchorEl(null);
-    handleMobileMenuClose();
   };
-
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
-
-  const menuId = 'primary-search-account-menu';
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
-
-  const mobileMenuId = 'primary-search-account-menu-mobile';
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItem>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton aria-label="show 11 new notifications" color="inherit">
-          <Badge badgeContent={11} color="secondary">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
-    </Menu>
-  );
 
   return (
     <div className={classes.grow}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-          >
-            <MenuIcon />
-          </IconButton>
-          <Button style={
-            {padding:"20px",
-            fontSize: 20,
-            lineHeight: 1.5,
-            backgroundColor: '#2DCD54',
-            borderColor: '#0063cc'
-            }}>
-            App Servicios</Button>
-
-              <div>
-                <Button style={{padding:"20px"}}><Link to="/">Publicaciones</Link></Button>
-                <Button style={{padding:"20px"}}><Link to="/proveedores">Proveedores</Link></Button>
-                <Button style={{padding:"20px"}}><Link to="/solicitados">Servicios solicitados</Link></Button>
-                <Button style={{padding:"20px"}}><Link to="/registrar">Registrar cuenta</Link></Button>
-                <Button style={{padding:"20px"}}>
+      <AppBar position="relative">
+        <Toolbar>          
+            <Typography style={{ flexGrow: 1 }} component="h2" variant="h5">
+              <Link to="/" style={
+              {
+              flexGrow: 1,
+              textDecoration:"none",
+              color: "white",
+              padding:"20px",
+              fontSize: 20,
+              background: "red",
+              marginRight:10,
+              }}>
+              App Servicios
+            </Link>
+          </Typography>
+          
+          <div className={classes.EstiloPC}>
+          <Grid container justify="center" alignContent="center">
+              <Grid item>
+                <Link to="/" className={classes.botonesNav}><Button style={{padding:"20px"}}>Publicaciones</Button></Link>
+                <Link to="/proveedores" className={classes.botonesNav}><Button style={{padding:"20px"}}>Proveedores</Button></Link>
+                <Link to="/solicitados" className={classes.botonesNav}><Button style={{padding:"20px"}}>Servicios solicitados</Button></Link>            
+              </Grid>
+              <Grid item hidden={sesionIniciada}>
+                <Button style={{margin:10, padding:"8px 0px 8px 0px"}} variant="contained" color="secondary">
                   <InicioSesion mensaje="Iniciar sesión"/>
                 </Button>
-              </div>
-
-          {/*----------------------------Iconos de sesión------------------------------------*/}
-          <div className={classes.grow} />
-          <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <MailIcon />
-              </Badge>
-            </IconButton>
+                
+                <Link to="/registrar" style={{textDecoration:"none",color: "black"}}>
+                  <Button variant="contained" color="secondary" style={{padding:"8px 8px 8px 8px"}}>
+                    Registrar cuenta
+                  </Button>
+                </Link>
+              </Grid>
+            
+            </Grid>
+          </div>  
+ 
+          <div hidden={!sesionIniciada}>
             <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
+                <Badge badgeContent={17} color="secondary">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+              <IconButton
+                edge="end"
+                aria-label="account of current user"
+                aria-haspopup="true"
+                color="inherit"
+              >
               <AccountCircle />
             </IconButton>
           </div>
-          <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
+            
+          
+          <div className={classes.EstiloMovil}>
+            <IconButton className={classes.hambur} onClick={handleClick}>
+              <MenuIcon/>
             </IconButton>
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleClose}>Profile</MenuItem>
+              <MenuItem onClick={handleClose}>My account</MenuItem>
+              <MenuItem onClick={handleClose}>Publicaciones</MenuItem>
+              <MenuItem onClick={handleClose}>Proveedores</MenuItem>
+              <MenuItem onClick={handleClose}>Servicios solicitados</MenuItem>
+              <MenuItem onClick={handleClose}>Logout</MenuItem>
+            </Menu>
           </div>
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
     </div>
   );
 }
@@ -191,30 +140,6 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       display: 'block',
     },
-  },
-  search: {
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: 'auto',
-    },
-  },
-  searchIcon: {
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   inputRoot: {
     color: 'inherit',
@@ -241,4 +166,21 @@ const useStyles = makeStyles((theme) => ({
       display: 'none',
     },
   },
+  botonesNav:{
+    textDecoration:"none",
+    color: "white",
+    padding:"20px"
+  },
+  EstiloMovil:{
+    display: 'none',
+    '@media (max-width:770px)': {
+      display: 'inline',
+    },
+  },
+  EstiloPC:{
+    display: 'inline',
+    '@media (max-width:770px)': {
+      display: 'none',
+    },
+  }
 }));
