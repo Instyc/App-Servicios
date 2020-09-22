@@ -14,7 +14,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 
 import Estilos from '../Estilos.js'; 
 
-export default function Registrar() {
+export default function CrearPublicacion() {
     const classes = Estilos();
     const [pictures,setPictures] = useState([]);
 
@@ -34,29 +34,15 @@ export default function Registrar() {
     function onDrop(pictureFiles, pictureDataURLs){
         setPictures(pictureFiles);
     }
-    const images = [
-        {
-          original: 'https://picsum.photos/id/1018/1000/600/',
-          thumbnail: 'https://picsum.photos/id/1018/250/150/',
-        },
-        {
-          original: 'https://picsum.photos/id/1015/1000/600/',
-          thumbnail: 'https://picsum.photos/id/1015/250/150/',
-        },
-        {
-          original: 'https://picsum.photos/id/1019/1000/600/',
-          thumbnail: 'https://picsum.photos/id/1019/250/150/',
-        },
-      ];
 
   return (
     <div className={classes.mostrarFlex}>
         <Paper elevation={3}>
             <FormControl className={classes.padding2} color="primary" fullWidth>
-                <Grid className={classes.pantallaMedia} container direction="row" justify="center" alignItems="center">
+                <Grid className={classes.pantallaMedia} container direction="row" justify="center" alignItems="center" spacing={1}>
                     <Grid item xs={12}>
                         <Typography variant="h5" component="h1" align="center">
-                        Crear publicación
+                            Crear publicación
                         </Typography>
                     </Grid>
                     
@@ -98,14 +84,10 @@ export default function Registrar() {
                         <SubirImagenes/>
                     </Grid>
 
-                    <Grid item xs={8}>
-                        <ImageGallery items={images}/>
-                    </Grid>
-
-                    <Grid item xs={6}>
+                    <Grid item xs={6} align="center">
                         <Button className={classes.botones} size="large" variant="contained" color="primary">Guardar</Button>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={6} align="center">
                         <Button className={classes.botones} size="large" variant="contained" color="secondary">Cancelar</Button>
                     </Grid>
                 </Grid>

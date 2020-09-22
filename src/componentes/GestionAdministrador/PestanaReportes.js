@@ -60,6 +60,11 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     width: '100%',
     backgroundColor: theme.palette.background.paper,
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    padding: 10,
+    minHeight:"calc(100vh - 130px)",
   },
 }));
 

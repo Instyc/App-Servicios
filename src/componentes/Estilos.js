@@ -6,7 +6,16 @@ const Estilos = makeStyles((theme) => ({
         justifyContent: 'center',
         alignItems: 'center',
         flexWrap: 'wrap',
-        padding: 10
+        padding: 10,
+    },
+    fondo:{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        padding: 10,
+        background: 'red',
+        minHeight:"calc(100vh - 130px)",
     },
     proveedorSticky:{
         display: 'scroll',

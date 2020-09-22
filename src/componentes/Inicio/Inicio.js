@@ -87,7 +87,7 @@ export default function Inicio() {
     }
   ];
   return (
-    <div className={classes.mostrarFlex} >
+    <div className={classes.fondo} >
       <Paper elevation={3} style={{width:950, padding: 15}}>      
       <Typography component="h3" variant="h4" align="center">Servicios Saenz Peña</Typography>
       <Typography component="h4" variant="h5" align="center">¡Encuentra tu servicio ideal!</Typography>

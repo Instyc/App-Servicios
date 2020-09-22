@@ -9,6 +9,8 @@ import Grid from '@material-ui/core/Grid';
 import Estrellas from '../Estrellas.js';
 import Estilos from '../Estilos'
 import Container from '@material-ui/core/Container';
+import BotonContactar from '../ContactarProveedor.js';
+import {BotonContratar} from '../ContactarProveedor.js'
 
 import {Link} from "react-router-dom";
 
@@ -17,7 +19,7 @@ export default function FilaPublicacion() {
   return (
     <Card className={classes.filaPublicacion}>
       <Grid container spacing={0} justify="center">  
-        <Link to="/registrar" style={{textDecoration:"none", padding: 10, color:"black"}}>   
+        <Link to="/publicacion" style={{textDecoration:"none", padding: 10, color:"black"}}>   
           <Grid container spacing={0} justify="center"> 
             <Grid item lg={3} md={12} sm={12}>
               <img 
@@ -27,43 +29,43 @@ export default function FilaPublicacion() {
               />
             </Grid>
             <Grid item lg={9} md={12} sm={12}>
-                <Typography align="left" variant="h5" color="textPrimary" component="h5">
-                  Proveedor de servicios
-                </Typography>
-                <Typography align="left" component="h5" variant="h5">
-                    Titulo publicacion
-                </Typography>
+              <Typography align="left" variant="h5" color="textPrimary" component="h5">
+                Proveedor de servicios
+              </Typography>
+              <Typography align="left" component="h5" variant="h5">
+                  Titulo publicacion
+              </Typography>
 
-                <div style={{overflow: "auto", textOverflow: "ellipsis", width: '100%', height:100, textJustify:"auto"}}> 
-                  <Typography nowrap >
-                    Lorem ipsum dolor sit amet, consectetur aiure?Lorem ipsum dolorsdam tempora, voluptates earum enim, exercitationem dolor itaque sunt molestiae, ducimus blanditiis rem adipisci! Eius, esse?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Esse consectetur aspernatur iste itaque delectus doloribus earum totam officiis nesciunt? A dolorem iure rerum laborum reiciendis ipsam impedit error quidem temporibus!
-                  </Typography>
-                </div>
+              <div style={{overflow: "auto", textOverflow: "ellipsis", width: '100%', height:100, textJustify:"auto"}}> 
+                <Typography nowrap >
+                  Lorem ipsum dolor sit amet, consectetur aiure?Lorem ipsum dolorsdam tempora, voluptates earum enim, exercitationem dolor itaque sunt molestiae, ducimus blanditiis rem adipisci! Eius, esse?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Esse consectetur aspernatur iste itaque delectus doloribus earum totam officiis nesciunt? A dolorem iure rerum laborum reiciendis ipsam impedit error quidem temporibus!
+                </Typography>
+              </div>
             </Grid>
           </Grid>
           
-        </Link>
-        <Grid item lg={3} md={6} align="center">
-        <Typography component="h6" variant="h6" color="secondary">
-          Precio estimado: $400
-        </Typography>
-        </Grid>  
-        <Grid item lg={3} md={6} align="center">
-          <Chip clickable variant="outlined" label="Servicio"/>
-        </Grid>
-
-        <Grid item lg={3} md={6} align="center">
-          <Estrellas/>
-        </Grid>   
-        <Grid item lg={3} md={6} align="center">
-          <Button variant="outlined" color="secondary">Contactar</Button>
-        </Grid>
-        
-        <Link to="/registrar" style={{textDecoration:"none", padding: 10, color:"black"}}>   
-          <Grid item xs={12} align="center">
-            <Button variant="outlined" color="primary">Leer más</Button>
+          </Link>
+          <Grid item sm={12} md={6} lg={3} align="center">
+          <Typography component="h6" variant="h6" color="secondary">
+            Precio estimado: $400
+          </Typography>
+          </Grid>  
+          <Grid item sm={6} md={6} lg={3} align="center">
+            <Chip clickable variant="outlined" label="Servicio"/>
           </Grid>
-        </Link>
+
+          <Grid item sm={6} md={6} lg={3} align="center">
+            <Estrellas/>
+          </Grid>   
+          <Grid item sm={6} md={6} lg={3} align="center">
+            <BotonContratar/>
+          </Grid>
+          
+          <Link to="/publicacion" style={{textDecoration:"none", padding: 10, color:"black"}}>   
+            <Grid item lg={12} md={12} sm={6} align="center">
+              <Button variant="outlined" color="primary">Leer más</Button>
+            </Grid>
+          </Link>
       </Grid>
     </Card>
   );

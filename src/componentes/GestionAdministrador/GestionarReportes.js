@@ -37,8 +37,6 @@ export default function GestionarReportes() {
             <Grid item xs={12}>
                 <Reporte/>
                 <Reporte/>
-                <Reporte/>
-                <Reporte/>
             </Grid>
         </Grid>
       </Paper>

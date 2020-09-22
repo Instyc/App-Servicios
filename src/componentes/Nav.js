@@ -15,6 +15,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
+import PriorityHighIcon from '@material-ui/icons/PriorityHigh';
 
 import {
   Drawer,
@@ -34,15 +35,21 @@ import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 
 export default function PrimarySearchAppBar() {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [sesionIniciada, setSesionIniciada] = React.useState(false);
+  const [despPerf, setdespPerf] = React.useState(null);
+  const [despMenu, setdespMenu] = React.useState(null);
+  const [sesionIniciada, setSesionIniciada] = React.useState(true);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const desplegarPerfil = (event) => {
+    setdespPerf(event.currentTarget);
   };
-
-  const handleClose = () => {
-    setAnchorEl(null);
+  const plegarPerfil = () => {
+    setdespPerf(null);
+  };
+  const desplegarMenu = (event) => {
+    setdespMenu(event.currentTarget);
+  };
+  const plegarMenu = () => {
+    setdespMenu(null);
   };
 
   return (
@@ -57,7 +64,6 @@ export default function PrimarySearchAppBar() {
               color: "white",
               padding:"20px",
               fontSize: 20,
-              background: "red",
               marginRight:10,
               }}>
               App Servicios
@@ -97,29 +103,63 @@ export default function PrimarySearchAppBar() {
                 aria-label="account of current user"
                 aria-haspopup="true"
                 color="inherit"
+                onClick={desplegarPerfil}
               >
               <AccountCircle />
             </IconButton>
+            <Menu
+              id="simple-menu"
+              anchorEl={despPerf}
+              keepMounted
+              open={Boolean(despPerf)}
+              onClose={plegarPerfil}
+            >              
+              <MenuItem onClick={plegarPerfil}>
+                <ListItemIcon>
+                  <PriorityHighIcon fontSize="small" />
+                </ListItemIcon>
+                <Link to="/modificar-usuario"><Typography variant="inherit">Modificar perfil</Typography></Link>
+              </MenuItem>
+              
+              <MenuItem onClick={plegarPerfil}>
+                <ListItemIcon>
+                  <PriorityHighIcon fontSize="small" />
+                </ListItemIcon>
+                <Link to="/modificar-proveedor"><Typography variant="inherit">Modificar perfil proveedor</Typography></Link>
+              </MenuItem>
+
+              <MenuItem onClick={plegarPerfil}>
+                <ListItemIcon>
+                  <PriorityHighIcon fontSize="small" />
+                </ListItemIcon>
+                <Typography variant="inherit">Cerrar sesión</Typography>
+              </MenuItem>
+            </Menu>
           </div>
             
           
           <div className={classes.EstiloMovil}>
-            <IconButton className={classes.hambur} onClick={handleClick}>
+            <IconButton className={classes.hambur} onClick={desplegarMenu}>
               <MenuIcon/>
             </IconButton>
             <Menu
               id="simple-menu"
-              anchorEl={anchorEl}
+              anchorEl={despMenu}
               keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
+              open={Boolean(despMenu)}
+              onClose={plegarMenu}
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
-              <MenuItem onClick={handleClose}>Publicaciones</MenuItem>
-              <MenuItem onClick={handleClose}>Proveedores</MenuItem>
-              <MenuItem onClick={handleClose}>Servicios solicitados</MenuItem>
-              <MenuItem onClick={handleClose}>Logout</MenuItem>
+              <Link to="/publicaciones"><MenuItem onClick={plegarMenu}>Publicaciones</MenuItem></Link>
+              <Link to="/proveedores"><MenuItem onClick={plegarMenu}>Proveedores</MenuItem></Link>
+              <Link to="/servicios"><MenuItem onClick={plegarMenu}>Servicios solicitados (logica)</MenuItem></Link>
+              <Link to="/servicios"><MenuItem onClick={plegarMenu}>Solicitar servicio (logica)</MenuItem></Link>
+              
+              {/*Proveedor*/}
+              <Link to="/crear-publicacion"><MenuItem onClick={plegarMenu}>Crear publicación</MenuItem></Link>
+              <Link to="/servicios"><MenuItem onClick={plegarMenu}>Gestionar contactos (chat)</MenuItem></Link>
+              {/*Administrador*/}
+              <Link to="/gestionar-reclamos"><MenuItem onClick={plegarMenu}>Gestionar reclamos</MenuItem></Link>
+              <Link to="/verificar-identidad"><MenuItem onClick={plegarMenu}>Verificar identidades </MenuItem></Link>
             </Menu>
           </div>
         </Toolbar>

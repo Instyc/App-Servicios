@@ -24,7 +24,7 @@ export default function Registrar() {
         setPictures(pictureFiles);
     }
   return (
-    <div className={classes.mostrarFlex}>
+    <div className={classes.fondo}>
         <Paper elevation={3} >
             <Grid className={classes.gridRegistro} spacing={1} container justify="space-between" alignItems="center">
                 <Grid item xs={12}>
@@ -82,8 +82,8 @@ export default function Registrar() {
                     <OkProveedor soyProveedor={soyProveedor} setSoyProveedor={setSoyProveedor}/>
                     <div hidden={soyProveedor}>
                         <Grid container spacing={1} direction="row" alignItems="center">
-                            <Grid item xs={6}>
-                                <TextField className={classes.inputAncho} id="filled-basic" label="DNI" variant="filled"/>
+                            <Grid item xs={12} align="center">
+                                <TextField  id="filled-basic" label="DNI" variant="filled"/>
                             </Grid>
                             
                             <Grid item xs={12}>

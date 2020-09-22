@@ -41,7 +41,7 @@ export default function Registrar() {
     <div className= {classes.mostrarFlex}>
         <Paper elevation={3} className= {classes.pantallaMedia}>
             <FormControl color="primary" fullWidth>
-                <Grid className={classes.filaPublicacion} container direction="row" justify="space-around" alignItems="center">
+                <Grid className={classes.filaPublicacion} container direction="row" justify="space-around" alignItems="center" spacing={1}>
                     <Grid item xs={12}>
                         <Typography variant="h5" component="h1" align="center">
                             Modificar datos de proveedor
