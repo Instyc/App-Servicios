@@ -56,9 +56,9 @@ export default function IniciarSesion({mensaje}) {
                         variant="filled"
                     />
                     
-                    <Link className={classes.margenArriba} href="#">
+                    <LinkMUI className={classes.margenArriba} href="#">
                         Olvidé mi contraseña
-                    </Link>
+                    </LinkMUI>
                     
                     <Button className={classes.margenArriba} size="large" variant="contained" color="primary">Iniciar Sesión</Button>
 

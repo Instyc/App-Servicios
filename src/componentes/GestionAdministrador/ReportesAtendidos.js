@@ -1,50 +1,42 @@
-import React from 'react';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
-import TextField from '@material-ui/core/TextField';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Collapse from '@material-ui/core/Collapse';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
+import React,{useState, useEffect} from 'react';
+//Estilos Material-UI
+import {Collapse, ListItemText, ListItem, List, Paper,Grid ,Typography, Button, Tooltip, TextField, Radio, RadioGroup,FormControlLabel, FormControl, FormLabel} from '@material-ui/core/';
+import {ExpandLess, ExpandMore} from '@material-ui/icons/';
 import Ojo from '@material-ui/icons/Visibility';
 import Flechita from '@material-ui/icons/ArrowForwardIos';
 
 import Estilos from '../Estilos.js'
 
-import Aceptar from '@material-ui/icons/Check';
-import Rechazar from '@material-ui/icons/Clear';
-import Switch from '@material-ui/core/Switch';
+export default function ReportesAtendidos({estadoReporte}) {
+    const classes = Estilos();
+    const [titulo, setTitulo] = useState("");
+    
+    useEffect(()=>{
+        //Dependiendo de si accedemos a los reclamos en espera o al historial de reclamos, se muestra el título correspodiente
+        if(estadoReporte){
+            setTitulo("Historial de reportes");
+        }else{
+            setTitulo("Reportes en espera");
+        }
+    },[])  
 
-export default function ReportesAtendidos() {
-  const classes = Estilos();
-  return (
-    <div className={classes.margenArriba}>
-      <Paper elevation={5}>
-        <Grid className={classes.filaPublicacion} container justify="center">
-            <Typography variant="h4" component="h1" align="left">
-                Historial de reportes
-            </Typography>
-            <Grid item xs={12}>
-                <Reporte color="#FFDED3"/>
-                <Reporte color="#D6FFD3"/>
-                <Reporte color="#FFDED3"/>
-                <Reporte color="#D6FFD3"/>
+    return (
+        <div className={classes.margenArriba}>
+        <Paper elevation={5}>
+            <Grid className={classes.filaPublicacion} container justify="center">
+                <Typography variant="h4" component="h1" align="left">
+                    {titulo}
+                </Typography>
+                <Grid item xs={12}>
+                    <Reporte color="#FFDED3"/>
+                    <Reporte color="#D6FFD3"/>
+                    <Reporte color="#FFDED3"/>
+                    <Reporte color="#D6FFD3"/>
+                </Grid>
             </Grid>
-        </Grid>
-      </Paper>
-    </div>
-  );
+        </Paper>
+        </div>
+    );
 }
 
 

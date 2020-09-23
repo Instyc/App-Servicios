@@ -10,10 +10,12 @@ import Estilos from '../Estilos.js';
 import ContactarProveedor from '../ContactarProveedor.js'
 import {BotonContratar} from '../ContactarProveedor.js'
 
+
 export default function Publicacion() {
+  const classes = Estilos();
     return (
         <div>
-            <Grid  container direction="row" justify="center" alignItems="stretch">
+            <Grid container direction="row" justify="center" alignItems="stretch">
                 <Grid item md={8} xs={12}>
                   <PublicacionInfo/>
                   <Opiniones/>

@@ -1,40 +1,26 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Like from '@material-ui/icons/ThumbUpAltTwoTone';
-import Dislike from '@material-ui/icons/ThumbDownAltTwoTone';
-import Button from '@material-ui/core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
-import TextField from '@material-ui/core/TextField';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Collapse from '@material-ui/core/Collapse';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
+//Material-UI
+import {Collapse, Switch, ListItemText, ListItem, List, Paper, Grid, Typography, Button, Tooltip, TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel} from '@material-ui/core/';
+import {Like, ExpandLess, ExpandMore} from '@material-ui/icons/';
+import Dislike from '@material-ui/icons/ThumbDownAltTwoTone';
 import Ojo from '@material-ui/icons/Visibility';
 import Flechita from '@material-ui/icons/ArrowForwardIos';
-import Estilos from '../Estilos.js'
-import Switch from '@material-ui/core/Switch';
-import Imagenes from 'react-lightbox-component';
-import 'react-lightbox-component/build/css/index.css';
-
 import Aceptar from '@material-ui/icons/Check';
 import Rechazar from '@material-ui/icons/Clear';
 
-export default function GestionarReportes() {
+import Imagenes from 'react-lightbox-component';
+import 'react-lightbox-component/build/css/index.css';
+
+//Estilos
+import Estilos from '../Estilos.js'
+
+export default function VerificarIdentidad() {
   const classes = Estilos();
   return (
-    <div className={classes.margenArriba}>
-      <Paper elevation={5}>
-        <Grid className={classes.filaPublicacion} container justify="flex-start">
+    <div >
+      <Paper elevation={5} className={classes.fondo}>
+        <Grid container justify="center" spacing={2}>
             <Grid item xs={11}>
                 <Typography variant="h4" component="h1" align="left">
                     Verificar identidad

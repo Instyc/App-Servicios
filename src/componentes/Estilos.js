@@ -14,7 +14,6 @@ const Estilos = makeStyles((theme) => ({
         alignItems: 'center',
         flexWrap: 'wrap',
         padding: 10,
-        background: 'red',
         minHeight:"calc(100vh - 130px)",
     },
     proveedorSticky:{

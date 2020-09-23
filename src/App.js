@@ -1,28 +1,26 @@
 import React from 'react';
+import './App.css';
+//Enrutamiento
+import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
+
+//Material-UI
+import {CssBaseline, Container, Button} from '@material-ui/core/';
+
+//Componentes de vistas
 import Nav from './componentes/Nav.js';
 import Footer from './componentes/Footer.js';
-
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Container from '@material-ui/core/Container';
-import './App.css';
-
 import Categoria from './componentes/Categoria/Categoria.js';
 import Registrar from './componentes/Sesion/Registrar.js';
 import InicioSesion from './componentes/Sesion/InicioSesion.js';
 import Inicio from './componentes/Inicio/Inicio.js';
 import Publicacion from './componentes/Publicacion/Publicacion.js';
-import Button from '@material-ui/core/Button';
-import ModificarPerfilUsuario from './componentes/ModificarDatos/ModificarPerfilUsuario.js';
 import ModificarPerfilProveedor from './componentes/ModificarDatos/ModificarPerfilProveedor';
-
 import CrearPublicacion from './componentes/Publicacion/CrearPublicacion.js';
 import GestionarReportes from './componentes/GestionAdministrador/GestionarReportes.js';
 import VerificarIdentidad from './componentes/GestionAdministrador/VerificarIdentidad.js';
 import PestanaReportes from './componentes/GestionAdministrador/PestanaReportes.js';
 import RegistrarSesion from './componentes/Sesion/Registrar.js';
 
-import RealizarOpinion from './componentes/Notificaciones/RealizarOpinion.js';
-import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 
 function App() { 
   return (
@@ -33,15 +31,20 @@ function App() {
           <CssBaseline/>
           <Container fixed style={{minHeight:"calc(100vh - 130px)"}}>
             <Switch>
-              <Route exact path="/" component={Inicio}/>
-              <Route path="/crear-publicacion" component={CrearPublicacion}/>
-              <Route path="/publicacion" component={Publicacion}/>
-              <Route path="/publicaciones" component={Categoria}/>
-              <Route path="/registrar" component={RegistrarSesion}/>
-              <Route path="/modificar-proveedor" component={ModificarPerfilProveedor}/>
-              <Route path="/modificar-usuario" component={ModificarPerfilUsuario}/>
-              <Route path="/verificar-identidad" component={VerificarIdentidad}/>
-              <Route path="/gestionar-reclamos" component={PestanaReportes}/>
+              <Route exact path="/"><Inicio tipo={true}/></Route>
+              <Route path="/crear-publicacion"><CrearPublicacion tipoPublicacion={true}/></Route>
+              <Route path="/solicitar-servicio"><CrearPublicacion tipoPublicacion={false}/></Route>
+              <Route path="/publicaciones"> <Categoria tipoPublicacion={true}/></Route>
+
+              <Route path="/servicios-solicitados"><Categoria tipoPublicacion={false}/></Route>
+              <Route path="/categorias-solicitados"><Inicio tipo={false}/></Route>
+              
+              <Route path="/registrar"><RegistrarSesion registrar={true}/></Route>
+              <Route path="/modificar-usuario"><RegistrarSesion registrar={false}/></Route>
+              <Route path="/publicacion"><Publicacion/></Route>
+              <Route path="/modificar-proveedor"><ModificarPerfilProveedor/></Route>
+              <Route path="/verificar-identidad"><VerificarIdentidad/></Route>
+              <Route path="/gestionar-reclamos"><PestanaReportes/></Route>
             </Switch>
           </Container>
         </React.Fragment>

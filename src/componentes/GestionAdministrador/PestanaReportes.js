@@ -78,33 +78,35 @@ export default function ScrollableTabsButtonForce() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" color="default">
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          variant="fullWidth"
-          scrollButtons="auto"
-          indicatorColor="primary"
-          textColor="primary"
-          aria-label="scrollable force tabs example"
-          centered
-        >
-          <Tab label="Gestionar nuevos reportes" icon={<Nuevo />} {...a11yProps(0)} />
-          <Tab label="Reportes en espera" icon={<Reloj />} {...a11yProps(1)} />
-          <Tab label="Historial de reportes" icon={<Check />} {...a11yProps(2)} />
-        </Tabs>
-      </AppBar>
-      <TabPanel value={value} index={0}>
-        <GestionarReportes/>
-      </TabPanel>
+      <div>
+        <AppBar position="static" color="default">
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            variant="fullWidth"
+            scrollButtons="auto"
+            indicatorColor="primary"
+            textColor="primary"
+            aria-label="scrollable force tabs example"
+            centered
+          >
+            <Tab label="Gestionar nuevos reportes" icon={<Nuevo />} {...a11yProps(0)} />
+            <Tab label="Reportes en espera" icon={<Reloj />} {...a11yProps(1)} />
+            <Tab label="Historial de reportes" icon={<Check />} {...a11yProps(2)} />
+          </Tabs>
+        </AppBar>
+        <TabPanel value={value} index={0}>
+          <GestionarReportes/>
+        </TabPanel>
 
-      <TabPanel value={value} index={1}>
-        <ReportesAtendidos/>
-      </TabPanel>
+        <TabPanel value={value} index={1}>
+          <ReportesAtendidos estadoReporte={false}/>
+        </TabPanel>
 
-      <TabPanel value={value} index={2}>
-        <ReportesAtendidos/>
-      </TabPanel>
+        <TabPanel value={value} index={2}>
+          <ReportesAtendidos estadoReporte={true}/>
+        </TabPanel>
+      </div>
     </div>
   );
 }

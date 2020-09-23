@@ -38,7 +38,7 @@ export default function Registrar() {
       ];
 
   return (
-    <div className= {classes.mostrarFlex}>
+    <div className= {classes.fondo}>
         <Paper elevation={3} className= {classes.pantallaMedia}>
             <FormControl color="primary" fullWidth>
                 <Grid className={classes.filaPublicacion} container direction="row" justify="space-around" alignItems="center" spacing={1}>
@@ -64,10 +64,6 @@ export default function Registrar() {
                         <SubirImagenes/>
                     </Grid>
 
-                    <Grid item xs={6}>
-                        <ImageGallery items={images}/>
-                    </Grid>
-
                     <Grid item xs={12} >
                         <Typography variant="h6" component="h3" align="left" className={classes.alinearInputs}>
                             Seleccionar los servicios que ofreces
@@ -78,10 +74,10 @@ export default function Registrar() {
                         <CategoriaSeleccion/>
                     </Grid>
 
-                    <Grid item xs={6}>
+                    <Grid item xs={6} align="center">
                         <Button size="large" variant="contained" color="primary">Guardar</Button>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={6} align="center">
                         <Button size="large" variant="contained" color="secondary">Cancelar</Button>
                     </Grid>
                 </Grid>

@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
@@ -14,44 +14,45 @@ import InputLabel from '@material-ui/core/InputLabel';
 
 import Estilos from '../Estilos.js'; 
 
-export default function CrearPublicacion() {
+export default function CrearPublicacion({tipoPublicacion}) {
     const classes = Estilos();
     const [pictures,setPictures] = useState([]);
 
-    /*const [precioPresupuesto, setPrecioPresupuesto] = useState("Precio estimado");
-    const [titulo, setTitulo] = useState("Crear publicación");
-    const [queSoy, setQueSoy] = useState(true);
+    const [precioPresupuesto, setPrecioPresupuesto] = useState("");
+    const [titulo, setTitulo] = useState("");
     
-    //Dependiendo de si se quiere crear una publicación o solicitar un servicio, se muestra la pantalla correspodiente
-    if(queSoy){
-        setTitulo("Crear publicación");
-        setPrecioPresupuesto("Precio estimado");
-    }else{
-        setTitulo("Solicitar servicio");
-        setPrecioPresupuesto("Presupuesto");
-    }*/
+    useEffect(()=>{
+        //Dependiendo de si se quiere crear una publicación o solicitar un servicio, se muestra la pantalla correspodiente
+        if(tipoPublicacion){
+            setTitulo("Crear publicación");
+            setPrecioPresupuesto("Precio estimado");
+        }else{
+            setTitulo("Solicitar servicio");
+            setPrecioPresupuesto("Presupuesto");
+        }
+    },[])    
 
     function onDrop(pictureFiles, pictureDataURLs){
         setPictures(pictureFiles);
     }
 
   return (
-    <div className={classes.mostrarFlex}>
+    <div className={classes.fondo}>
         <Paper elevation={3}>
             <FormControl className={classes.padding2} color="primary" fullWidth>
                 <Grid className={classes.pantallaMedia} container direction="row" justify="center" alignItems="center" spacing={1}>
                     <Grid item xs={12}>
                         <Typography variant="h5" component="h1" align="center">
-                            Crear publicación
+                            {titulo}
                         </Typography>
                     </Grid>
                     
                     <Grid item sm={8} xs={12}>
-                        <TextField className={classes.inputAncho} id="filled-basic" label="Titulo de publicacion" variant="filled" required/>
+                        <TextField className={classes.inputAncho} id="filled-basic" label="Título de la publicación" variant="filled" required/>
                     </Grid>
 
                     <Grid item sm={4} xs={12}>
-                        <TextField className={classes.inputAncho} id="formatted-numberformat-input" value="$" label="Precio estimado" variant="filled"/>
+                        <TextField className={classes.inputAncho} id="formatted-numberformat-input" value="$" label={precioPresupuesto} variant="filled"/>
                     </Grid>
 
                     <Grid item sm={6} xs={12}>

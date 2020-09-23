@@ -12,7 +12,7 @@ import Estilos from '../Estilos';
 
 import {Link} from "react-router-dom";
 
-export default function Inicio() {
+export default function Inicio({tipo}) {
   const classes = Estilos();
   let arrayCategoria = [
     {
@@ -96,10 +96,17 @@ export default function Inicio() {
         {
           arrayCategoria.map((cat, i) => (
             <Grid item sm={4} md={3} lg={2} key={i} >
-              <Link to="/publicaciones">
-                <BotonCategoria nombre={cat.nombre} imagen={cat.imagen} />
-              </Link>
-              
+              {
+                tipo
+                ?<Link to="/publicaciones">
+                  no solicitado{tipo}
+                  <BotonCategoria nombre={cat.nombre} imagen={cat.imagen} />
+                </Link>
+                :<Link to="/servicios-solicitados">
+                  solicitado{tipo}
+                  <BotonCategoria nombre={cat.nombre} imagen={cat.imagen} />
+                </Link>
+              }              
             </Grid>
           ))
         }

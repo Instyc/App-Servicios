@@ -75,7 +75,7 @@ export default function PrimarySearchAppBar() {
               <Grid item>
                 <Link to="/" className={classes.botonesNav}><Button style={{padding:"20px"}}>Publicaciones</Button></Link>
                 <Link to="/proveedores" className={classes.botonesNav}><Button style={{padding:"20px"}}>Proveedores</Button></Link>
-                <Link to="/solicitados" className={classes.botonesNav}><Button style={{padding:"20px"}}>Servicios solicitados</Button></Link>            
+                <Link to="/categorias-solicitados" className={classes.botonesNav}><Button style={{padding:"20px"}}>Servicios solicitados</Button></Link>            
               </Grid>
               <Grid item hidden={sesionIniciada}>
                 <Button style={{margin:10, padding:"8px 0px 8px 0px"}} variant="contained" color="secondary">
@@ -151,9 +151,10 @@ export default function PrimarySearchAppBar() {
             >
               <Link to="/publicaciones"><MenuItem onClick={plegarMenu}>Publicaciones</MenuItem></Link>
               <Link to="/proveedores"><MenuItem onClick={plegarMenu}>Proveedores</MenuItem></Link>
-              <Link to="/servicios"><MenuItem onClick={plegarMenu}>Servicios solicitados (logica)</MenuItem></Link>
-              <Link to="/servicios"><MenuItem onClick={plegarMenu}>Solicitar servicio (logica)</MenuItem></Link>
-              
+              <Link to="/categorias-solicitados"><MenuItem onClick={plegarMenu}>Servicios solicitados</MenuItem></Link>
+              <Link to="/solicitar-servicio"><MenuItem onClick={plegarMenu}>Solicitar servicio</MenuItem></Link>
+              <Link to="/solicitar-servicio"><MenuItem onClick={plegarMenu}>Mis publicaciones</MenuItem></Link>
+
               {/*Proveedor*/}
               <Link to="/crear-publicacion"><MenuItem onClick={plegarMenu}>Crear publicación</MenuItem></Link>
               <Link to="/servicios"><MenuItem onClick={plegarMenu}>Gestionar contactos (chat)</MenuItem></Link>
