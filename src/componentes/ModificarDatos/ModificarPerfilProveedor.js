@@ -55,6 +55,14 @@ export default function Registrar() {
                             label="Pausar mis servicios"
                         />
                     </Grid>
+
+                    <Grid item xs={12}>    
+                        <FormControlLabel
+                            className={classes.inputAncho}
+                            control={<Checkbox name="checkedA" />}
+                            label="Mostrar mi número de teléfono"
+                        />
+                    </Grid>
                     
                     <Grid item xs={12}>
                         <TextField className={classes.inputAncho} id="filled-basic" label="Descripción" multiline variant="filled" multiline/>

@@ -20,6 +20,7 @@ import GestionarReportes from './componentes/GestionAdministrador/GestionarRepor
 import VerificarIdentidad from './componentes/GestionAdministrador/VerificarIdentidad.js';
 import PestanaReportes from './componentes/GestionAdministrador/PestanaReportes.js';
 import RegistrarSesion from './componentes/Sesion/Registrar.js';
+import MisPublicaciones from './componentes/Publicacion/MisPublicaciones.js';
 
 
 function App() { 
@@ -32,8 +33,11 @@ function App() {
           <Container fixed style={{minHeight:"calc(100vh - 130px)"}}>
             <Switch>
               <Route exact path="/"><Inicio tipo={true}/></Route>
-              <Route path="/crear-publicacion"><CrearPublicacion tipoPublicacion={true}/></Route>
-              <Route path="/solicitar-servicio"><CrearPublicacion tipoPublicacion={false}/></Route>
+              <Route path="/crear-publicacion"><CrearPublicacion modificar={false} tipoPublicacion={true}/></Route>
+              <Route path="/solicitar-servicio"><CrearPublicacion modificar={false} tipoPublicacion={false}/></Route>
+              <Route path="/modificar-publicacion"><CrearPublicacion modificar={true} tipoPublicacion={true}/></Route>
+              <Route path="/modificar-solicitud-servicio"><CrearPublicacion modificar={true} tipoPublicacion={false}/></Route>
+              
               <Route path="/publicaciones"> <Categoria tipoPublicacion={true}/></Route>
 
               <Route path="/servicios-solicitados"><Categoria tipoPublicacion={false}/></Route>
@@ -42,6 +46,8 @@ function App() {
               <Route path="/registrar"><RegistrarSesion registrar={true}/></Route>
               <Route path="/modificar-usuario"><RegistrarSesion registrar={false}/></Route>
               <Route path="/publicacion"><Publicacion/></Route>
+              <Route path="/mis-publicaciones"><MisPublicaciones tipoPublicacion={true}/></Route>
+              <Route path="/mis-servicios-solicitados"><MisPublicaciones tipoPublicacion={false}/></Route>
               <Route path="/modificar-proveedor"><ModificarPerfilProveedor/></Route>
               <Route path="/verificar-identidad"><VerificarIdentidad/></Route>
               <Route path="/gestionar-reclamos"><PestanaReportes/></Route>

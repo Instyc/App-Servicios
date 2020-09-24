@@ -47,7 +47,7 @@ const Estilos = makeStyles((theme) => ({
         marginBottom: 15
     },
     gridRegistro:{
-        width:550, 
+        maxWidth:550, 
         padding: 20,
         marginBottom: 10,
     },

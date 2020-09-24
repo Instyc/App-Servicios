@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import FilaPublicacion from '../Categoria/FilaPublicacion.js';
 import Estilos from '../Estilos.js';
-import { Typography } from '@material-ui/core';
+import { Typography, Paper } from '@material-ui/core';
 
 export default function MisPublicaciones({tipoPublicacion}) {
     const classes = Estilos();
@@ -17,12 +17,14 @@ export default function MisPublicaciones({tipoPublicacion}) {
     },[])
 
     return (
-        <div className={classes.fondo}>
-            <Typography>{titulo}</Typography>
+      <div>
+        <Paper elevation={5} className={classes.fondo} style={{marginTop:10}}>
+            <Typography variant="h4" component="h2" align="left">{titulo}</Typography>
 
             <FilaPublicacion tipoPublicacion={tipoPublicacion}/>
             <FilaPublicacion tipoPublicacion={tipoPublicacion}/>
             <FilaPublicacion tipoPublicacion={tipoPublicacion}/>
-        </div>
+        </Paper>
+      </div>
     )
 }

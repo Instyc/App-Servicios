@@ -26,8 +26,7 @@ export default function FilaPublicacion({tipoPublicacion}) {
 
   return (
     <Card className={classes.filaPublicacion}>
-      <Grid container spacing={1} justify="center">  
-        <Link to="/publicacion" style={{textDecoration:"none", padding: 10, color:"black"}}>   
+      <Grid container spacing={1} justify="center"> 
           <Grid container spacing={1} justify="center" alignItems="center"> 
             <Grid item xs={12} md={3} sm={12} align="center">
               <img 
@@ -44,9 +43,11 @@ export default function FilaPublicacion({tipoPublicacion}) {
               
               <Typography align="left" component="h5" variant="h5">
                   Titulo publicacion
-                  <Tooltip title="Editar publicación">
-                    <IconButton><Editar color="primary" /></IconButton>
-                  </Tooltip>
+                  <Link to={tipoPublicacion?"/modificar-publicacion":"/modificar-solicitud-servicio"}>
+                    <Tooltip title="Editar publicación">
+                      <IconButton><Editar color="primary" /></IconButton>
+                    </Tooltip>
+                  </Link>
                   <Tooltip title="Pausar publicación">
                     <IconButton><Pausa color="primary" /></IconButton>
                   </Tooltip>
@@ -62,7 +63,6 @@ export default function FilaPublicacion({tipoPublicacion}) {
               </div>
             </Grid>
           </Grid>
-        </Link>
 
 
         <Grid item xs={8} sm={12} md={6} lg={3} align="center">
