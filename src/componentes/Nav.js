@@ -10,9 +10,10 @@ import PriorityHighIcon from '@material-ui/icons/PriorityHigh';
 import Inicio from "./Inicio/Inicio.js";
 import Publicacion from "./Publicacion/Publicacion.js";
 import InicioSesion from "./Sesion/InicioSesion.js";
+import Estilos from './Estilos.js';
 
 export default function PrimarySearchAppBar() {
-  const classes = useStyles();
+  const classes = Estilos();
   const [despPerf, setdespPerf] = useState(null);
   const [despMenu, setdespMenu] = useState(null);
   const [sesionIniciada, setSesionIniciada] = useState(true);
@@ -31,7 +32,7 @@ export default function PrimarySearchAppBar() {
     setdespMenu(null);
   };
   return (
-    <div className={classes.grow}>
+    <div style={{ flexGrow: 1 }}>
       <AppBar position="relative" style={{padding: "0% 7% 0% 7%"}}>
         <Toolbar>          
           <Typography style={{ flexGrow: 1 }} component="h2" variant="h5">
@@ -118,7 +119,7 @@ export default function PrimarySearchAppBar() {
                 <ListItemIcon>
                   <PriorityHighIcon fontSize="small" />
                 </ListItemIcon>
-                <Link to="/modificar-usuario"><Typography variant="inherit">Modificar perfil</Typography></Link>
+                <Link to="/modificar-usuario"><Typography variant="inherit">Modificar mi perfil</Typography></Link>
               </MenuItem>
               
               <div hidden={tipoUsuario!==2}>
@@ -126,7 +127,16 @@ export default function PrimarySearchAppBar() {
                   <ListItemIcon>
                     <PriorityHighIcon fontSize="small" />
                   </ListItemIcon>
-                  <Link to="/modificar-proveedor"><Typography variant="inherit">Modificar perfil de proveedor</Typography></Link>
+                  <Link to="/modificar-proveedor"><Typography variant="inherit">Modificar mi perfil de proveedor</Typography></Link>
+                </MenuItem>
+              </div>
+
+              <div hidden={tipoUsuario!==2}>
+                <MenuItem onClick={plegarPerfil}>
+                  <ListItemIcon>
+                    <PriorityHighIcon fontSize="small" />
+                  </ListItemIcon>
+                  <Link to="/perfil-proveedor"><Typography variant="inherit">Ver mi perfil de proveedor</Typography></Link>
                 </MenuItem>
               </div>
 
@@ -195,29 +205,3 @@ export default function PrimarySearchAppBar() {
     </div>
   );
 }
-
-const useStyles = makeStyles((theme) => ({
-  grow: {
-    flexGrow: 1,
-  },
-  botonesNav:{
-    textDecoration:"none",
-    color: "white",
-    display: 'inline',
-    '@media (max-width:1075px)': {
-      display: 'none',
-    },
-  },
-  EstiloMovil:{
-    display: 'none',
-    '@media (max-width:1075px)': {
-      display: 'inline',
-    },
-  },
-  EstiloPC:{
-    display: 'inline',
-    '@media (max-width:1075px)': {
-      display: 'none',
-    },
-  }
-}));

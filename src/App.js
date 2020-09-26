@@ -14,14 +14,14 @@ import Registrar from './componentes/Sesion/Registrar.js';
 import InicioSesion from './componentes/Sesion/InicioSesion.js';
 import Inicio from './componentes/Inicio/Inicio.js';
 import Publicacion from './componentes/Publicacion/Publicacion.js';
-import ModificarPerfilProveedor from './componentes/ModificarDatos/ModificarPerfilProveedor';
+import ModificarPerfilProveedor from './componentes/Proveedor/ModificarPerfilProveedor';
+import MiPerfil from './componentes/Proveedor/MiPerfil';
 import CrearPublicacion from './componentes/Publicacion/CrearPublicacion.js';
 import GestionarReportes from './componentes/GestionAdministrador/GestionarReportes.js';
 import VerificarIdentidad from './componentes/GestionAdministrador/VerificarIdentidad.js';
 import PestanaReportes from './componentes/GestionAdministrador/PestanaReportes.js';
 import RegistrarSesion from './componentes/Sesion/Registrar.js';
 import MisPublicaciones from './componentes/Publicacion/MisPublicaciones.js';
-
 
 function App() { 
   return (
@@ -51,6 +51,9 @@ function App() {
               <Route path="/modificar-proveedor"><ModificarPerfilProveedor/></Route>
               <Route path="/verificar-identidad"><VerificarIdentidad/></Route>
               <Route path="/gestionar-reclamos"><PestanaReportes/></Route>
+
+              <Route path="/perfil-proveedor"><MiPerfil/></Route>
+
             </Switch>
           </Container>
         </React.Fragment>

@@ -86,7 +86,26 @@ const Estilos = makeStyles((theme) => ({
         padding: 10,
         marginTop: 10,
     },
-
+    botonesNav:{
+        textDecoration:"none",
+        color: "white",
+        display: 'inline',
+        '@media (max-width:1075px)': {
+          display: 'none',
+        },
+      },
+      EstiloMovil:{
+        display: 'none',
+        '@media (max-width:1075px)': {
+          display: 'inline',
+        },
+      },
+      EstiloPC:{
+        display: 'inline',
+        '@media (max-width:1075px)': {
+          display: 'none',
+        },
+    }
     
 }));
 

@@ -11,34 +11,8 @@ import SeleccionarServicio from '../SeleccionarServicio.js';
  
 import Estilos from '../Estilos.js'
 
-export default function Filtro() {
+export default function Filtro({servicios, agregarSeleccionado}) {
   const classes = Estilos();
-  
-  const [arrayServicios, setArrayServicios] = useState(
-    [
-      {
-        label: "Servicio 1"
-      },
-      {
-        label: "Servicio 2"
-      },
-      {
-        label: "Servicio 3"
-      },
-      {
-        label: "Servicio 4"
-      },
-      {
-        label: "Servicio 5"
-      },
-      {
-        label: "Servicio 6"
-      },
-      {
-        label: "Servicio 7"
-      }
-    ]
-  )
   
   return (
     <Card className={classes.margenArriba} variant="outlined">
@@ -49,9 +23,9 @@ export default function Filtro() {
 
         <Grid container className={classes.margenArriba} spacing={2} justify="space-around" alignItems="center">    
           {
-            arrayServicios.map((servicio,i) => (
-              <Grid item xs={6} sm={4} md={3} lg={2}  key={i} >
-                <SeleccionarServicio key={i} servicio={servicio.label} />
+            servicios.map((servicio,i) => (
+              <Grid item xs={6} sm={4} md={3} lg={2}  key={i}>
+                <SeleccionarServicio key={i} servicio={servicio} agregarSeleccionado={agregarSeleccionado}/>
               </Grid>
             ))
           }

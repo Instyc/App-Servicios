@@ -18,8 +18,8 @@ import Estilos from '../Estilos.js'
 export default function VerificarIdentidad() {
   const classes = Estilos();
   return (
-    <div >
-      <Paper elevation={5} className={classes.fondo}>
+    <div className={classes.fondo}>
+      <Paper elevation={5}  style={{margin:"10px 0px", padding:"20px"}}>
         <Grid container justify="center" spacing={2}>
             <Grid item xs={11}>
                 <Typography variant="h4" component="h1" align="left">
@@ -110,8 +110,8 @@ function DesplegarInformacion() {
                                         description: 'image description'
                                     }] 
                                 }
-                                thumbnailWidth='150px'
-                                thumbnailHeight='150px'
+                                thumbnailWidth='100px'
+                                thumbnailHeight='100px'
                                 />
                             </div>
                         </Grid>
@@ -122,8 +122,9 @@ function DesplegarInformacion() {
                             label="Agregar mensaje"
                             multiline variant="outlined"
                             size="medium"
-                            fullWidth>
+                            fullWidth
                             className={classes.inputAncho}
+                            >
                             </TextField> 
                         </Grid>
                         <div align="center">

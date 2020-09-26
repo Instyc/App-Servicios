@@ -1,42 +1,34 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
-import Divider from '@material-ui/core/Divider';
-import PhoneIcon from '@material-ui/icons/Phone';
-import Button from '@material-ui/core/Button';
+import {Paper, Grid, Typography, Avatar, Divider, Button, ListSubheader, List, ListItem, ListItemText, Collapse} from '@material-ui/core';
 
-import ListSubheader from '@material-ui/core/ListSubheader';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Collapse from '@material-ui/core/Collapse';
+import PhoneIcon from '@material-ui/icons/Phone';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import Estilos from '../Estilos.js';
 
-export default function ProveedorInfo() {
+export default function ProveedorInfo({esDePerfil}) {
   const classes = Estilos();
   return (
     <div className={classes.proveedorSticky}>
       <Paper elevation={5}>
         <Grid className={classes.padding} container direction="row" justify="space-between" alignItems="center">
-            <Grid item xs={12}>
+            <Grid item xs={12} className={esDePerfil && classes.EstiloPC}>
               <Avatar alt="Remy Sharp" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR7Mt8wp9lo-dd73xpvjzPMcspQ8uwAThLitQ&usqp=CAU" className={classes.imagenPublicacion} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} hidden={esDePerfil}>
               <Typography variant="h5" component="h3" align="center">
                 Andres Manuel Lopez Obrador
               </Typography>
            </Grid>
-           <Grid item xs={12}>
-           <Divider/> 
+
+           <Grid item xs={12} hidden={esDePerfil}>
+              <Divider/> 
               <Typography variant="body1" component="p" align="justify"> 
                 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Molestias et commodi iste, inventore a fugiat? Asperiores minima corrupti magnam expedita laborum, quidem accusamus, repudiandae voluptate dolore, dicta blanditiis totam in?
               </Typography>
-           </Grid>   
+           </Grid>
+            
            <Grid item xs={12}>
                 <Divider/> 
                 <List

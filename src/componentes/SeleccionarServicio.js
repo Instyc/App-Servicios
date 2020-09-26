@@ -6,12 +6,13 @@ import ClearIcon from '@material-ui/icons/Clear';
 
 import Estilos from './Estilos.js';
 
-export default function SeleccioanrServicio({servicio}) {
+export default function SeleccioanrServicio({servicio, agregarSeleccionado}) {
   const classes = Estilos();
   const [hecho_noHecho, setHecho_noHecho] = useState((<div><ClearIcon/></div>));
   const [seleccion, setSeleccion] = useState(0);
 
   const handleClick = () => {
+    agregarSeleccionado(servicio)
     if(seleccion===1){
       setSeleccion(0);
       setHecho_noHecho(<div><ClearIcon/></div>);

@@ -19,6 +19,19 @@ export default function Registrar({registrar}) {
     const classes = Estilos();
     const [pictures,setPictures] = useState([]);
     const [soyProveedor,setSoyProveedor] = useState(true);
+    const [tituloPagina,settituloPagina] = useState("");
+     //Datos de la pagina
+     const [usuario,setusuario] = useState({
+        nombre:"",
+        apellido:"",
+        imagenPerfil:"",
+        correo:"",
+        usuario:"",
+        telefono:"",
+        dni:"",
+        imagenDni:["",""],
+        descripcion:""
+    });
 
     /*Cuando se renderiza la pagina debemos saber si ha sido invocada para registrar un usuario o
     para modificar datos
@@ -36,21 +49,13 @@ export default function Registrar({registrar}) {
                 imagenDni:["",""],
                 descripcion:"Esto es una descripción"
             })
+            settituloPagina("Modificar mi perfil")
+        }else{
+            settituloPagina("Registrar usuario")
         }
     },[])
     
-    //Datos de la pagina
-    const [usuario,setusuario] = useState({
-        nombre:"",
-        apellido:"",
-        imagenPerfil:"",
-        correo:"",
-        usuario:"",
-        telefono:"",
-        dni:"",
-        imagenDni:["",""],
-        descripcion:""
-    });
+   
 
     function onDrop(pictureFiles, pictureDataURLs){
         setPictures(pictureFiles);
@@ -61,7 +66,7 @@ export default function Registrar({registrar}) {
                 <Grid className={classes.gridRegistro} spacing={1} container justify="space-between" alignItems="center">
                     <Grid item xs={12}>
                         <Typography variant="h5" component="h1" align="center" className={classes.inputAncho}>
-                            Registrar Usuario
+                            {tituloPagina}
                         </Typography>
                     </Grid>
 
@@ -133,7 +138,7 @@ export default function Registrar({registrar}) {
                         <Button className={classes.inputAncho} size="large" variant="contained" color="primary">Registrar Usuario</Button>
                     </Grid>
                     
-                    <Grid item xs={12}>
+                    <Grid item xs={12} hidden={!registrar}>
                         <InicioSesion mensaje={"¿Ya tenés una cuenta?"}/>
                     </Grid>
                 </Grid>

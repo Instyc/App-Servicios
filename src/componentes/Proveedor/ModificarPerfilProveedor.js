@@ -44,7 +44,7 @@ export default function Registrar() {
                 <Grid className={classes.filaPublicacion} container direction="row" justify="space-around" alignItems="center" spacing={1}>
                     <Grid item xs={12}>
                         <Typography variant="h5" component="h1" align="center">
-                            Modificar datos de proveedor
+                            Modificar mis datos de proveedor
                         </Typography>
                     </Grid>
 
@@ -74,7 +74,7 @@ export default function Registrar() {
 
                     <Grid item xs={12} >
                         <Typography variant="h6" component="h3" align="left" className={classes.alinearInputs}>
-                            Seleccionar los servicios que ofreces
+                            Selecciona los servicios que ofreces
                         </Typography>
                     </Grid>
 
@@ -138,8 +138,8 @@ const CategoriaSeleccion = () => {
                 <Grid  container spacing={2} justify="space-around">    
                     {
                         arrayServicios.map((servicio,i) => (
-                        <Grid item xs={6} sm={4} md={3} lg={2}  key={i} >
-                            <SeleccionarServicio key={i} servicio={servicio.label} />
+                        <Grid item xs={6} sm={4} md={3} lg={2} key={i}>
+                            <SeleccionarServicio key={i} servicio={servicio.label} agregarSeleccionado={()=>{}}/>
                         </Grid>
                         ))
                     }
