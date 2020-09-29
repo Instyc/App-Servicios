@@ -1,19 +1,21 @@
-import React from 'react'
-import Estilos from './Estilos.js';
-import FormControl from '@material-ui/core/FormControl';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Avatar from '@material-ui/core/Avatar';
-import Modal from '@material-ui/core/Modal';
-import Fade from '@material-ui/core/Fade';
-import Mail from '@material-ui/icons/Mail';
-import AlertaMensaje from './AlertaMensaje.js';
-import Backdrop from '@material-ui/core/Backdrop';
+import React,{useState} from 'react'
+//Material-UI
+import {Avatar, FormControl, Grid, Typography, TextField, Button, Modal, Fade, Backdrop, InputLabel, MenuItem, Select} from '@material-ui/core/';
+import {Mail} from '@material-ui/icons';
 
-function ContactarProveedor() {
+///Componentes
+import AlertaMensaje from './AlertaMensaje.js';
+import Estilos from './Estilos.js';
+import CategoriaSeleccion from './CategoriaSeleccion.js';
+
+function ContactarProveedor({esDePerfil}) {
     const classes = Estilos();
+
+    const [seleccionado, setSeleccionado] = useState(false);
+    const manejarCambio = () =>{
+        setSeleccionado(!seleccionado);
+    }
+
     return (
         <div>
             <Grid  container direction="row" justify="center" alignItems="stretch" spacing={2}>
@@ -27,6 +29,19 @@ function ContactarProveedor() {
                         Nombre proveedor
                     </Typography>
                 </Grid>
+                <FormControl className={classes.inputAncho} style={{marginBottom:10}}>
+                  <InputLabel  htmlFor="grouped-select">Seleccione la categoría</InputLabel>
+                  <Select defaultValue="" id="grouped-select" onChange={manejarCambio}>
+                    <MenuItem value={1}>Option 1</MenuItem>
+                    <MenuItem value={2}>Option 2</MenuItem>
+                    <MenuItem value={3}>Option 3</MenuItem>
+                    <MenuItem value={4}>Option 4</MenuItem>
+                  </Select>
+                </FormControl>
+
+                <Grid item xs={12}>
+                  <CategoriaSeleccion seleccionado={seleccionado}/>
+                </Grid>
 
                 <TextField className={classes.inputAncho} id="filled-basic" label="Escribe tu mensaje" variant="filled" multiline/>
 
@@ -38,15 +53,13 @@ function ContactarProveedor() {
     )
 }
 
-export function BotonContratar({fijo}) {
+export function BotonContratar({fijo, esDePerfil}) {
     const classes = Estilos();
     const [open, setOpen] = React.useState(false);
-    const [botonFijo, setbotonFijo] = React.useState(fijo);
 
     const handleOpen = () => {
       setOpen(true);
     };
-  
     const handleClose = () => {
       setOpen(false);
     };
@@ -77,7 +90,7 @@ export function BotonContratar({fijo}) {
         >
           <Fade in={open}>
             <div className={classes.contactarProveedor}>
-              <ContactarProveedor/>
+              <ContactarProveedor esDePerfil={esDePerfil}/>
             </div>
           </Fade>
         </Modal>

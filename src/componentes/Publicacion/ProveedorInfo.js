@@ -6,6 +6,8 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import Estilos from '../Estilos.js';
+import Estrellas from '../Estrellas.js';
+
 
 export default function ProveedorInfo({esDePerfil}) {
   const classes = Estilos();
@@ -72,9 +74,9 @@ function Categorias({nombre}) {
     };
     return (
         <div>
-            
             <ListItem button onClick={handleClick}>
-                <ListItemText primary={nombre} />
+                <ListItemText primary={nombre}/>
+                  <Estrellas valor={3.3}/>
                 {open ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse in={open} timeout="auto" unmountOnExit>

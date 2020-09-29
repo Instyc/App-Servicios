@@ -1,22 +1,20 @@
 import React,{useState} from 'react';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Checkbox from '@material-ui/core/Checkbox';
-//import {useDropzone} from 'react-dropzone';
-import ImageGallery from 'react-image-gallery';
-import SubirImagenes from '../SubirImagen.js';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import SeleccionarServicio from '../SeleccionarServicio.js';
+//Material-UI
+import {Typography, TextField, FormControl, Button, Paper, Grid, Checkbox, FormControlLabel} from '@material-ui/core/';
 
+//Componentes
+import SubirImagenes from '../SubirImagen.js';
+import CategoriaSeleccion from '../CategoriaSeleccion.js';
 import Estilos from '../Estilos.js';
 
 export default function Registrar() {
     const classes = Estilos();
     const [pictures,setPictures] = useState([]);
+
+    const [seleccionado, setSeleccionado] = useState(false);
+    const manejarCambio = () =>{
+        setSeleccionado(!seleccionado);
+    }
 
     function onDrop(pictureFiles, pictureDataURLs){
         setPictures(pictureFiles);
@@ -79,7 +77,13 @@ export default function Registrar() {
                     </Grid>
 
                     <Grid item xs={12} >
-                        <CategoriaSeleccion/>
+                        <Grid container justify="flex-start">
+                            <FormControlLabel
+                            control={<Checkbox onChange={manejarCambio} checked={seleccionado} name="checkedA" />}
+                            label="Categoría 1"
+                            />
+                        </Grid>
+                        <CategoriaSeleccion seleccionado={seleccionado}/>
                     </Grid>
 
                     <Grid item xs={6} align="center">
@@ -96,55 +100,3 @@ export default function Registrar() {
 }
 
 
-const CategoriaSeleccion = () => {
-    const [arrayServicios, setArrayServicios] = useState(
-        [
-          {
-            label: "Servicio 1"
-          },
-          {
-            label: "Servicio 2"
-          },
-          {
-            label: "Servicio 3"
-          },
-          {
-            label: "Servicio 4"
-          },
-          {
-            label: "Servicio 5"
-          },
-          {
-            label: "Servicio 6"
-          }
-        ]
-      );
-
-    const [seleccionado, setSeleccionado] = useState(false);
-    const manejarCambio = () =>{
-        setSeleccionado(!seleccionado);
-    }
-
-    return (
-        <div>
-            <Grid container justify="flex-start">
-                <FormControlLabel
-                    control={<Checkbox onChange={manejarCambio} checked={seleccionado} name="checkedA" />}
-                    label="Categoría 1"
-                />
-            </Grid>
-
-            <div hidden={!seleccionado}>
-                <Grid  container spacing={2} justify="space-around">    
-                    {
-                        arrayServicios.map((servicio,i) => (
-                        <Grid item xs={6} sm={4} md={3} lg={2} key={i}>
-                            <SeleccionarServicio key={i} servicio={servicio.label} agregarSeleccionado={()=>{}}/>
-                        </Grid>
-                        ))
-                    }
-                </Grid>
-            </div>
-        </div>
-    )
-}

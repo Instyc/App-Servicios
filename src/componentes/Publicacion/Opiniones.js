@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -13,6 +13,30 @@ import Estilos from '../Estilos.js';
 
 export default function Opiniones() {
   const classes = Estilos();
+
+    const [opiniones, setOpiniones] = useState({
+        promedio: 4.5,
+        cantidad: 250,
+        resena:[
+            {
+                titulo:"Reseña 1",
+                fecha:"05/10/2020",
+                estrella: 3.5,
+                descripcion:"Me sirvio pero no estoy tan conforme",
+                likes: 20,
+                dislikes: 23
+            },
+            {
+                titulo:"Reseña 2",
+                fecha:"5/6",
+                estrella: 4.3,
+                descripcion:"Muy feo todo",
+                likes: 2,
+                dislikes: 4
+            }
+        ]
+    });
+
   return (
     <div className={classes.mostrarFlex}>
       <Paper elevation={5}>
@@ -24,14 +48,15 @@ export default function Opiniones() {
             </Grid>
             <Grid item xs={12}>
                 <Typography variant="h5" component="h2" align="center" align="left">
-                <Estrellas/> 5.0 en base a 300 reseñas
+                <Estrellas valor={opiniones.promedio}/> {`${opiniones.promedio} en base a ${opiniones.cantidad} reseñas`}
                 </Typography>
             </Grid>
             <Grid item xs={12}>
-                <Reseña/>
-                <Reseña/>
-                <Reseña/>
-                <Reseña/>
+                {
+                    opiniones.resena.map((opinion, i)=>(
+                        <Resena opinion={opinion} key={i}/>
+                    ))
+                }
             </Grid>
         </Grid>
       </Paper>
@@ -40,40 +65,38 @@ export default function Opiniones() {
 }
 
 
-function Reseña() {
+function Resena({opinion}) {
     const classes = Estilos();
     return (
         <Paper variant="outlined" square>
             <Grid className={classes.padding} container direction="row" justify="space-around" alignItems="baseline">
                 <Grid item xs={6}>
                     <Typography variant="h5" component="h2" align="left">
-                        Titulo de la reseña
+                        {opinion.titulo}
                     </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <Estrellas/>
+                    <Estrellas valor={opinion.estrella}/>
                 </Grid>
                 <Grid item xs={12}>
                     <Typography variant="body1" component="p" align="justify"> 
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. In aperiam amet quaerat rem quo repellendus vitae ad labore nam facere! Magnam numquam sit recusandae tenetur harum! Animi facilis natus minima!
-                        Labore omnis sint quis nisi, porro atque minus consequatur eius sed alias odit explicabo rerum mollitia laboriosam excepturi. Rerum, numquam tenetur! Asperiores sequi magni error quis blanditiis voluptate. Animi, maxime.
-                        Veniam facilis eaque hic cum voluptatum doloribus fuga debitis dolore doloremque ut, voluptatem consequatur, accusantium fugit blanditiis laborum autem similique optio quas dolor. Consequuntur soluta officia eius natus facilis reiciendis!
+                        {opinion.descripcion}
                     </Typography> 
                 </Grid>
                 <Grid item xs={6}>
                     <Tooltip title="Me sirve">
                         <Button startIcon={<Like/>}>
-                            42
+                            {opinion.likes}
                         </Button>
                     </Tooltip>
                     <Tooltip title="No me sirve">
                         <Button color="secondary" startIcon={<Dislike/>}>
-                            17
+                            {opinion.dislikes}
                         </Button>
                     </Tooltip>
                 </Grid>
                 <Grid item xs={6}>
-                    17/05/2020 (Hace 5 años)
+                    {opinion.fecha} (Hace 5 años //hacer calculo)
                 </Grid>
             </Grid>
         </Paper>

@@ -1,12 +1,13 @@
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
 
+//Material-UI
+import {Grid} from '@material-ui/core/';
+
+//Componentes
 import ProveedorInfo from './ProveedorInfo.js';
 import PublicacionInfo from './PublicacionInfo.js';
 import Opiniones from './Opiniones.js';
 import Estilos from '../Estilos.js';
-import ContactarProveedor from '../ContactarProveedor.js'
 import {BotonContratar} from '../ContactarProveedor.js'
 
 export default function Publicacion() {
@@ -21,26 +22,8 @@ export default function Publicacion() {
                 <Grid item md={4} xs={12} >
                     <ProveedorInfo esDePerfil={false}/>
                 </Grid>  
-                <BotonContratar fijo={true}/> 
+                <BotonContratar fijo={true} esDePerfil={false}/> 
             </Grid>
         </div>
     )
 }
-
-/*function Contratar() {
-  const classes = Estilos();
-
-  return (
-    <div className={classes.botonFijo}>
-       <Button
-        variant="contained"
-        color="primary"
-        startIcon={<Mail/>}
-      >
-        Contactar
-      </Button>
-    </div>
-  );
-}*/
-
-

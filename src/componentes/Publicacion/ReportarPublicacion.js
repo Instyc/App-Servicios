@@ -6,15 +6,15 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
-import Link from '@material-ui/core/Link';
 import Reportar from '@material-ui/icons/PriorityHigh';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import Estilos from '../Estilos.js';
 
-export default function ReportarPublicacion() {
+export default function ReportarPublicacion({esDePerfil}) {
   const classes = Estilos();
   const [open, setOpen] = React.useState(false);
 
@@ -28,11 +28,12 @@ export default function ReportarPublicacion() {
 
   return (
     <div>
-        
+      <Tooltip title={esDePerfil?"Reportar proveedor de servicios":"Reportar publicación"}>
         <Button
             onClick={handleOpen}
         ><Reportar/>
         </Button>
+      </Tooltip>
             
       <Modal
         aria-labelledby="transition-modal-title"

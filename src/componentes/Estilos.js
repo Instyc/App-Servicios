@@ -65,10 +65,12 @@ const Estilos = makeStyles((theme) => ({
         minWidth: 360,
     },
     botonFijo: {
-        left: "43%",
-        top: "90%",
         display: "scroll",
         position: "fixed",
+        left: "50%",
+        top: "calc(100% - 80px)",
+        transform: "translate(-50%, -50%)",
+        zIndex: 100
     },
     contactarProveedor:{
         backgroundColor: "white",

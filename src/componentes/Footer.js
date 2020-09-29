@@ -1,8 +1,5 @@
 import React,{useState} from 'react';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 
@@ -15,7 +12,7 @@ export default function Footer() {
     
     return (
         <div >
-           <AppBar position="relative">   
+           <AppBar position="relative" style={{zIndex: 0}}>   
                 <Toolbar style={{background:"green"}}>
                     <Grid container direction="row" align="center">
                         <Grid item xs={12} sm={4}>

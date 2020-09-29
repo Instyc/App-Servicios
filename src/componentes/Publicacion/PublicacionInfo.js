@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 //Material-UI
-import {Paper, Grid, Typography, Breadcrumbs, Link, Avatar} from '@material-ui/core/';
+import {Paper, Grid, Typography, Breadcrumbs, Link, Avatar, Tooltip} from '@material-ui/core/';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import ImageGallery from 'react-image-gallery';
 import Estrellas from '../Estrellas.js';
 import ReportarPublicacion from './ReportarPublicacion.js'
@@ -10,7 +10,6 @@ import Estilos from '../Estilos.js';
 
 export default function PublicacionInfo({esDePerfil}) {
   const classes = Estilos();
-
   const images = [
     {
       original: 'https://picsum.photos/id/1018/1000/600/',
@@ -26,6 +25,41 @@ export default function PublicacionInfo({esDePerfil}) {
     },
   ];
 
+  const [datosPagina, setDatosPagina] = useState({
+    titulo:"",
+    precio:"",
+    categoria:"",
+    servicio:"",
+    estrella: 3,
+    descripcion:"",
+    imagenes:[""]
+  });
+
+  useEffect(()=>{
+    //Dependiendo de si se hace referencia al perfil de un proveedor o a una publicación, se muestra la pantalla correspondiente
+    if(esDePerfil){
+      setDatosPagina({
+        titulo:"Carlos Saragoza",
+        precio:"",
+        categoria:"",
+        servicio:"",
+        estrella: 0,
+        descripcion:"Soy un ingeniero en aeronautica que se dedica...",
+        imagenes:[""]
+      })
+    }else{
+      setDatosPagina({
+        titulo:"Reparación de caños",
+        precio:"300",
+        categoria:"Plomería",
+        servicio:"Caños",
+        estrella: 3.5,
+        descripcion:"Se reparan caños a domicilio.",
+        imagenes:[""]
+      })
+    }
+},[])
+
   return (
     <div className={classes.mostrarFlex}>
       <Paper elevation={5} >
@@ -35,36 +69,38 @@ export default function PublicacionInfo({esDePerfil}) {
             </Grid>
             
             <Grid item xs={esDePerfil?10:6} sm={esDePerfil?11:7}>
-                <Typography variant="h5" component="h1" align="left">
-                    Titulo de la publicacion
+                <Typography variant="h5" component="h1" align="left" alignContent="center">
+                  {datosPagina.titulo}
+                  <Tooltip title="Usuario verificado">
+                    <CheckCircleOutlineIcon color="primary"/>
+                  </Tooltip>
                 </Typography>
             </Grid>
 
             <Grid hidden={esDePerfil} item xs={6} sm={4} align-items="last baseline">
               <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-                <Link color="inherit">Categoría</Link>
-                <Link color="inherit">Servicio</Link>
+                <Link color="inherit">{datosPagina.categoria}</Link>
+                <Link color="inherit">{datosPagina.servicio}</Link>
               </Breadcrumbs>
             </Grid>
             
             <Grid item xs={esDePerfil?2:6} sm={1}>
-                <ReportarPublicacion/>
+              <ReportarPublicacion esDePerfil={esDePerfil}/>
             </Grid>
             <Grid item xs={6} hidden={esDePerfil}>
                 <Typography variant="h6" component="h3" align="left">
-                    Precio estimado: $500
+                    Precio estimado: ${datosPagina.precio}
                 </Typography>
             </Grid>
             <Grid item xs={6} sm={6} hidden={esDePerfil}>
                 <Typography variant="h6" component="h3">
-                    <Estrellas/>
+                    <Estrellas valor={datosPagina.estrella}/>
                 </Typography>
             </Grid>
             
             <Grid item xs={12}>
                 <Typography variant="body1" component="p" align="justify"> 
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Id delectus rem, saepe accusamus maiores illo nam, ullam a quidem eos ducimus temporibus maxime aliquid autem, voluptate vero nostrum perferendis unde.
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid similique unde sed dolore nesciunt alias sit sequi harum labore, vitae amet modi corporis distinctio eos aperiam. Dignissimos consequuntur atque esse.
+                  {datosPagina.descripcion}    
                 </Typography>
             </Grid>
             <Grid item xs={12}>
