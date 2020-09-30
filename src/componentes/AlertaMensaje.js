@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 function Alerta(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
-export default function AlertaMensaje() {
+export default function AlertaMensaje({mensaje}) {
     const classes = Estilos();
     const [open, setOpen] = React.useState(false);
 
@@ -31,7 +31,7 @@ export default function AlertaMensaje() {
 
                 <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
                     <Alerta onClose={handleClose} severity="success">
-                        ¡Mensaje enviado con éxito!
+                        {mensaje}
                     </Alerta>
                 </Snackbar>
             </Grid>

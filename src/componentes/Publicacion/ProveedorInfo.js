@@ -1,12 +1,14 @@
 import React from 'react';
-import {Paper, Grid, Typography, Avatar, Divider, Button, ListSubheader, List, ListItem, ListItemText, Collapse} from '@material-ui/core';
+import {Paper, Grid, Typography, Avatar, Divider, Button, ListSubheader, List, ListItem, ListItemText, Tooltip, Collapse} from '@material-ui/core';
 
 import PhoneIcon from '@material-ui/icons/Phone';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 
 import Estilos from '../Estilos.js';
 import Estrellas from '../Estrellas.js';
+import { Link } from 'react-router-dom';
 
 
 export default function ProveedorInfo({esDePerfil}) {
@@ -20,7 +22,12 @@ export default function ProveedorInfo({esDePerfil}) {
             </Grid>
             <Grid item xs={12} hidden={esDePerfil}>
               <Typography variant="h5" component="h3" align="center">
-                Andres Manuel Lopez Obrador
+                <Link to="/perfil-proveedor" className={classes.EstiloLink}>
+                  Andres Manuel Lopez Obrador
+                  <Tooltip title="Usuario verificado">
+                    <CheckCircleOutlineIcon color="primary"/>
+                  </Tooltip>
+                </Link>
               </Typography>
            </Grid>
 
@@ -67,6 +74,7 @@ export default function ProveedorInfo({esDePerfil}) {
 
 
 function Categorias({nombre}) {
+    const classes = Estilos();
     const [open, setOpen] = React.useState(true);
 
     const handleClick = () => {
@@ -76,16 +84,17 @@ function Categorias({nombre}) {
         <div>
             <ListItem button onClick={handleClick}>
                 <ListItemText primary={nombre}/>
-                  <Estrellas valor={3.3}/>
+                  <Estrellas clickeable={false} valor={3.3}/>
                 {open ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                     <Divider/>
-                    <Typography variant="h6" component="h5" align="left">Servicio 1</Typography>
-                    <Typography variant="h6" component="h5" align="left">Servicio 2</Typography>
-                    <Typography variant="h6" component="h5" align="left">Servicio 3</Typography>
-                    <Typography variant="h6" component="h5" align="left">Servicio 4</Typography>
+                    <Typography variant="h6" component="h5" align="left">
+                      <Link to="/publicacion" className={classes.EstiloLink}>
+                        Servicio 1
+                      </Link>
+                    </Typography>
                     <Divider/>
                 </List>
             </Collapse>

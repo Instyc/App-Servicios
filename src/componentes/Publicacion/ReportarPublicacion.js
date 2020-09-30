@@ -11,6 +11,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import Tooltip from '@material-ui/core/Tooltip';
+import AlertaMensaje from '../AlertaMensaje.js';
 
 import Estilos from '../Estilos.js';
 
@@ -81,7 +82,8 @@ export default function ReportarPublicacion({esDePerfil}) {
             
             <TextField id="filled-basic" label="Informacion adicional" variant="filled" multiline/>
             <Divider/>
-            <Button className={classes.margenArriba} size="large" variant="contained" color="primary">Reportar</Button>   
+
+            <AlertaMensaje mensaje="¡Reporte enviado!"/>   
           </div>
         </Fade>
       </Modal>

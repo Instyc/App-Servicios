@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
@@ -14,9 +14,10 @@ import AlertaMensaje from '../AlertaMensaje.js';
 
 import Estilos from '../Estilos.js'
 
-export default function IniciarSesion() {
+export default function RealizarOpinion() {
   const classes = Estilos();
   const [open, setOpen] = React.useState(false);
+  const [valorEstrella, setValorEstrella] = useState(0);
 
   const handleOpen = () => {
     setOpen(true);
@@ -25,6 +26,11 @@ export default function IniciarSesion() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const cambiarValor = (e) =>{
+      console.log(e.target.value);
+      setValorEstrella(Number(e.target.value));
+  }
 
   return (
     <div>
@@ -56,6 +62,15 @@ export default function IniciarSesion() {
                     <Typography variant="h4" component="h2" align="center" className={classes.form}>
                         Realizar opinión del servicio
                     </Typography>
+
+                    <Typography variant="h5" component="h3" align="center" className={classes.form}>
+                        (Imagen de perfil) Nombre del proveedor
+                    </Typography>
+
+                    <Typography variant="h5" component="h3" align="center" className={classes.form}>
+                        {`Categoria>servicio1 | sericio2 | ...`}
+                    </Typography>
+
                     <TextField className={classes.inputAncho} id="filled-basic" label="Título" variant="filled" required/>
                     <Divider/>
                     
@@ -64,9 +79,9 @@ export default function IniciarSesion() {
                     <Typography variant="h5" component="h4" align="center" className={classes.form}>
                         ¡Valora el servicio brindado!
                     </Typography>
-                    <Estrellas/>
+                    <Estrellas valor={valorEstrella} cambiarValor={cambiarValor} clickeable={true}/>
 
-                    <AlertaMensaje/>
+                    <AlertaMensaje mensaje="¡Reseña enviada!"/>
                 </FormControl>
             </Grid>
           </div>

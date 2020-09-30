@@ -22,6 +22,8 @@ import VerificarIdentidad from './componentes/GestionAdministrador/VerificarIden
 import PestanaReportes from './componentes/GestionAdministrador/PestanaReportes.js';
 import RegistrarSesion from './componentes/Sesion/Registrar.js';
 import MisPublicaciones from './componentes/Publicacion/MisPublicaciones.js';
+import PreguntasFrecuentes from './componentes/Footer/PreguntasFrecuentes.js';
+import SobreNosotros from './componentes/Footer/SobreNosotros.js';
 
 function App() { 
   return (
@@ -51,8 +53,10 @@ function App() {
               <Route path="/modificar-proveedor"><ModificarPerfilProveedor/></Route>
               <Route path="/verificar-identidad"><VerificarIdentidad/></Route>
               <Route path="/gestionar-reclamos"><PestanaReportes/></Route>
-
               <Route path="/perfil-proveedor"><MiPerfil/></Route>
+
+              <Route path="/preguntas-frecuentes"><PreguntasFrecuentes/></Route>
+              <Route path="/sobre-nosotros"><SobreNosotros/></Route>
 
             </Switch>
           </Container>

@@ -15,7 +15,6 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 import GestionarReportes from './GestionarReportes.js'
-import ReportesAtendidos from './ReportesAtendidos.js'
 
 import Estilos from '../Estilos.js'
 import Nuevo from '@material-ui/icons/Announcement';
@@ -68,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ScrollableTabsButtonForce() {
+export default function PestanaReportes() {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -96,15 +95,15 @@ export default function ScrollableTabsButtonForce() {
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          <GestionarReportes/>
+          <GestionarReportes estadoReporte={0}/>
         </TabPanel>
 
         <TabPanel value={value} index={1}>
-          <ReportesAtendidos estadoReporte={false}/>
+          <GestionarReportes estadoReporte={1}/>
         </TabPanel>
 
         <TabPanel value={value} index={2}>
-          <ReportesAtendidos estadoReporte={true}/>
+          <GestionarReportes estadoReporte={2}/>
         </TabPanel>
       </div>
     </div>

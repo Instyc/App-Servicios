@@ -73,7 +73,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar}) {
           </Grid>
 
           <Grid item xs={12} sm={6} md={6} lg={3} align="center">
-            <Estrellas valor={datos.estrellas}/>
+            <Estrellas valor={datos.estrellas} clickeable={false}/>
           </Grid>   
           <Grid item xs={6} sm={6} md={6} lg={3} align="center" hidden={!contactar}>
             <BotonContratar/>

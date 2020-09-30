@@ -48,7 +48,7 @@ export default function Opiniones() {
             </Grid>
             <Grid item xs={12}>
                 <Typography variant="h5" component="h2" align="center" align="left">
-                <Estrellas valor={opiniones.promedio}/> {`${opiniones.promedio} en base a ${opiniones.cantidad} reseñas`}
+                <Estrellas clickeable={false} valor={opiniones.promedio}/> {`${opiniones.promedio} en base a ${opiniones.cantidad} reseñas`}
                 </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -76,7 +76,7 @@ function Resena({opinion}) {
                     </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <Estrellas valor={opinion.estrella}/>
+                    <Estrellas clickeable={false} valor={opinion.estrella}/>
                 </Grid>
                 <Grid item xs={12}>
                     <Typography variant="body1" component="p" align="justify"> 

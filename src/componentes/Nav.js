@@ -11,13 +11,16 @@ import Inicio from "./Inicio/Inicio.js";
 import Publicacion from "./Publicacion/Publicacion.js";
 import InicioSesion from "./Sesion/InicioSesion.js";
 import Estilos from './Estilos.js';
+import RealizarOpinion from './Notificaciones/RealizarOpinion.js';
 
 export default function PrimarySearchAppBar() {
   const classes = Estilos();
   const [despPerf, setdespPerf] = useState(null);
   const [despMenu, setdespMenu] = useState(null);
+  const [despNoti, setdespNoti] = useState(null);
+  
   const [sesionIniciada, setSesionIniciada] = useState(true);
-  const [tipoUsuario, setTipoUsuario] = useState(2);
+  const [tipoUsuario, setTipoUsuario] = useState(3);
 
   const desplegarPerfil = (event) => {
     setdespPerf(event.currentTarget);
@@ -30,6 +33,12 @@ export default function PrimarySearchAppBar() {
   };
   const plegarMenu = () => {
     setdespMenu(null);
+  };
+  const desplegarNoti = (event) => {
+    setdespNoti(event.currentTarget);
+  };
+  const plegarNoti = () => {
+    setdespNoti(null);
   };
   return (
     <div style={{ flexGrow: 1 }}>
@@ -94,11 +103,22 @@ export default function PrimarySearchAppBar() {
          
  
           <div hidden={tipoUsuario===0}>
-            <IconButton aria-label="show 17 new notifications" color="inherit">
+              {/*Desplegar notificaciones*/}
+              <IconButton aria-label="show 17 new notifications" color="inherit" onClick={desplegarNoti}>
                 <Badge badgeContent={17} color="secondary">
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
+              <Menu id="simple-menu" anchorEl={despNoti} keepMounted open={Boolean(despNoti)} onClose={plegarNoti}>
+                <MenuItem onClick={plegarNoti}>
+                  <ListItemIcon>
+                    <PriorityHighIcon fontSize="small"/>
+                  </ListItemIcon>
+                  <RealizarOpinion/>
+                </MenuItem>
+              </Menu>
+
+              {/*Desplegar perfil*/}
               <IconButton
                 edge="end"
                 aria-label="account of current user"

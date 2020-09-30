@@ -46,7 +46,7 @@ function ContactarProveedor({esDePerfil}) {
                 <TextField className={classes.inputAncho} id="filled-basic" label="Escribe tu mensaje" variant="filled" multiline/>
 
                 <Grid item>
-                  <AlertaMensaje/>
+                  <AlertaMensaje mensaje="¡Mensaje enviado con éxito!"/>
                 </Grid>
             </Grid>
         </div>

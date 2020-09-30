@@ -1,10 +1,8 @@
 import React,{useState} from 'react';
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
+import {Link} from 'react-router-dom';
 
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
+//Material-UI
+import {Typography, Grid, AppBar, Toolbar} from '@material-ui/core/';
 
 import Estilos from './Estilos.js';
 
@@ -16,8 +14,8 @@ export default function Footer() {
                 <Toolbar style={{background:"green"}}>
                     <Grid container direction="row" align="center">
                         <Grid item xs={12} sm={4}>
-                            <Link to="/acerca-de">Sobre nosotros</Link><br/>
-                            <Link to="/acerca-de">Preguntas frecuentes</Link>
+                            <Link to="/sobre-nosotros">Sobre nosotros</Link><br/>
+                            <Link to="/preguntas-frecuentes">Preguntas frecuentes</Link>
                         </Grid>
                         <Grid item xs={12} sm={4}>
                             <Link to="/acerca-de">Términos de uso</Link><br/>

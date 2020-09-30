@@ -71,9 +71,12 @@ export default function PublicacionInfo({esDePerfil}) {
             <Grid item xs={esDePerfil?10:6} sm={esDePerfil?11:7}>
                 <Typography variant="h5" component="h1" align="left" alignContent="center">
                   {datosPagina.titulo}
-                  <Tooltip title="Usuario verificado">
-                    <CheckCircleOutlineIcon color="primary"/>
-                  </Tooltip>
+                  {
+                    esDePerfil && <Tooltip title="Usuario verificado">
+                      <CheckCircleOutlineIcon color="primary"/>
+                    </Tooltip>
+                  }
+                  
                 </Typography>
             </Grid>
 
@@ -94,7 +97,7 @@ export default function PublicacionInfo({esDePerfil}) {
             </Grid>
             <Grid item xs={6} sm={6} hidden={esDePerfil}>
                 <Typography variant="h6" component="h3">
-                    <Estrellas valor={datosPagina.estrella}/>
+                    <Estrellas clickeable={false} valor={datosPagina.estrella}/>
                 </Typography>
             </Grid>
             

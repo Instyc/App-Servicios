@@ -107,6 +107,10 @@ const Estilos = makeStyles((theme) => ({
         '@media (max-width:1075px)': {
           display: 'none',
         },
+    },
+    EstiloLink:{
+        textDecoration:"none",
+        color:"black"
     }
     
 }));
