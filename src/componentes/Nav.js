@@ -217,6 +217,7 @@ export default function PrimarySearchAppBar() {
               <div hidden={tipoUsuario!==3}>
                 <Link to="/gestionar-reclamos"><MenuItem onClick={plegarMenu}>Gestionar reclamos</MenuItem></Link>
                 <Link to="/verificar-identidad"><MenuItem onClick={plegarMenu}>Verificar identidades </MenuItem></Link>
+                <Link to="/administrar-categorias"><MenuItem onClick={plegarMenu}>Administrar categorías </MenuItem></Link>
               </div>
             </Menu>
           </div>
