@@ -14,6 +14,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import AlertaMensaje from '../AlertaMensaje.js';
 
 import Estilos from '../Estilos.js';
+import { Input } from '@material-ui/core';
 
 export default function ReportarPublicacion({esDePerfil}) {
   const classes = Estilos();
@@ -80,8 +81,7 @@ export default function ReportarPublicacion({esDePerfil}) {
             />
             </FormGroup>
             
-            <TextField id="filled-basic" label="Informacion adicional" variant="filled" multiline/>
-            <Divider/>
+            <TextField className={classes.inputAncho} id="filled-basic" label="Informacion adicional" variant="filled" multiline/>
 
             <AlertaMensaje mensaje="¡Reporte enviado!"/>   
           </div>

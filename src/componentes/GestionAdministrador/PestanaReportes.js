@@ -76,7 +76,7 @@ export default function PestanaReportes() {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} style={{margin:"10px 0px", padding:"20px"}}>
       <div>
         <AppBar position="static" color="default">
           <Tabs
@@ -105,7 +105,7 @@ export default function PestanaReportes() {
         <TabPanel value={value} index={2}>
           <GestionarReportes estadoReporte={2}/>
         </TabPanel>
-      </div>
+        </div>
     </div>
   );
 }

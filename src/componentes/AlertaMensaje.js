@@ -27,7 +27,7 @@ export default function AlertaMensaje({mensaje}) {
     return (
        <div>
            <Grid container>
-                <Button className={classes.inputAncho} size="large" variant="contained" color="primary" onClick={handleClick}>Enviar</Button>
+                <Button className={classes.inputAncho} style={{marginTop:10}} size="large" variant="contained" color="primary" onClick={handleClick}>Enviar</Button>
 
                 <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
                     <Alerta onClose={handleClose} severity="success">

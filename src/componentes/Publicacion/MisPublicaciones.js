@@ -57,8 +57,8 @@ export default function MisPublicaciones({tipoPublicacion}) {
     },[])
 
     return (
-      <div>
-        <Paper elevation={5} className={classes.fondo} style={{marginTop:10}}>
+      <div style={{maxWidth:"1000px", margin:"auto", marginTop:10, marginBottom:10}}>
+        <Paper elevation={5} className={classes.fondo}>
             <Typography variant="h4" component="h2" align="left">{titulo}</Typography>
             {
               filas.map((datos, i)=>(

@@ -1,6 +1,9 @@
 @import "~react-image-gallery/styles/css/image-gallery.css";
 
 .App {
+  font-family: 'Century Gothic', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    sans-serif;
   text-align: left;
   background: gray;
   box-sizing: border-box;

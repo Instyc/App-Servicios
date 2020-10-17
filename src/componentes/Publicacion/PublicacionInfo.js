@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 //Material-UI
-import {Paper, Grid, Typography, Breadcrumbs, Link, Avatar, Tooltip} from '@material-ui/core/';
+import {Paper, Grid, Typography, Breadcrumbs, Link, Avatar, Tooltip, IconButton} from '@material-ui/core/';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import Verificado from '@material-ui/icons/CheckCircleOutline';
 import ImageGallery from 'react-image-gallery';
 import Estrellas from '../Estrellas.js';
 import ReportarPublicacion from './ReportarPublicacion.js'
@@ -73,7 +73,7 @@ export default function PublicacionInfo({esDePerfil}) {
                   {datosPagina.titulo}
                   {
                     esDePerfil && <Tooltip title="Usuario verificado">
-                      <CheckCircleOutlineIcon color="primary"/>
+                      <IconButton><Verificado color="primary"/></IconButton>
                     </Tooltip>
                   }
                   

@@ -28,7 +28,7 @@ export default function GestionarReportes({estadoReporte}) {
 
   
   return (
-    <div className={classes.margenArriba}>
+    <div className={classes.fondo}>
       <Paper elevation={5}>
         <Grid className={classes.filaPublicacion} container justify="center">
             <Typography variant="h4" component="h1" align="left">
@@ -60,7 +60,7 @@ function Reporte({color, estadoReporte}) {
     return (
         <Paper className={classes.filaPublicacion} style={{background: color}} variant="outlined" square>
             <Grid container direction="row" justify="center">             
-                <Grid item xs={9}>
+                <Grid item xs={12} lg={9} md={9} sm={12}>
                     <Button disabled>
                         <Typography color="secondary" variant="h5" component="h2" align="left" >
                             Publicacion X
@@ -76,7 +76,7 @@ function Reporte({color, estadoReporte}) {
                     <Button disabled>
                         <Flechita/>
                     </Button>
-                    
+                  
                     <Link to="/perfil-proveedor" className={classes.EstiloLink}>
                         <Button className={classes.button}>
                             <Typography variant="h6" component="h5" align="left">
@@ -86,7 +86,7 @@ function Reporte({color, estadoReporte}) {
                     </Link>
                 </Grid>
 
-                <Grid item xs={3}>
+                <Grid item xs={12} lg={3} md={3} sm={12}>
                     <Typography variant="h6" component="h5" align="right">
                         05/05/5005
                     </Typography>
@@ -99,11 +99,11 @@ function Reporte({color, estadoReporte}) {
                     </Typography>
                 </Grid>
                 
-                <Grid container direction="row" justify="space-around">
+                <Grid container direction="row" justify="center">
                     {
                         motivos.map((motivo, i)=>(
-                            <Grid item xs={3}>
-                                <Typography key={i} variant="h7" component="h3" align="left">
+                            <Grid item xs={6} sm={3} md={3} lg={3}>
+                                <Typography key={i} variant="h7" component="h3" align="center">
                                     {
                                         motivo
                                     }

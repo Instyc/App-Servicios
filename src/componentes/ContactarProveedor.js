@@ -17,7 +17,7 @@ function ContactarProveedor({esDePerfil}) {
     }
 
     return (
-        <div>
+        <div style={{maxWidth:750}}>
             <Grid  container direction="row" justify="center" alignItems="stretch" spacing={2}>
                 <Grid item xs={12}>
                     <div align="center">
@@ -89,7 +89,7 @@ export function BotonContratar({fijo, esDePerfil}) {
           }}
         >
           <Fade in={open}>
-            <div className={classes.contactarProveedor}>
+            <div className={classes.papelFondo}>
               <ContactarProveedor esDePerfil={esDePerfil}/>
             </div>
           </Fade>

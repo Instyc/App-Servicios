@@ -95,14 +95,14 @@ export default function Inicio({tipo}) {
       <Grid container spacing={5} justify="space-around" alignItems="center">
         {
           arrayCategoria.map((cat, i) => (
-            <Grid item sm={4} md={3} lg={2} key={i} >
+            <Grid item sm={4} md={3} lg={2} key={i} align="center">
               {
                 tipo
-                ?<Link to="/publicaciones">
+                ?<Link to="/publicaciones" className={classes.EstiloLink}>
                   no solicitado{tipo}
                   <BotonCategoria nombre={cat.nombre} imagen={cat.imagen} />
                 </Link>
-                :<Link to="/servicios-solicitados">
+                :<Link to="/servicios-solicitados" className={classes.EstiloLink}>
                   solicitado{tipo}
                   <BotonCategoria nombre={cat.nombre} imagen={cat.imagen} />
                 </Link>

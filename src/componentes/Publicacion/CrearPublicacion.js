@@ -55,7 +55,7 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
     }
 
   return (
-    <div className={classes.fondo}>
+    <div className={classes.fondo} >
         <Paper elevation={3}>
             <FormControl className={classes.padding2} color="primary" fullWidth>
                 <Grid className={classes.pantallaMedia} container direction="row" justify="center" alignItems="center" spacing={1}>

@@ -6,34 +6,27 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 
+import Verificado from '@material-ui/icons/CheckCircleOutline';
+import { IconButton } from '@material-ui/core';
+
 const useStyles = makeStyles({
   root: {
-    maxWidth: 345,
-    background: "pink"
-  },
-  media: {
-    margin: "auto"
+    width:100,
+    height:100,
+    padding:0,
+    margin:"auto",
+    paddingTop:20
   },
 });
 
 export default function BotonCategoria({nombre, imagen}) {
   const classes = useStyles();
-  let url = "/static/images/cards/"+imagen;
   
   return (
-    <Card className={classes.root}>
-      <CardActionArea>
-        <CardMedia
-          className={classes.media}
-          image={url}
-          title={nombre}
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h6" component="h4">
-            {nombre}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-    </Card>
+    <IconButton className={classes.root}>
+      <Typography variant="h2" justify="center" align="center">
+        <Verificado color="secondary" fontSize="inherit"/>
+      </Typography>
+    </IconButton>
   );
 }

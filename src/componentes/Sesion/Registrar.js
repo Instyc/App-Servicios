@@ -135,7 +135,7 @@ export default function Registrar({registrar}) {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Button className={classes.inputAncho} size="large" variant="contained" color="primary">Registrar Usuario</Button>
+                        <Button className={classes.inputAncho} size="large" variant="contained" color="primary">{registrar?"Registrar Usuario":"Guardar cambios"}</Button>
                     </Grid>
                     
                     <Grid item xs={12} hidden={!registrar}>

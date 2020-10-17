@@ -55,10 +55,10 @@ const Estilos = makeStyles((theme) => ({
         width: "100%",
     },
     papelFondo:{
-        backgroundColor: "white",
         border: '1px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
+        backgroundColor: theme.palette.primary.light
     },
     pantallaMedia:{
         maxWidth: 800, 
@@ -72,12 +72,6 @@ const Estilos = makeStyles((theme) => ({
         transform: "translate(-50%, -50%)",
         zIndex: 100
     },
-    contactarProveedor:{
-        backgroundColor: "white",
-        border: '1px solid #000',
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-    },
     button:{
         textTransform: "none"
     },
@@ -90,27 +84,27 @@ const Estilos = makeStyles((theme) => ({
     },
     botonesNav:{
         textDecoration:"none",
-        color: "white",
-        display: 'inline',
-        '@media (max-width:1075px)': {
-          display: 'none',
-        },
-      },
-      EstiloMovil:{
-        display: 'none',
-        '@media (max-width:1075px)': {
-          display: 'inline',
-        },
-      },
-      EstiloPC:{
+        color: theme.palette.secondary.main,
         display: 'inline',
         '@media (max-width:1075px)': {
           display: 'none',
         },
     },
+    EstiloMovil:{
+        display: 'none',
+        '@media (max-width:1075px)': {
+            display: 'inline',
+        },
+    },
+    EstiloPC:{
+    display: 'inline',
+    '@media (max-width:1075px)': {
+        display: 'none',
+    },
+    },
     EstiloLink:{
         textDecoration:"none",
-        color:"black"
+        color: theme.palette.secondary.main
     }
     
 }));

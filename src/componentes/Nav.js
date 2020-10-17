@@ -53,7 +53,7 @@ export default function PrimarySearchAppBar() {
               
               fontSize: 20,
               }}>
-              App Servicios
+              Servia
             </Link>
           </Typography>
           
@@ -139,7 +139,7 @@ export default function PrimarySearchAppBar() {
                 <ListItemIcon>
                   <PriorityHighIcon fontSize="small" />
                 </ListItemIcon>
-                <Link to="/modificar-usuario"><Typography variant="inherit">Modificar mi perfil</Typography></Link>
+                <Link to="/modificar-usuario" className={classes.EstiloLink}><Typography variant="inherit">Modificar mi perfil</Typography></Link>
               </MenuItem>
               
               <div hidden={tipoUsuario!==2}>
@@ -147,7 +147,7 @@ export default function PrimarySearchAppBar() {
                   <ListItemIcon>
                     <PriorityHighIcon fontSize="small" />
                   </ListItemIcon>
-                  <Link to="/modificar-proveedor"><Typography variant="inherit">Modificar mi perfil de proveedor</Typography></Link>
+                  <Link to="/modificar-proveedor" className={classes.EstiloLink}><Typography variant="inherit">Modificar mi perfil de proveedor</Typography></Link>
                 </MenuItem>
               </div>
 
@@ -156,7 +156,7 @@ export default function PrimarySearchAppBar() {
                   <ListItemIcon>
                     <PriorityHighIcon fontSize="small" />
                   </ListItemIcon>
-                  <Link to="/perfil-proveedor"><Typography variant="inherit">Ver mi perfil de proveedor</Typography></Link>
+                  <Link to="/perfil-proveedor" className={classes.EstiloLink}><Typography variant="inherit">Ver mi perfil de proveedor</Typography></Link>
                 </MenuItem>
               </div>
 
@@ -180,44 +180,44 @@ export default function PrimarySearchAppBar() {
               open={Boolean(despMenu)}
               onClose={plegarMenu}
             >
-              <Link to="/registrar" hidden={tipoUsuario!==0}>
+              <Link to="/registrar" hidden={tipoUsuario!==0} className={classes.EstiloLink}>
                 <MenuItem onClick={plegarMenu}>Crear una nueva cuenta</MenuItem>
                 <hr/>
               </Link>
               
-              <Link to="/publicaciones" className={classes.EstiloMovil}>
+              <Link to="/publicaciones" className={classes.EstiloMovil} className={classes.EstiloLink}>
                 <MenuItem onClick={plegarMenu}>Explorar servicios</MenuItem>
               </Link>
-              <Link to="/categorias-solicitados" className={tipoUsuario>=2 && classes.EstiloMovil}>
+              <Link to="/categorias-solicitados" className={tipoUsuario>=2 && classes.EstiloMovil}  className={classes.EstiloLink}>
                 <MenuItem onClick={plegarMenu}>Servicios solicitados</MenuItem>
               </Link>
 
               {/*Usuario*/}
               <div hidden={tipoUsuario<1 || tipoUsuario>2}>
-                <Link to="/solicitar-servicio" className={tipoUsuario===1 && classes.EstiloMovil}>
+                <Link to="/solicitar-servicio" className={tipoUsuario===1 && classes.EstiloMovil} className={classes.EstiloLink}>
                   <MenuItem onClick={plegarMenu}>Solicitar servicio</MenuItem>
                 </Link>
-                <Link to="/mis-servicios-solicitados" className={tipoUsuario===1 && classes.EstiloMovil}>
+                <Link to="/mis-servicios-solicitados" className={tipoUsuario===1 && classes.EstiloMovil} className={classes.EstiloLink}>
                   <MenuItem onClick={plegarMenu}>Mis servicios solicitados</MenuItem>
                 </Link>
               </div>
 
               {/*Proveedor*/}
               <div hidden={tipoUsuario!==2}>
-                <Link to="/crear-publicacion" className={classes.EstiloMovil}>
+                <Link to="/crear-publicacion" className={classes.EstiloMovil} className={classes.EstiloLink}>
                   <MenuItem onClick={plegarMenu}>Crear publicación</MenuItem>
                 </Link>
-                <Link to="/mis-publicaciones" className={classes.EstiloMovil}>
+                <Link to="/mis-publicaciones" className={classes.EstiloMovil} className={classes.EstiloLink}>
                   <MenuItem onClick={plegarMenu}>Mis publicaciones</MenuItem>
                 </Link>
-                <Link to="/"><MenuItem onClick={plegarMenu}>Gestionar contactos (chat)</MenuItem></Link>
+                <Link to="/" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Gestionar contactos (chat)</MenuItem></Link>
               </div>
 
               {/*Administrador*/}
               <div hidden={tipoUsuario!==3}>
-                <Link to="/gestionar-reclamos"><MenuItem onClick={plegarMenu}>Gestionar reclamos</MenuItem></Link>
-                <Link to="/verificar-identidad"><MenuItem onClick={plegarMenu}>Verificar identidades </MenuItem></Link>
-                <Link to="/administrar-categorias"><MenuItem onClick={plegarMenu}>Administrar categorías </MenuItem></Link>
+                <Link to="/gestionar-reclamos" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Gestionar reclamos</MenuItem></Link>
+                <Link to="/verificar-identidad" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Verificar identidades </MenuItem></Link>
+                <Link to="/administrar-categorias" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Administrar categorías </MenuItem></Link>
               </div>
             </Menu>
           </div>

@@ -21,12 +21,12 @@ export default function VerificarIdentidad() {
     <div className={classes.fondo}>
       <Paper elevation={5}  style={{margin:"10px 0px", padding:"20px"}}>
         <Grid container justify="center" spacing={2}>
-            <Grid item xs={11}>
+            <Grid item xs={9}>
                 <Typography variant="h4" component="h1" align="left">
                     Verificar identidad
                 </Typography>
             </Grid>
-            <Grid item xs={1}>
+            <Grid item xs={3}>
                 <Tooltip title="Mostrar toda la informacion de las verificaciones">
                     <Switch
                         name="Desplegar"

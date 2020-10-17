@@ -1,10 +1,10 @@
 import React from 'react';
-import {Paper, Grid, Typography, Avatar, Divider, Button, ListSubheader, List, ListItem, ListItemText, Tooltip, Collapse} from '@material-ui/core';
+import {Paper, Grid, Typography, Avatar, Divider, Button, ListSubheader, List, ListItem, ListItemText, Tooltip, Collapse, IconButton} from '@material-ui/core';
 
 import PhoneIcon from '@material-ui/icons/Phone';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import Verificado from '@material-ui/icons/CheckCircleOutline';
 
 import Estilos from '../Estilos.js';
 import Estrellas from '../Estrellas.js';
@@ -25,7 +25,7 @@ export default function ProveedorInfo({esDePerfil}) {
                 <Link to="/perfil-proveedor" className={classes.EstiloLink}>
                   Andres Manuel Lopez Obrador
                   <Tooltip title="Usuario verificado">
-                    <CheckCircleOutlineIcon color="primary"/>
+                    <IconButton><Verificado color="primary"/></IconButton>
                   </Tooltip>
                 </Link>
               </Typography>
