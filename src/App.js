@@ -26,13 +26,16 @@ import PreguntasFrecuentes from './componentes/Footer/PreguntasFrecuentes.js';
 import SobreNosotros from './componentes/Footer/SobreNosotros.js';
 import AdministrarCategorias from './componentes/GestionAdministrador/AdministrarCategorias.js';
 
+import Chat from './componentes/Chat/Chat.js';
+
 import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import Tema from './Tema'
+import TemaClaro from './TemaClaro'
 
 //"typography": {"fontFamily": "['Century Gothic','Roboto','Arial','sans-serif']"}
 
-const theme = createMuiTheme(Tema);
+const theme = createMuiTheme(TemaClaro);
 
 function App() { 
   return (
@@ -68,7 +71,9 @@ function App() {
 
                 <Route path="/preguntas-frecuentes"><PreguntasFrecuentes/></Route>
                 <Route path="/sobre-nosotros"><SobreNosotros/></Route>
+                <Route path="/chat-contactos"><Chat/></Route>
 
+                
               </Switch>
             </Container>
           </React.Fragment>

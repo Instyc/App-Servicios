@@ -20,7 +20,7 @@ export default function PrimarySearchAppBar() {
   const [despNoti, setdespNoti] = useState(null);
   
   const [sesionIniciada, setSesionIniciada] = useState(true);
-  const [tipoUsuario, setTipoUsuario] = useState(3);
+  const [tipoUsuario, setTipoUsuario] = useState(2);
 
   const desplegarPerfil = (event) => {
     setdespPerf(event.currentTarget);
@@ -210,7 +210,7 @@ export default function PrimarySearchAppBar() {
                 <Link to="/mis-publicaciones" className={classes.EstiloMovil} className={classes.EstiloLink}>
                   <MenuItem onClick={plegarMenu}>Mis publicaciones</MenuItem>
                 </Link>
-                <Link to="/" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Gestionar contactos (chat)</MenuItem></Link>
+                <Link to="/chat-contactos" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Gestionar contactos (chat)</MenuItem></Link>
               </div>
 
               {/*Administrador*/}

@@ -56,7 +56,7 @@ export default function RealizarOpinion() {
       >
         <Fade in={open}>
           <div>
-            <Grid className={classes.contactarProveedor} container direction="row" justify="space-between" alignItems="center">
+            <Grid className={classes.papelFondo} container direction="row" justify="space-between" alignItems="center">
 
                 <FormControl >
                     <Typography variant="h4" component="h2" align="center" className={classes.form}>

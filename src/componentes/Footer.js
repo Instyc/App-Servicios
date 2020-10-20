@@ -10,7 +10,7 @@ export default function Footer() {
     const classes = Estilos();
     return (
         <div >
-           <AppBar position="relative" style={{zIndex: 0}}>   
+           <AppBar position="relative" bottom="0px" style={{zIndex: 0}}>   
                 <Toolbar>
                     <Grid container direction="row" align="center">
                         <Grid item xs={12} sm={4}>
