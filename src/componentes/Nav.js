@@ -20,7 +20,7 @@ export default function PrimarySearchAppBar() {
   const [despNoti, setdespNoti] = useState(null);
   
   const [sesionIniciada, setSesionIniciada] = useState(true);
-  const [tipoUsuario, setTipoUsuario] = useState(2);
+  const [tipoUsuario, setTipoUsuario] = useState(3);
 
   const desplegarPerfil = (event) => {
     setdespPerf(event.currentTarget);

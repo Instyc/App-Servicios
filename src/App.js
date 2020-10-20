@@ -28,10 +28,14 @@ import AdministrarCategorias from './componentes/GestionAdministrador/Administra
 
 import Chat from './componentes/Chat/Chat.js';
 
+import {  ObtenerEstado, ProveerEstadoCategoria  } from './Estados/CategoriaEstado'
+
 import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import Tema from './Tema'
 import TemaClaro from './TemaClaro'
+
+
 
 //"typography": {"fontFamily": "['Century Gothic','Roboto','Arial','sans-serif']"}
 
@@ -66,7 +70,11 @@ function App() {
                 <Route path="/modificar-proveedor"><ModificarPerfilProveedor/></Route>
                 <Route path="/verificar-identidad"><VerificarIdentidad/></Route>
                 <Route path="/gestionar-reclamos"><PestanaReportes/></Route>
-                <Route path="/administrar-categorias"><AdministrarCategorias/></Route>
+
+                <ProveerEstadoCategoria>
+                  <Route path="/administrar-categorias"><AdministrarCategorias/></Route>
+                </ProveerEstadoCategoria>
+
                 <Route path="/perfil-proveedor"><MiPerfil/></Route>
 
                 <Route path="/preguntas-frecuentes"><PreguntasFrecuentes/></Route>
