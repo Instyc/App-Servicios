@@ -28,7 +28,8 @@ import AdministrarCategorias from './componentes/GestionAdministrador/Administra
 
 import Chat from './componentes/Chat/Chat.js';
 
-import {  ObtenerEstado, ProveerEstadoCategoria  } from './Estados/CategoriaEstado'
+import { ObtenerEstado, ProveerEstadoCategoria } from './Estados/CategoriaEstado'
+import { ObtenerEstadoUsuario, ProveerEstadoUsuario } from './Estados/UsuarioEstado'
 
 import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -46,46 +47,52 @@ function App() {
     <div className="App" style={{height: "auto"}}>
       <ThemeProvider theme={theme}>
         <Router>
+        <ProveerEstadoUsuario>
           <Nav/>
+          
           <React.Fragment>
-            <CssBaseline/>
-            <Container style={{minHeight:"calc(100vh - 130px)"}}>
-              <Switch>
-                <Route exact path="/"><Inicio tipo={true}/></Route>
-                <Route path="/crear-publicacion"><CrearPublicacion modificar={false} tipoPublicacion={true}/></Route>
-                <Route path="/solicitar-servicio"><CrearPublicacion modificar={false} tipoPublicacion={false}/></Route>
-                <Route path="/modificar-publicacion"><CrearPublicacion modificar={true} tipoPublicacion={true}/></Route>
-                <Route path="/modificar-solicitud-servicio"><CrearPublicacion modificar={true} tipoPublicacion={false}/></Route>
-                
-                <Route path="/publicaciones"> <Categoria tipoPublicacion={true}/></Route>
+              <CssBaseline/>
+              <Container style={{minHeight:"calc(100vh - 130px)"}}>
+                <Switch>
+                  
+                  <Route exact path="/"><Inicio tipo={true}/></Route>
+                  
+                  <Route path="/crear-publicacion"><CrearPublicacion modificar={false} tipoPublicacion={true}/></Route>
+                  <Route path="/solicitar-servicio"><CrearPublicacion modificar={false} tipoPublicacion={false}/></Route>
+                  <Route path="/modificar-publicacion"><CrearPublicacion modificar={true} tipoPublicacion={true}/></Route>
+                  <Route path="/modificar-solicitud-servicio"><CrearPublicacion modificar={true} tipoPublicacion={false}/></Route>
+                  
+                  <Route path="/publicaciones"> <Categoria tipoPublicacion={true}/></Route>
 
-                <Route path="/servicios-solicitados"><Categoria tipoPublicacion={false}/></Route>
-                <Route path="/categorias-solicitados"><Inicio tipo={false}/></Route>
-                
-                <Route path="/registrar"><RegistrarSesion registrar={true}/></Route>
-                <Route path="/modificar-usuario"><RegistrarSesion registrar={false}/></Route>
-                <Route path="/publicacion"><Publicacion/></Route>
-                <Route path="/mis-publicaciones"><MisPublicaciones tipoPublicacion={true}/></Route>
-                <Route path="/mis-servicios-solicitados"><MisPublicaciones tipoPublicacion={false}/></Route>
-                <Route path="/modificar-proveedor"><ModificarPerfilProveedor/></Route>
-                <Route path="/verificar-identidad"><VerificarIdentidad/></Route>
-                <Route path="/gestionar-reclamos"><PestanaReportes/></Route>
+                  <Route path="/servicios-solicitados"><Categoria tipoPublicacion={false}/></Route>
+                  <Route path="/categorias-solicitados"><Inicio tipo={false}/></Route>
+                  
+                  <Route path="/registrar"><RegistrarSesion registrar={true}/></Route>
+                  <Route path="/modificar-usuario"><RegistrarSesion registrar={false}/></Route>
+                  <Route path="/publicacion"><Publicacion/></Route>
+                  <Route path="/mis-publicaciones"><MisPublicaciones tipoPublicacion={true}/></Route>
+                  <Route path="/mis-servicios-solicitados"><MisPublicaciones tipoPublicacion={false}/></Route>
+                  <Route path="/modificar-proveedor"><ModificarPerfilProveedor/></Route>
+                  <Route path="/verificar-identidad"><VerificarIdentidad/></Route>
+                  <Route path="/gestionar-reclamos"><PestanaReportes/></Route>
 
-                <ProveerEstadoCategoria>
-                  <Route path="/administrar-categorias"><AdministrarCategorias/></Route>
-                </ProveerEstadoCategoria>
+                  <ProveerEstadoCategoria>
+                    <Route path="/administrar-categorias"><AdministrarCategorias/></Route>
+                  </ProveerEstadoCategoria>
 
-                <Route path="/perfil-proveedor"><MiPerfil/></Route>
+                  <Route path="/perfil-proveedor"><MiPerfil/></Route>
 
-                <Route path="/preguntas-frecuentes"><PreguntasFrecuentes/></Route>
-                <Route path="/sobre-nosotros"><SobreNosotros/></Route>
-                <Route path="/chat-contactos"><Chat/></Route>
+                  <Route path="/preguntas-frecuentes"><PreguntasFrecuentes/></Route>
+                  <Route path="/sobre-nosotros"><SobreNosotros/></Route>
+                  <Route path="/chat-contactos"><Chat/></Route>
 
-                
-              </Switch>
-            </Container>
+                  
+                  
+                </Switch>
+              </Container>
           </React.Fragment>
           <Footer/>
+          </ProveerEstadoUsuario>
         </Router>
       </ThemeProvider>
     </div>

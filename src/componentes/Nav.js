@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 //Material-UI
 import {makeStyles, ListItemIcon, Grid, AppBar, Toolbar, IconButton, Typography, Badge, MenuItem, Menu, Button} from '@material-ui/core/';
@@ -13,14 +13,24 @@ import InicioSesion from "./Sesion/InicioSesion.js";
 import Estilos from './Estilos.js';
 import RealizarOpinion from './Notificaciones/RealizarOpinion.js';
 
+import { ObtenerEstadoUsuario, ProveerEstadoUsuario } from '../Estados/UsuarioEstado'
+
 export default function PrimarySearchAppBar() {
   const classes = Estilos();
+
+  const { state, dispatch } = useContext(ObtenerEstadoUsuario);
+
   const [despPerf, setdespPerf] = useState(null);
   const [despMenu, setdespMenu] = useState(null);
   const [despNoti, setdespNoti] = useState(null);
   
   const [sesionIniciada, setSesionIniciada] = useState(true);
-  const [tipoUsuario, setTipoUsuario] = useState(3);
+
+  const [tipoUsuario, setTipoUsuario] = useState(state.tipo);
+
+  useEffect(()=>{
+    setTipoUsuario(state.tipo)
+  },[state.tipo])
 
   const desplegarPerfil = (event) => {
     setdespPerf(event.currentTarget);

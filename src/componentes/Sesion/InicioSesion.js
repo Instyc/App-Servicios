@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
@@ -12,9 +12,12 @@ import LinkMUI from '@material-ui/core/Link';
 import {Link} from "react-router-dom";
 import Estilos from '../Estilos.js'
 
+import { ObtenerEstadoUsuario, ProveerEstadoUsuario } from '../../Estados/UsuarioEstado'
+
 export default function IniciarSesion({mensaje}) {
   const classes = Estilos();
-  const [open, setOpen] = React.useState(false);
+  const { state, dispatch } = useContext(ObtenerEstadoUsuario);
+  const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -22,6 +25,11 @@ export default function IniciarSesion({mensaje}) {
 
   const handleClose = () => {
     setOpen(false);
+  };
+  
+  const iniciarSesion = () => {
+    dispatch({type:"setUsuario"});
+    console.log(state.tipo)
   };
 
   return (
@@ -60,7 +68,7 @@ export default function IniciarSesion({mensaje}) {
                         Olvidé mi contraseña
                     </LinkMUI>
                     
-                    <Button className={classes.margenArriba} size="large" variant="contained" color="primary">Iniciar Sesión</Button>
+                    <Button onClick={iniciarSesion} className={classes.margenArriba} size="large" variant="contained" color="primary">Iniciar Sesión</Button>
 
                     <Divider/>
                     <Typography onClick={handleClose} variant="body1" align="center">
