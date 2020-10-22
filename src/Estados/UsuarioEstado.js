@@ -1,6 +1,7 @@
 import React, { useReducer, useEffect, createContext} from "react";
 
 const estadoInicial = {
+    servidor:"http://localhost:1337",
     id:"",
     jwt:"",
     email: "",

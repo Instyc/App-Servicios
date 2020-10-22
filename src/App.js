@@ -26,7 +26,7 @@ import PreguntasFrecuentes from './componentes/Footer/PreguntasFrecuentes.js';
 import SobreNosotros from './componentes/Footer/SobreNosotros.js';
 import AdministrarCategorias from './componentes/GestionAdministrador/AdministrarCategorias.js';
 
-import Chat from './componentes/Chat/Chat.js';
+//import Chat from './componentes/Chat/Chat.js';
 
 import { ObtenerEstado, ProveerEstadoCategoria } from './Estados/CategoriaEstado'
 import { ObtenerEstadoUsuario, ProveerEstadoUsuario } from './Estados/UsuarioEstado'
@@ -84,7 +84,7 @@ function App() {
 
                   <Route path="/preguntas-frecuentes"><PreguntasFrecuentes/></Route>
                   <Route path="/sobre-nosotros"><SobreNosotros/></Route>
-                  <Route path="/chat-contactos"><Chat/></Route>
+                  {/*<Route path="/chat-contactos"><Chat/></Route>*/}
 
                   
                   
