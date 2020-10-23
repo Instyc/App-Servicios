@@ -29,7 +29,7 @@ import AdministrarCategorias from './componentes/GestionAdministrador/Administra
 //import Chat from './componentes/Chat/Chat.js';
 
 import { ObtenerEstado, ProveerEstadoCategoria } from './Estados/CategoriaEstado'
-import { ObtenerEstadoUsuario, ProveerEstadoUsuario } from './Estados/UsuarioEstado'
+import { ObtenerEstadoAplicacion, ProveerEstadoAplicacion } from './Estados/AplicacionEstado'
 
 import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -47,7 +47,7 @@ function App() {
     <div className="App" style={{height: "auto"}}>
       <ThemeProvider theme={theme}>
         <Router>
-        <ProveerEstadoUsuario>
+        <ProveerEstadoAplicacion>
           <Nav/>
           
           <React.Fragment>
@@ -92,7 +92,7 @@ function App() {
               </Container>
           </React.Fragment>
           <Footer/>
-          </ProveerEstadoUsuario>
+          </ProveerEstadoAplicacion>
         </Router>
       </ThemeProvider>
     </div>

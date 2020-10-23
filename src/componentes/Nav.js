@@ -13,12 +13,12 @@ import InicioSesion from "./Sesion/InicioSesion.js";
 import Estilos from './Estilos.js';
 import RealizarOpinion from './Notificaciones/RealizarOpinion.js';
 
-import { ObtenerEstadoUsuario, ProveerEstadoUsuario } from '../Estados/UsuarioEstado'
+import { ObtenerEstadoAplicacion } from '../Estados/AplicacionEstado'
 
 export default function PrimarySearchAppBar() {
   const classes = Estilos();
 
-  const { state, dispatch } = useContext(ObtenerEstadoUsuario);
+  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
 
   const [despPerf, setdespPerf] = useState(null);
   const [despMenu, setdespMenu] = useState(null);
@@ -26,11 +26,11 @@ export default function PrimarySearchAppBar() {
   
   const [sesionIniciada, setSesionIniciada] = useState(true);
 
-  const [tipoUsuario, setTipoUsuario] = useState(state.tipo);
+  const [tipoUsuario, setTipoUsuario] = useState(state.datosSesion.tipo);
 
   useEffect(()=>{
-    setTipoUsuario(state.tipo)
-  },[state.tipo])
+    setTipoUsuario(state.datosSesion.tipo)
+  },[state.datosSesion.tipo])
 
   const desplegarPerfil = (event) => {
     setdespPerf(event.currentTarget);

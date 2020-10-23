@@ -1,7 +1,7 @@
 import React,{useState, useEffect, useContext} from 'react';
 
 //Material UI
-import {FormControl ,Typography, TextField, Button, Divider, Link, Paper, Grid, Checkbox, FormControlLabel, Hidden} from '@material-ui/core/';
+import {LinearProgress, FormControl ,Typography, TextField, Button, Divider, Link, Paper, Grid, Checkbox, FormControlLabel, Hidden} from '@material-ui/core/';
 
 //Libreria para consultar la API del servidor
 import axios from 'axios';
@@ -11,20 +11,24 @@ import Estilos from '../Estilos.js';
 import SubirImagen from '../SubirImagen.js';
 import InicioSesion from "../Sesion/InicioSesion.js";
 
-import { ObtenerEstadoUsuario, ProveerEstadoUsuario } from '../../Estados/UsuarioEstado'
+import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
 export default function Registrar({registrar}) {
-    const classes = Estilos();
-    const [tituloPagina, settituloPagina] = useState("");
-    const { state, dispatch } = useContext(ObtenerEstadoUsuario);
-    
+    const classes = Estilos()
+    //Variables de la página
+    const [mensaje, setmensaje] = useState("");
+    const [tituloPagina, settituloPagina] = useState("")
+    const [cargando, setcargando] = useState(false)
+    const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+    //
+
     const [pictures, setPictures] = useState([]);
     
     //Variables de los campos   
     const [datos, setdatos] = useState({
         nombre:"",
         apellido:"",
-        correo:"",
+        email:"",
         usuario:"",
         telefono:"",
         contrasena:"",
@@ -37,76 +41,57 @@ export default function Registrar({registrar}) {
     const [soyProveedor, setSoyProveedor] = useState(true);
     
     const cambiarInput = (e) =>{
+        if(mensaje!=="")
+            setmensaje("")
+        
         let valor = e.target.value;
         let campo = e.target.name;
         setdatos({
             ...datos,
             [campo]: valor
-        })
+        })        
     }
 
-    useEffect(()=>{
-        axios
-            .get("http://localhost:1337/api/servicios")
-            .then(response => {
-                // Se registró el usuario correctamente
-                console.log('Well done!'+response.data);
-                console.log('User profile', response.data.user);
-                console.log('User token', response.data.jwt);
-            })
-            .catch(error => {
-                // Ocurrió un error
-                console.log('Ha ocurrido un error:', error.response);
-        });
-        axios
-                .post(state.servidor+"/auth/local/register", {
-                    username: 'Strapi user',
-                    email: 'user@strapi.io',
-                    password: 'strapiPassword',
-                })
-                .then(response => {
-                    // Se registró el usuario correctamente
-                    console.log('Well done!');
-                    console.log('User profile', response.data.user);
-                    console.log('User token', response.data.jwt);
-                })
-                .catch(error => {
-                    // Ocurrió un error
-                    console.log('Ha ocurrido un error:', error.response);
-            });
-    },[])
     const registrarUsuario = (e) =>{
         e.preventDefault();
         if(datos.contrasena!==datos.contrasena_rep){
-            alert("Las contraseñas no son iguales");
+            setmensaje("Las contraseñas no coinciden")
+        }else if(datos.contrasena.length < 8){
+            setmensaje("La contraseña debe tener al menos 8 caracteres");
+        }else if(datos.email.search('[.][a-z][a-z]')=== -1 || datos.email.search('[.].*[0-9].*')!== -1 ){
+            setmensaje("El email se encuentra escrito incorrectamente");
         }else{
-            /*axios
-                .post(state.servidor+"/auth/local/register", {
-                    username: 'Strapi user',
-                    email: 'user@strapi.io',
-                    password: 'strapiPassword',
-                })
-                .then(response => {
-                    // Se registró el usuario correctamente
-                    console.log('Well done!');
-                    console.log('User profile', response.data.user);
-                    console.log('User token', response.data.jwt);
-                })
-                .catch(error => {
-                    // Ocurrió un error
-                    console.log('Ha ocurrido un error:', error.response);
-            });*/
+            setcargando(true)
             axios
-                .get("https://localhost:1337/api/servicios")
+                .post(state.servidor+"/auth/local/register", {
+                    username: datos.usuario,
+                    email: datos.email,
+                    password: datos.contrasena,
+                    nombre: datos.nombre,
+                    apellido: datos.apellido,
+                    telefono: datos.telefono,
+                    dni: datos.dni,
+                    descripcion: datos.descripcion,
+                    tipo: soyProveedor?1:2
+                })
                 .then(response => {
                     // Se registró el usuario correctamente
-                    console.log('Well done!'+response.data);
-                    console.log('User profile', response.data.user);
-                    console.log('User token', response.data.jwt);
+                    console.log('Se ha registrado correctamente el usuario')
+                    
+                    dispatch({type:"setDatos", value: response.data.user})
+                    dispatch({type:"setJwt", value: response.data.jwt})
+                    setcargando(false)
                 })
                 .catch(error => {
                     // Ocurrió un error
-                    console.log('Ha ocurrido un error:', error.response);
+                    let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
+                    if(err==="Auth.form.error.email.taken")
+                        setmensaje('El email ya está en uso.');
+                    
+                    if(err==="Auth.form.error.username.taken")
+                        setmensaje('El usuario ya está en uso.');
+
+                    setcargando(false)
             });
         }
     }
@@ -138,6 +123,7 @@ export default function Registrar({registrar}) {
                         <Grid item xs={6}>
                             <TextField
                             className={classes.inputAncho}
+                            type="text"
                             name="nombre"
                             value={datos.nombre}
                             onChange={cambiarInput}
@@ -148,7 +134,16 @@ export default function Registrar({registrar}) {
                         </Grid>
 
                         <Grid item xs={6}>
-                            <TextField className={classes.inputAncho} name="apellido" value={datos.apellido} onChange={cambiarInput} id="filled-basic" label="Apellido" variant="filled" required/>
+                            <TextField
+                            className={classes.inputAncho}
+                            type="text"
+                            name="apellido"
+                            value={datos.apellido}
+                            onChange={cambiarInput}
+                            id="filled-basic"
+                            label="Apellido"
+                            variant="filled"
+                            required/>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -156,15 +151,40 @@ export default function Registrar({registrar}) {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <TextField className={classes.inputAncho} name="correo" value={datos.correo} onChange={cambiarInput} id="filled-basic" label="Correo electrónico" variant="filled" type="email" required />
+                            <TextField
+                            className={classes.inputAncho}
+                            name="email"
+                            value={datos.email}
+                            onChange={cambiarInput}
+                            id="filled-basic"
+                            label="Correo electrónico"
+                            variant="filled"
+                            type="email"
+                            required />
                         </Grid>
 
                         <Grid item xs={6}>
-                            <TextField className={classes.inputAncho} name="usuario" value={datos.usuario} onChange={cambiarInput} id="filled-basic" label="Usuario" variant="filled" required />
+                            <TextField
+                            className={classes.inputAncho}
+                            name="usuario"
+                            value={datos.usuario}
+                            onChange={cambiarInput}
+                            id="filled-basic"
+                            label="Usuario"
+                            variant="filled"
+                            required />
                         </Grid>
 
                         <Grid item xs={6}>
-                            <TextField className={classes.inputAncho} name="telefono" value={datos.telefono} onChange={cambiarInput} id="filled-basic" label="Telefono" variant="filled"/>
+                            <TextField
+                            className={classes.inputAncho}
+                            type="number"
+                            name="telefono"
+                            value={datos.telefono}
+                            onChange={cambiarInput}
+                            id="filled-basic"
+                            label="Telefono"
+                            variant="filled"/>
                         </Grid>
                         <Divider/>
 
@@ -194,10 +214,10 @@ export default function Registrar({registrar}) {
                             />
                         </Grid>
 
-                        <Hidden xlDown={datos.contrasena_rep==="" || datos.contrasena===datos.contrasena_rep}>
+                        <Hidden xlDown={mensaje===""}>
                             <Grid item xs={12}>
                                 <Typography color="error">
-                                    *Las contraseñas no coinciden.
+                                    {mensaje}
                                 </Typography>
                             </Grid>
                         </Hidden>
@@ -207,7 +227,14 @@ export default function Registrar({registrar}) {
                             <div hidden={soyProveedor}>
                                 <Grid container spacing={1} direction="row" alignItems="center">
                                     <Grid item xs={12} align="center">
-                                        <TextField name="dni" value={datos.dni} onChange={cambiarInput} id="filled-basic" label="DNI" variant="filled"/>
+                                        <TextField
+                                        name="dni"
+                                        type="number"
+                                        value={datos.dni}
+                                        onChange={cambiarInput}
+                                        id="filled-basic"
+                                        label="DNI"
+                                        variant="filled"/>
                                     </Grid>
                                     
                                     <Grid item xs={12}>
@@ -215,12 +242,22 @@ export default function Registrar({registrar}) {
                                     </Grid>
 
                                     <Grid item xs={12}>
-                                        <TextField name="descripcion" value={datos.descripcion} onChange={cambiarInput} className={classes.inputAncho} id="filled-basic" label="Descripción" variant="filled" multiline/>
+                                        <TextField
+                                        name="descripcion"
+                                        value={datos.descripcion}
+                                        onChange={cambiarInput}
+                                        className={classes.inputAncho}
+                                        id="filled-basic"
+                                        label="Descripción"
+                                        variant="filled"
+                                        multiline/>
                                     </Grid>
                                 </Grid>
                             </div>
                         </Grid>
-
+                        <div className={classes.inputAncho} hidden={!cargando}>
+                            <LinearProgress />
+                        </div>
                         <Grid item xs={12}>
                             <Button
                             type="submit"
