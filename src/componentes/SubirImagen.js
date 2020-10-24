@@ -2,7 +2,7 @@ import React from 'react';
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 
-const SingleFileAutoSubmit = ({cantidad}) => {
+const SingleFileAutoSubmit = ({cantidad, funcionSetImagen}) => {
     const toast = (innerHTML) => {
       const el = document.getElementById('toast')
       el.innerHTML = innerHTML
@@ -10,15 +10,21 @@ const SingleFileAutoSubmit = ({cantidad}) => {
       setTimeout(() => { el.className = el.className.replace('show', '') }, 3000)
     }
   
-    const getUploadParams = () => {
-      return { url: 'https://httpbin.org/post' }
+    const getUploadParams = ({ file, meta }) => {
+
+      funcionSetImagen(file, cantidad, 0);
+
+      return { url: 'https://httpbin.org/post'}
     }
   
-    const handleChangeStatus = ({ meta, remove }, status) => {
-      /*if (status === 'headers_received') {
-        toast(`${meta.name} uploaded!`)
-        remove()
-      } else if (status === 'aborted') {
+    const handleChangeStatus = ({ meta, file }, status) => {
+      if (status === 'removed') {
+        console.log("Removido",file);
+        funcionSetImagen(file, cantidad, 1);
+
+        /*toast(`${meta.name} uploaded!`)
+        remove()*/
+      }/* else if (status === 'aborted') {
         toast(`${meta.name}, upload failed...`)
       }*/
     }

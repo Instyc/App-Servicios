@@ -28,7 +28,8 @@ const estadoInicial = {
         ubicacion: "",
         updated_at: "",
         url_imagen: "",
-        username: ""
+        username: "",
+        identidad_verificada: false
     }
 };
 
