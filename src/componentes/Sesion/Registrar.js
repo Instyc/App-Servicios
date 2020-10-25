@@ -14,7 +14,7 @@ import InicioSesion from "../Sesion/InicioSesion.js";
 
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
-export default function Registrar({registrar}) {
+export default function Registrar({registrar}){
     const classes = Estilos()
     //Variables de la página
     const [mensaje, setmensaje] = useState("");
@@ -29,6 +29,8 @@ export default function Registrar({registrar}) {
     const [ImagenDNI, setImagenDNI] = useState([])
 
     const funcionSetImagen = (file, cantidad, tipo) =>{
+        console.log("Imagen de modificar: ",file, tipo, cantidad)
+        //Si es 0, entonces se agrega la imagen a su respectiva variable, si es 1 entonces se desea eliminar
         if(tipo===0){
             if(cantidad===2){
                 setImagenDNI([...ImagenDNI, file])
@@ -39,14 +41,16 @@ export default function Registrar({registrar}) {
             if(cantidad===2){
                 let aux = ImagenDNI.filter(f => f !== file)
                 setImagenDNI(aux)
-                console.log(aux);
             }else if(cantidad===1){
                 let aux = ImagenDNI.filter(f => f !== file)
                 setImagenPerfil(aux)
-                console.log(aux);
             }
         }
     }
+    
+    useEffect(()=>{
+        console.log("se ha modificado alguna imagen de usuario", ImagenDNI, ImagenPerfil)
+    },[ImagenDNI, ImagenPerfil])
 
     const [datos, setdatos] = useState({
         nombre:"",
@@ -88,36 +92,133 @@ export default function Registrar({registrar}) {
         setdatos({
             ...datos,
             [campo]: valor
-        })        
+        })
     }
-
+    
+    const [retorno, setretorno] = useState([]);
     useEffect(()=>{
-        if(state.jwt!==""){
-            const formData = new FormData()
+        let objetoEnviar = {}
+        let j=0
+        
+        if(retorno.length!==0){            
+            if(ImagenPerfil.length!==0){
+                objetoEnviar["img_perfil"] = retorno.data[0].id
+                j=1;
+            }
+            if(ImagenDNI.length!==0){
+                let k = 1;
+                
+                for(let i=j; i<=ImagenDNI.length+j-1; i++){
+                    objetoEnviar["img_dni"+k] = retorno.data[i].id;
+                    k++;
+                }
+            }
 
-            formData.append('files', ImagenPerfil)
-            formData.append('ref', 'users-permissions_user')
-            formData.append('refId', state.datosSesion.id)
-            formData.append('field', 'avatar')
-            
             let auth = 'Bearer '+state.jwt;
-            console.log(state)
-            axios({
-                method: "post",
-                url: state.servidor+"/upload",
-                data: formData,
-                headers: {
-                'Authorization': auth
-            }})
+            axios.put(
+                state.servidor+"/users/"+state.datosSesion.id
+                ,objetoEnviar,
+                {
+                    headers: {
+                        'Authorization': auth
+                    },
+                }
+            )
             .then(response => {
-                console.log("Respuesta: ",response)
+                setcargando(false)
+
+                console.log("log de registrar xd:", response.data)                
+                dispatch({type:"setDatos", value: response.data})
+
+                //history.push("/")
             })
             .catch(error => {
-                console.log("Error: ",error.response)
+                alert("Error, es posible que las imagenes no se hayan cargado correctamente, sin embargo su cuenta ha sido creada.")
             })
         }
-    },[state.jwt])
+    },[retorno])
 
+    useEffect(()=>{
+        console.log("Se ejecuta por cambio de jwt", ImagenPerfil, ImagenDNI)
+        console.log(state.jwt)
+        if(state.jwt!==""){
+            let mandar = [...ImagenPerfil, ...ImagenDNI] 
+
+            if((ImagenDNI.length+ImagenPerfil.length)!==0){
+                subirImagen(mandar)
+            }else{
+                let auth = 'Bearer '+state.jwt;
+                
+                /*if(state.datosSesion.img_perfil!==null){
+                    axios.delete(state.servidor+"/upload/files/"+state.datosSesion.img_perfil,
+                    {
+                        headers: {
+                        'Authorization': auth
+                    },}).then(response => {
+                        console.log("borrado", response)
+                    }).catch(error => {
+                        alert("error al borrar")
+                    })*/
+                    /*
+                    axios
+                    .put(state.servidor+"/users/"+state.datosSesion.id, {
+                            img_perfil: null
+                        },
+                        {
+                            headers: {
+                                'Authorization': auth
+                            },
+                        }
+                    )
+                    .then(response => {
+                        //ª
+                        console.log('nulo papu', response)
+                        
+                        //dispatch({type:"setDatos", value: response.data.user})
+                    })
+                    .catch(error => {
+                        // Ocurrió un error
+                        alert("Ocurrio un error en imagen nula!")
+                    }); */
+                //}
+            }
+        }
+    },[state.jwt])
+    
+    function subirImagen(files){
+        const formData = new FormData()
+
+        for(let i =0; i<files.length; i++){
+            formData.append('files', files[i])
+        }
+        
+        //formData.append('ref', 'imagenes_solicitud')
+        //formData.append('refId', 1)
+        //formData.append('field', 'imagen')
+
+        //console.log(files)
+
+        let auth = 'Bearer '+state.jwt;
+
+        axios.post(
+            state.servidor+"/upload",
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': auth
+                },
+        })
+        .then(response => {
+            console.log("Respuesta imagen: ",response.data)
+            
+            setretorno(response)
+        })
+        .catch(error => {
+            alert("Error, no se han podido subir las imagenes, sin embargo su cuenta ha sido creada. ")
+        })
+    }
+    
     const enviarDatos = (e) =>{
         e.preventDefault();
         if(datos.email.search('[.][a-z][a-z]')=== -1 || datos.email.search('[.].*[0-9].*')!== -1 ){
@@ -148,40 +249,19 @@ export default function Registrar({registrar}) {
                         
                         dispatch({type:"setDatos", value: response.data.user})
                         dispatch({type:"setJwt", value: response.data.jwt})
-                        setcargando(false)
-
-                        /*const formData = new FormData()
-
-                        formData.append('files', ImagenPerfil)
-                        formData.append('ref', 'users-permissions_user')
-                        formData.append('refId', state.datosSesion.id)
-                        formData.append('field', 'avatar')
+                        dispatch({type:"setGuardar", value: !state.guardar})
                         
-                        let auth = 'Bearer '+state.jwt;
-                        console.log(state)
-                        axios.post(state.servidor+"/upload", {
-                        formData,
-                        headers: {
-                          'Authorization': auth
-                        }})
-                        .then(response => {
-                            console.log("Respuesta: ",response)
-                        })
-                        .catch(error => {
-                            console.log("Error: ",error.response)
-                        })*/
-
-                        //history.push("/")
+                        if((ImagenDNI.length+ImagenPerfil.length)===0){
+                            setcargando(false)
+                            history.push("/")
+                        }
                     })
                     .catch(error => {
                         // Ocurrió un error
                         let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
                         if(err==="Auth.form.error.email.taken")
                             setmensaje('El email ya está en uso.');
-                        else
-                            setmensaje(err)
-                        
-                        if(err==="Auth.form.error.username.taken")
+                        else if(err==="Auth.form.error.username.taken")
                             setmensaje('El usuario ya está en uso.');
                         else
                             setmensaje(err)
@@ -190,24 +270,53 @@ export default function Registrar({registrar}) {
                 });
             }
         }else{
-            /*axios
-                .post(state.servidor+"/auth/local", {
-                    username: datos.usuario,
-                    email: datos.email,
-                    password: datos.contrasena,
-                    nombre: datos.nombre,
-                    apellido: datos.apellido,
-                    telefono: datos.telefono,
-                    dni: datos.dni,
-                    descripcion: datos.descripcion,
-                    tipo: soyProveedor?1:2
-                })
+            if(datos.email.search('[.][a-z][a-z]')=== -1 || datos.email.search('[.].*[0-9].*')!== -1 ){
+                setmensaje("El email se encuentra escrito incorrectamente");
+            }else{
+                let auth = 'Bearer '+state.jwt;
+                setcargando(true)
+                axios.put(
+                    state.servidor+"/users/"+state.datosSesion.id
+                    ,{
+                        username: datos.usuario,
+                        email: datos.email,
+                        nombre: datos.nombre,
+                        apellido: datos.apellido,
+                        telefono: datos.telefono,
+                        dni: datos.dni,
+                        descripcion: datos.descripcion,
+                        tipo: soyProveedor?1:2
+                    },
+                    {
+                        headers: {
+                            'Authorization': auth
+                        },
+                    }
+                )
                 .then(response => {
-                    
+                    console.log("Respuesta cambio: ",response.data)
+                    dispatch({type:"setDatos", value: response.data})
+                    //dispatch({type:"setJwt", value: state.jwt})
+                    dispatch({type:"setGuardar", value: !state.guardar})
+
+                    alert("Sus datos se han modificado correctamente!")
+
+                    setcargando(false)
+                    //history.push("/")
                 })
                 .catch(error => {
-                       
-                });*/
+                    let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
+                    
+                    if(err==="Auth.form.error.email.taken")
+                        setmensaje('El email ya está en uso.');
+                    else if(err==="Auth.form.error.username.taken")
+                        setmensaje('El usuario ya está en uso.');
+                    else
+                        setmensaje(err)
+
+                    setcargando(false)
+                })
+            }
         }
     }
 }
@@ -260,7 +369,7 @@ export default function Registrar({registrar}) {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <SubirImagen cantidad={1} funcionSetImagen={funcionSetImagen}/>
+                            <SubirImagen cantidad={1} funcionSetImagen={funcionSetImagen} ids={[state.datosSesion.img_perfil]}/>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -353,7 +462,7 @@ export default function Registrar({registrar}) {
                                         </Grid>
                                         
                                         <Grid item xs={12}>
-                                            <SubirImagen cantidad={2} funcionSetImagen={funcionSetImagen}/>
+                                            <SubirImagen cantidad={2} funcionSetImagen={funcionSetImagen} ids={[state.datosSesion.img_dni1,state.datosSesion.img_dni2]}/>
                                         </Grid>
 
                                         <Grid item xs={12}>
