@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import './App.css';
 //Enrutamiento
 import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
@@ -36,13 +36,12 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import Tema from './Tema'
 import TemaClaro from './TemaClaro'
 
-
-
 //"typography": {"fontFamily": "['Century Gothic','Roboto','Arial','sans-serif']"}
 
 const theme = createMuiTheme(TemaClaro);
 
 function App() { 
+
   return (
     <div className="App" style={{height: "auto"}}>
       <ThemeProvider theme={theme}>

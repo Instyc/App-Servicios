@@ -12,7 +12,7 @@ const estadoInicial = {
         descripcion: "",
         dni: "",
         email: "",
-        estado: "",
+        estado: false,
         fecha_creacion: "",
         id: null,
         mostrar_telefono: false,

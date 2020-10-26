@@ -52,6 +52,14 @@ export default function IniciarSesion({mensaje}) {
           
           dispatch({type:"setDatos", value: response.data.user})
           dispatch({type:"setJwt", value: response.data.jwt})
+
+          localStorage.setItem('datosLocal', JSON.stringify({
+            jwt: response.data.jwt,
+            datosSesion: response.data.user
+          }));
+
+          console.log(response.data.user)
+
           setcargando(false)
           setOpen(false)
       })

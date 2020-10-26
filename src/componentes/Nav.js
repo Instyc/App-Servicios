@@ -16,9 +16,19 @@ import RealizarOpinion from './Notificaciones/RealizarOpinion.js';
 import { ObtenerEstadoAplicacion } from '../Estados/AplicacionEstado'
 
 export default function PrimarySearchAppBar() {
-  const classes = Estilos();
-
   const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+  const classes = Estilos();
+  
+  //Código de guardado del estado de la sesión
+  React.useEffect(()=>{
+    let sesion = localStorage.getItem('datosLocal') || null;
+    let sesionObjeto = JSON.parse(sesion)
+
+    if(sesionObjeto!==null){
+      dispatch({type:"setDatos", value: sesionObjeto.datosSesion});
+      dispatch({type:"setJwt", value: sesionObjeto.jwt});
+    }
+  },[])
 
   const [despPerf, setdespPerf] = useState(null);
   const [despMenu, setdespMenu] = useState(null);
@@ -27,10 +37,44 @@ export default function PrimarySearchAppBar() {
   const [sesionIniciada, setSesionIniciada] = useState(true);
 
   const [tipoUsuario, setTipoUsuario] = useState(state.datosSesion.tipo);
-
+  
   useEffect(()=>{
     setTipoUsuario(state.datosSesion.tipo)
   },[state.datosSesion.tipo])
+
+  const cerrarSesion = () => {
+    setdespPerf(null);
+    dispatch({type:"setDatos", value: {
+      apellido: "",
+      blocked: "",
+      confirmed: false,
+      created_at: "",
+      descripcion: "",
+      dni: "",
+      email: "",
+      estado: false,
+      fecha_creacion: "",
+      id: null,
+      mostrar_telefono: false,
+      nombre: "",
+      permiso: 0,
+      provider: "local",
+      role: {
+        id: 1, name: "Authenticated", 
+        description: "Default role given to authenticated user.", 
+        type: "authenticated"
+      },
+      telefono: "",
+      tipo: 0,
+      ubicacion: "",
+      updated_at: "",
+      username: "",
+      identidad_verificada: false
+    }});
+    dispatch({type:"setJwt", value: ""});
+
+    localStorage.setItem('datosLocal', JSON.stringify(null));
+  };
 
   const desplegarPerfil = (event) => {
     setdespPerf(event.currentTarget);
@@ -170,7 +214,7 @@ export default function PrimarySearchAppBar() {
                 </MenuItem>
               </div>
 
-              <MenuItem onClick={plegarPerfil}>
+              <MenuItem onClick={cerrarSesion}>
                 <ListItemIcon>
                   <PriorityHighIcon fontSize="small" />
                 </ListItemIcon>

@@ -179,8 +179,8 @@ export default function Registrar({registrar}){
                     .catch(error => {
                         // Ocurrió un error
                         alert("Ocurrio un error en imagen nula!")
-                    }); */
-                //}
+                    });
+                //}*/
             }
         }
     },[state.jwt])
@@ -248,9 +248,13 @@ export default function Registrar({registrar}){
                         console.log('Se ha registrado correctamente el usuario')
                         
                         dispatch({type:"setDatos", value: response.data.user})
-                        dispatch({type:"setJwt", value: response.data.jwt})
-                        dispatch({type:"setGuardar", value: !state.guardar})
-                        
+                        dispatch({type:"setJwt", value: response.data.jwt})                        
+
+                        localStorage.setItem('datosLocal', JSON.stringify({
+                            jwt: response.data.jwt,
+                            datosSesion: response.data.user
+                        }));
+
                         if((ImagenDNI.length+ImagenPerfil.length)===0){
                             setcargando(false)
                             history.push("/")
@@ -285,7 +289,7 @@ export default function Registrar({registrar}){
                         telefono: datos.telefono,
                         dni: datos.dni,
                         descripcion: datos.descripcion,
-                        tipo: soyProveedor?1:2
+                        tipo: soyProveedor?2:1
                     },
                     {
                         headers: {
@@ -296,8 +300,13 @@ export default function Registrar({registrar}){
                 .then(response => {
                     console.log("Respuesta cambio: ",response.data)
                     dispatch({type:"setDatos", value: response.data})
-                    //dispatch({type:"setJwt", value: state.jwt})
+                    dispatch({type:"setJwt", value: state.jwt})
                     dispatch({type:"setGuardar", value: !state.guardar})
+
+                    localStorage.setItem('datosLocal', JSON.stringify({
+                        jwt: state.jwt,
+                        datosSesion: response.data
+                    }));
 
                     alert("Sus datos se han modificado correctamente!")
 
@@ -445,9 +454,12 @@ export default function Registrar({registrar}){
                             </Grid>
                         </Hidden>
 
-                        <Hidden xlDown={!registrar}>
-                            <Grid item xs={12}>
+                        
+                        <Grid item xs={12}>
+                            <Hidden xlDown={state.datosSesion.tipo===2}>
                                 <OkProveedor soyProveedor={soyProveedor} setSoyProveedor={setSoyProveedor}/>
+                            </Hidden>
+                            <Hidden xlDown={!registrar}>
                                 <div hidden={!soyProveedor}>
                                     <Grid container spacing={1} direction="row" alignItems="center">
                                         <Grid item xs={12} align="center">
@@ -478,8 +490,9 @@ export default function Registrar({registrar}){
                                         </Grid>
                                     </Grid>
                                 </div>
-                            </Grid>
-                        </Hidden>
+                            </Hidden>
+                        </Grid>
+                        
                         <div className={classes.inputAncho} hidden={!cargando}>
                             <LinearProgress />
                         </div>
@@ -507,7 +520,7 @@ export default function Registrar({registrar}){
 
 function OkProveedor({setSoyProveedor, soyProveedor}) {
     const manejarCambio = (event) => {
-    setSoyProveedor(!soyProveedor);
+        setSoyProveedor(!soyProveedor);
     };
 
     return (
