@@ -34,7 +34,7 @@ const CategoriaSeleccion = ({seleccionado}) => {
                     {
                         arrayServicios.map((servicio,i) => (
                         <Grid item xs={6} sm={4} md={3} lg={2} key={i}>
-                            <SeleccionarServicio key={i} servicio={servicio.label} agregarSeleccionado={()=>{}}/>
+                            <SeleccionarServicio key={i} servicio={servicio.nombre} agregarSeleccionado={()=>{}}/>
                         </Grid>
                         ))
                     }

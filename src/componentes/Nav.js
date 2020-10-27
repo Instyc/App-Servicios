@@ -53,7 +53,6 @@ export default function PrimarySearchAppBar() {
       dni: "",
       email: "",
       estado: false,
-      fecha_creacion: "",
       id: null,
       mostrar_telefono: false,
       nombre: "",

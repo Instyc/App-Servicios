@@ -6,25 +6,36 @@ import ClearIcon from '@material-ui/icons/Clear';
 
 import Estilos from './Estilos.js';
 
-export default function SeleccioanrServicio({servicio, agregarSeleccionado}) {
+export default function SeleccionarServicio({servicio, agregarSeleccionado}) {
   const classes = Estilos();
   const [hecho_noHecho, setHecho_noHecho] = useState((<div><ClearIcon/></div>));
-  const [seleccion, setSeleccion] = useState(0);
+  const [seleccion, setSeleccion] = useState(servicio.seleccionado);
+
+
+  React.useEffect(()=>{
+    if(servicio.seleccionado===true){
+      setSeleccion(true);
+      setHecho_noHecho(<div><DoneIcon/></div>);
+    }else{
+      setSeleccion(false);
+      setHecho_noHecho(<div><ClearIcon/></div>);
+    }
+  },[])
 
   const handleClick = () => {
-    agregarSeleccionado(servicio)
-    if(seleccion===1){
-      setSeleccion(0);
-      setHecho_noHecho(<div><ClearIcon/></div>);
-    }else{
-      setSeleccion(1);
+    agregarSeleccionado(!seleccion)
+    if(seleccion===false){
+      setSeleccion(true);
       setHecho_noHecho(<div><DoneIcon/></div>);
+    }else{
+      setSeleccion(false);
+      setHecho_noHecho(<div><ClearIcon/></div>);
     }
   };
 
   return (
     <div className={classes.mostrarFlex}>
-      <Chip clickable variant="outlined" color="primary" label={servicio} icon={hecho_noHecho} onClick={handleClick}/>
+      <Chip clickable variant="outlined" color="primary" label={servicio.nombre} icon={hecho_noHecho} onClick={handleClick}/>
     </div>
   );
 }

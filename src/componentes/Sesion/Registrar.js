@@ -241,7 +241,11 @@ export default function Registrar({registrar}){
                         telefono: datos.telefono,
                         dni: datos.dni,
                         descripcion: datos.descripcion,
-                        tipo: soyProveedor?2:1
+                        tipo: soyProveedor?2:1,
+                        confirmed: false,
+                        estado: false,
+                        mostrar_telefono: false,
+                        identidad_verificada: false
                     })
                     .then(response => {
                         // Se registró el usuario correctamente
@@ -277,6 +281,7 @@ export default function Registrar({registrar}){
             if(datos.email.search('[.][a-z][a-z]')=== -1 || datos.email.search('[.].*[0-9].*')!== -1 ){
                 setmensaje("El email se encuentra escrito incorrectamente");
             }else{
+                //Modificar datos del usuario
                 let auth = 'Bearer '+state.jwt;
                 setcargando(true)
                 axios.put(
@@ -301,7 +306,6 @@ export default function Registrar({registrar}){
                     console.log("Respuesta cambio: ",response.data)
                     dispatch({type:"setDatos", value: response.data})
                     dispatch({type:"setJwt", value: state.jwt})
-                    dispatch({type:"setGuardar", value: !state.guardar})
 
                     localStorage.setItem('datosLocal', JSON.stringify({
                         jwt: state.jwt,
@@ -315,13 +319,14 @@ export default function Registrar({registrar}){
                 })
                 .catch(error => {
                     let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
-                    
+                    console.log("error: ",error.response)
                     if(err==="Auth.form.error.email.taken")
                         setmensaje('El email ya está en uso.');
                     else if(err==="Auth.form.error.username.taken")
                         setmensaje('El usuario ya está en uso.');
-                    else
+                    else{
                         setmensaje(err)
+                    }
 
                     setcargando(false)
                 })
