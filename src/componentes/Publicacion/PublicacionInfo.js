@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 //Material-UI
-import {Paper, Grid, Typography, Breadcrumbs, Link, Avatar, Tooltip, IconButton} from '@material-ui/core/';
+import {Hidden, Paper, Grid, Typography, Breadcrumbs, Link, Avatar, Tooltip, IconButton} from '@material-ui/core/';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import Verificado from '@material-ui/icons/CheckCircleOutline';
 import ImageGallery from 'react-image-gallery';
@@ -8,22 +8,14 @@ import Estrellas from '../Estrellas.js';
 import ReportarPublicacion from './ReportarPublicacion.js'
 import Estilos from '../Estilos.js';
 
-export default function PublicacionInfo({esDePerfil}) {
+import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
+
+export default function PublicacionInfo({esDePerfil, datosPerfil}) {
   const classes = Estilos();
-  const images = [
-    {
-      original: 'https://picsum.photos/id/1018/1000/600/',
-      thumbnail: 'https://picsum.photos/id/1018/250/150/',
-    },
-    {
-      original: 'https://picsum.photos/id/1015/1000/600/',
-      thumbnail: 'https://picsum.photos/id/1015/250/150/',
-    },
-    {
-      original: 'https://picsum.photos/id/1019/1000/600/',
-      thumbnail: 'https://picsum.photos/id/1019/250/150/',
-    },
-  ];
+  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+  //const [datosPerfil, setdatosPerfil] = useState({})
+
+  const [imagenes, setimagenes] = useState([])
 
   const [datosPagina, setDatosPagina] = useState({
     titulo:"",
@@ -37,15 +29,27 @@ export default function PublicacionInfo({esDePerfil}) {
 
   useEffect(()=>{
     //Dependiendo de si se hace referencia al perfil de un proveedor o a una publicación, se muestra la pantalla correspondiente
-    if(esDePerfil){
+    if(esDePerfil && datosPerfil!=null){
+      console.log("publicacion datos perfil:",datosPerfil)
+      
+      let img = datosPerfil.imagenes_proveedor.map((imagen)=>{
+        return ({
+          original: state.servidor+imagen.url,
+          thumbnail: state.servidor+imagen.formats.thumbnail.url
+        })
+      })
+      console.log("Img:",img)
+
+      setimagenes(img)
+
       setDatosPagina({
-        titulo:"Carlos Saragoza",
+        titulo: `${datosPerfil.nombre} ${datosPerfil.apellido}`,
         precio:"",
         categoria:"",
         servicio:"",
         estrella: 0,
-        descripcion:"Soy un ingeniero en aeronautica que se dedica...",
-        imagenes:[""]
+        descripcion: datosPerfil.descripcion,
+        imagenes:[]
       })
     }else{
       setDatosPagina({
@@ -55,26 +59,29 @@ export default function PublicacionInfo({esDePerfil}) {
         servicio:"Caños",
         estrella: 3.5,
         descripcion:"Se reparan caños a domicilio.",
-        imagenes:[""]
+        imagenes:[]
       })
     }
-},[])
+},[datosPerfil])
 
   return (
     <div className={classes.mostrarFlex}>
       <Paper elevation={5} >
         <Grid className={classes.padding} container direction="row" justify="space-between" alignItems="center">
             <Grid item xs={12} hidden={!esDePerfil} className={esDePerfil && classes.EstiloMovil}>
-              <Avatar alt="Remy Sharp" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR7Mt8wp9lo-dd73xpvjzPMcspQ8uwAThLitQ&usqp=CAU" className={classes.imagenPublicacion} />
+              <Avatar
+              alt="Remy Sharp"
+              src="https://i.pinimg.com/originals/69/1d/0c/691d0c155896f8ec64280648cac6fa22.jpg"
+              className={classes.imagenPublicacion} />
             </Grid>
             
             <Grid item xs={esDePerfil?10:6} sm={esDePerfil?11:7}>
-                <Typography variant="h5" component="h1" align="left" alignContent="center">
+                <Typography variant="h5" component="h1" align="left">
                   {datosPagina.titulo}
                   {
-                    esDePerfil && <Tooltip title="Usuario verificado">
+                    esDePerfil && <Hidden xlDown={!datosPerfil.identidad_verificada}><Tooltip title="Usuario verificado">
                       <IconButton><Verificado color="primary"/></IconButton>
-                    </Tooltip>
+                    </Tooltip></Hidden>
                   }
                   
                 </Typography>
@@ -107,7 +114,7 @@ export default function PublicacionInfo({esDePerfil}) {
                 </Typography>
             </Grid>
             <Grid item xs={12}>
-                <ImageGallery items={images}/>
+                <ImageGallery items={imagenes}/>
             </Grid>
             
         </Grid>

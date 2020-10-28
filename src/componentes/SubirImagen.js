@@ -15,24 +15,25 @@ const SingleFileAutoSubmit = ({cantidad, funcionSetImagen, ids}) => {
 
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
     useEffect(()=>{
-      if(state.datosSesion.id!==null && ids.some(id=>(id!==null))){
-        let IDS = ""
-        ids.map((id)=>{
-          if(id!==null){
-            IDS+="id_in="+id+"&"
-          }
-        })
-        axios.get(state.servidor+"/upload/files?"+IDS)
-        .then(response => {
-          response.data.map((dat) => {
-            hacerArchivo(state.servidor+dat.url)
+      console.log(ids)
+        if(state.datosSesion.id!==null && ids.some(id=>(id!==null))){
+          let IDS = ""
+          ids.map((id)=>{
+            if(id!==null){
+              IDS+="id_in="+id+"&"
+            }
           })
-        })  
-        .catch(error => {
-            //let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
-            console.log("Error: ", error)
-        })
-    }
+          axios.get(state.servidor+"/upload/files?"+IDS)
+          .then(response => {
+            response.data.map((dat) => {
+              hacerArchivo(state.servidor+dat.url)
+            })
+          })  
+          .catch(error => {
+              //let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
+              console.log("Error: ", error)
+          })
+        }
     },[])
     
     
@@ -77,7 +78,7 @@ const SingleFileAutoSubmit = ({cantidad, funcionSetImagen, ids}) => {
           canCancel={false}
           accept="image/*"
           inputWithFilesContent={'Subir otra imagen'}
-          inputContent={()=>(cantidad===1?`Selecciona ${cantidad} imagen`:`Selecciona ${cantidad} imágenes`)}
+          inputContent={()=>(cantidad===1?`Selecciona ${cantidad} imagen`:`Selecciona hasta ${cantidad} imágenes`)}
           //submitButtonContent=null to remove el botón submit
           styles={{
             dropzone: { width: "100%", height: "100%", overflow:"auto"},

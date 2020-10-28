@@ -78,7 +78,8 @@ export default function Registrar({registrar}){
                 contrasena: "",
                 contrasena_rep: "",
                 dni: state.datosSesion.dni,
-                descripcion: state.datosSesion.descripcion
+                descripcion: state.datosSesion.descripcion,
+                tipo: state.datosSesion.tipo
             })
         }
     },[])
@@ -294,7 +295,7 @@ export default function Registrar({registrar}){
                         telefono: datos.telefono,
                         dni: datos.dni,
                         descripcion: datos.descripcion,
-                        tipo: soyProveedor?2:1
+                        tipo: datos.tipo===2?2:soyProveedor?2:1
                     },
                     {
                         headers: {
@@ -507,7 +508,8 @@ export default function Registrar({registrar}){
                             className={classes.inputAncho}
                             size="large"
                             variant="contained"
-                            color="primary">
+                            color="primary"
+                            disabled={cargando}>
                             {registrar?"Registrar Usuario":"Guardar cambios"}
                             </Button>
                         </Grid>

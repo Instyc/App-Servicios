@@ -3,6 +3,7 @@ import React, { useReducer, useEffect, createContext} from "react";
 const estadoInicial = {
     servidor:"http://localhost:1337",
     jwt:"",
+    publico: false,
     guardar: false,
     datosSesion:{
         apellido: "",
@@ -43,6 +44,8 @@ const reducer = (state, action) => {
             return {...state, jwt: valor};
         case "setGuardar":
             return {...state, guardar: valor};
+        case "setPublico":
+            return {...state, publico: valor};
         default:
             return { ...state };
     }

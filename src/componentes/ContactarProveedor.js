@@ -53,7 +53,7 @@ function ContactarProveedor({esDePerfil}) {
     )
 }
 
-export function BotonContratar({fijo, esDePerfil}) {
+export function BotonContratar({fijo, esDePerfil, datosPerfil}) {
     const classes = Estilos();
     const [open, setOpen] = React.useState(false);
 

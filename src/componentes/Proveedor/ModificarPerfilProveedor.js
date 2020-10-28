@@ -21,7 +21,6 @@ export default function Registrar() {
     const [cargando, setcargando] = useState(false)
     const [controlGuardar, setcontrolGuardar] = useState(false)
     const [categorias, setcategorias] = useState([])
-    const [idServicios, setidServicios] = useState([])
 
     const [datos, setdatos] = useState({
         descripcion: state.datosSesion.descripcion,
@@ -30,13 +29,17 @@ export default function Registrar() {
     });
 
     const [imagenes, setimagenes] = useState([])
+    const [cambioImagen, setcambioImagen] = useState(-1)
     const funcionSetImagen = (file, cantidad, tipo) =>{
         //Si es 0, entonces se agrega la imagen a su respectiva variable, si es 1 entonces se desea eliminar
         if(tipo===0){
-            setimagenes([...imagenes, file])
+            let obj = {file:file, nueva: true}
+            setimagenes([...imagenes, obj])
+            setcambioImagen(cambioImagen+1);
         }else{
-            let aux = imagenes.filter(f => f !== file)
+            let aux = imagenes.filter(f => f.file !== file)
             setimagenes(aux)
+            setcambioImagen(cambioImagen-1);
         }
     }
 
@@ -70,12 +73,10 @@ export default function Registrar() {
                     })
                 }                
             })
-
-            console.log(response.data)
             setcategorias(response.data)
         })
         .catch(error => {
-            alert("Un error ha ocurrido")
+            alert("Un error ha ocurrido al cargar las categorías.")
             console.log(error.response)
         }) 
         
@@ -98,8 +99,38 @@ export default function Registrar() {
         })
     }
 
-    useEffect(()=>{
-        if(idServicios.length!==0 || controlGuardar){
+    const guardarDatos = () => {
+        let aux = [];
+        categorias.map((categoria)=>{
+            if(categoria.seleccionado){
+                categoria.servicios.map((servicio)=>{
+                    if(servicio.seleccionado){
+                        aux.push(servicio.id)
+                        if(!controlGuardar)
+                            setcontrolGuardar(true)
+                    }
+                })
+            }
+        })
+        enviarDatos(aux)
+    }
+    function eliminarImagenes(img){
+        let auth = 'Bearer '+state.jwt;
+        axios.delete(state.servidor+"/upload/files/"+img.id,
+        {
+            headers: {
+            'Authorization': auth
+        },})
+        .then(response => {
+            console.log("borrado", response)            
+        }).catch(error => {
+            alert("error al borrar")
+            console.log(error.response)
+        })
+    }
+    
+    const enviarDatos = (id_servicios) =>{
+        if(controlGuardar || cambioImagen!==-1){
             let auth = 'Bearer '+state.jwt;
             setcargando(true)
             axios.put(
@@ -108,7 +139,7 @@ export default function Registrar() {
                     descripcion: datos.descripcion,
                     estado: datos.estado,
                     mostrar_telefono: datos.mostrar_telefono,
-                    servicios : idServicios
+                    servicios : id_servicios
                 },
                 {
                     headers: {
@@ -118,40 +149,98 @@ export default function Registrar() {
             )
             .then(response => {
                 console.log("Respuesta cambio: ",response.data)
-                dispatch({type:"setDatos", value: response.data})
+                
+                let datos_ayuda = response.data
 
+                dispatch({type:"setDatos", value: response.data})
                 localStorage.setItem('datosLocal', JSON.stringify({
                     jwt: state.jwt,
-                    datosSesion: response.data
+                    datosSesion: datos_ayuda
                 }));
 
                 alert("Sus datos se han modificado correctamente!")
+                console.log("Cambio imagen:",cambioImagen)
+                if(imagenes.length!==0 && cambioImagen!==-1){
+                    //Borramos las imagenes existentes de la base de datos
+                    if(state.datosSesion.imagenes_proveedor.length!==0)
+                    state.datosSesion.imagenes_proveedor.map(img => {
+                        console.log("borrar las imagenes",img)
+                        eliminarImagenes(img)
+                    })
+                    
+                    //Subiendo las imagenes seleccionadas
+                    const formData = new FormData()
 
+                    for(let i =0; i<imagenes.length; i++){
+                        formData.append('files', imagenes[i].file)
+                    }
+                    
+                    formData.append('ref', 'user')
+                    formData.append('refId', state.datosSesion.id)
+                    formData.append('field', 'imagenes_proveedor')
+                    formData.append('source', 'users-permissions')
+
+                    let auth = 'Bearer '+state.jwt;
+
+                    axios.post(
+                        state.servidor+"/upload",
+                        formData,
+                        {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                                'Authorization': auth
+                            },
+                        })
+                    .then(response => {
+                        console.log("Respuesta imagen: ",response.data)
+
+                        datos_ayuda.imagenes_proveedor = response.data
+                        
+                        dispatch({type:"setDatos", value: datos_ayuda})
+                        localStorage.setItem('datosLocal', JSON.stringify({
+                            jwt: state.jwt,
+                            datosSesion: datos_ayuda
+                        }));
+                    })
+                    .catch(error => {
+                        alert("Error al cargar las imágenes.")
+                        console.log("Error: ", error.response)
+                    })
+                }else{
+                    if(state.datosSesion.imagenes_proveedor.length!==0)
+                        state.datosSesion.imagenes_proveedor.map(img => {
+                            axios.delete(state.servidor+"/upload/files/"+img.id,
+                            {
+                                headers: {
+                                'Authorization': auth
+                            },})
+                            .then(response => {
+                                console.log("borrado", response) 
+
+                                datos_ayuda.imagenes_proveedor = []
+
+                                dispatch({type:"setDatos", value: datos_ayuda})
+                                localStorage.setItem('datosLocal', JSON.stringify({
+                                    jwt: state.jwt,
+                                    datosSesion: datos_ayuda
+                                }));
+                                
+                            }).catch(error => {
+                                alert("error al borrar")
+                                console.log(error.response)
+                            })
+                        })
+                }
+                
                 setcargando(false)
                 history.push("/")
             })
             .catch(error => {
-                //let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
                 console.log(error.response)
                 alert("Ha ocurrido un error al guardar los datos")
                 setcargando(false)
             })
         }
-    },[idServicios])
-
-    const guardarDatos = () => {
-        let aux = [];
-        categorias.map((categoria)=>{
-            if(categoria.seleccionado){
-                categoria.servicios.map((servicio)=>{
-                    if(servicio.seleccionado){
-                        aux.push(servicio.id)
-                    }
-                })
-            }
-        })
-
-        setidServicios(aux)
     }
     
     return (
@@ -201,7 +290,7 @@ export default function Registrar() {
                         </Grid>
 
                         <Grid item xs={12} className={classes.inputAncho}>
-                            <SubirImagenes cantidad={10} funcionSetImagen={funcionSetImagen} ids={[]}/>
+                            <SubirImagenes cantidad={10} funcionSetImagen={funcionSetImagen} ids={state.datosSesion.imagenes_proveedor.map((item)=>(item.id))}/>
                         </Grid>
 
                         <Grid item xs={12} >
@@ -261,7 +350,7 @@ export default function Registrar() {
                         </div>
 
                         <Grid item xs={6} align="center">
-                            <Button onClick={guardarDatos} size="large" variant="contained" color="primary">Guardar</Button>
+                            <Button onClick={guardarDatos} disabled={cargando} size="large" variant="contained" color="primary">Guardar</Button>
                         </Grid>
                         <Grid item xs={6} align="center">
                             <Button size="large" variant="contained" color="secondary">Cancelar</Button>

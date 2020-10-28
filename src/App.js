@@ -14,8 +14,8 @@ import Registrar from './componentes/Sesion/Registrar.js';
 import InicioSesion from './componentes/Sesion/InicioSesion.js';
 import Inicio from './componentes/Inicio/Inicio.js';
 import Publicacion from './componentes/Publicacion/Publicacion.js';
-import ModificarPerfilProveedor from './componentes/Proveedor/ModificarPerfilProveedor';
-import MiPerfil from './componentes/Proveedor/MiPerfil';
+import ModificarPerfilProveedor from './componentes/Proveedor/ModificarPerfilProveedor.js';
+import MiPerfil from './componentes/Proveedor/MiPerfil.js';
 import CrearPublicacion from './componentes/Publicacion/CrearPublicacion.js';
 import GestionarReportes from './componentes/GestionAdministrador/GestionarReportes.js';
 import VerificarIdentidad from './componentes/GestionAdministrador/VerificarIdentidad.js';
@@ -75,18 +75,18 @@ function App() {
                   <Route path="/verificar-identidad"><VerificarIdentidad/></Route>
                   <Route path="/gestionar-reclamos"><PestanaReportes/></Route>
 
-                  <ProveerEstadoCategoria>
-                    <Route path="/administrar-categorias"><AdministrarCategorias/></Route>
-                  </ProveerEstadoCategoria>
+                  <Route path="/perfil-proveedor/:id"><MiPerfil/></Route>
 
-                  <Route path="/perfil-proveedor"><MiPerfil/></Route>
-
+                  <Route path="/administrar-categorias">
+                    <ProveerEstadoCategoria>
+                      <AdministrarCategorias/>
+                    </ProveerEstadoCategoria>
+                  </Route>
+                  
                   <Route path="/preguntas-frecuentes"><PreguntasFrecuentes/></Route>
                   <Route path="/sobre-nosotros"><SobreNosotros/></Route>
-                  {/*<Route path="/chat-contactos"><Chat/></Route>*/}
 
-                  
-                  
+                  {/*<Route path="/chat-contactos"><Chat/></Route>*/}
                 </Switch>
               </Container>
           </React.Fragment>

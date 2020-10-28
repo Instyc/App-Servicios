@@ -27,6 +27,8 @@ export default function PrimarySearchAppBar() {
     if(sesionObjeto!==null){
       dispatch({type:"setDatos", value: sesionObjeto.datosSesion});
       dispatch({type:"setJwt", value: sesionObjeto.jwt});
+    }else{
+      dispatch({type:"setPublico", value: true});
     }
   },[])
 
@@ -34,8 +36,6 @@ export default function PrimarySearchAppBar() {
   const [despMenu, setdespMenu] = useState(null);
   const [despNoti, setdespNoti] = useState(null);
   
-  const [sesionIniciada, setSesionIniciada] = useState(true);
-
   const [tipoUsuario, setTipoUsuario] = useState(state.datosSesion.tipo);
   
   useEffect(()=>{
@@ -209,7 +209,7 @@ export default function PrimarySearchAppBar() {
                   <ListItemIcon>
                     <PriorityHighIcon fontSize="small" />
                   </ListItemIcon>
-                  <Link to="/perfil-proveedor" className={classes.EstiloLink}><Typography variant="inherit">Ver mi perfil de proveedor</Typography></Link>
+                  <Link to={"/perfil-proveedor/"+state.datosSesion.id} className={classes.EstiloLink}><Typography variant="inherit">Ver mi perfil de proveedor</Typography></Link>
                 </MenuItem>
               </div>
 
