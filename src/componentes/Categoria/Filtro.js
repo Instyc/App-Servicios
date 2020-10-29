@@ -6,14 +6,16 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
+import Chip from '@material-ui/core/Chip';
+import DoneIcon from '@material-ui/icons/Done';
+import ClearIcon from '@material-ui/icons/Clear';
 
-import SeleccionarServicio from '../SeleccionarServicio.js';
- 
+
 import Estilos from '../Estilos.js'
 
-export default function Filtro({servicios, agregarSeleccionado}) {
+export default function Filtro({servicios, agregarSeleccionado, buscarServicios}) {
   const classes = Estilos();
-  
+
   return (
     <Card className={classes.margenArriba} variant="outlined">
       <CardContent>
@@ -34,8 +36,31 @@ export default function Filtro({servicios, agregarSeleccionado}) {
         <form className={classes.margenArriba} noValidate autoComplete="off">
           <TextField id="outlined-basic" label="Buscar por nombre" variant="outlined" size="medium" fullWidth />
         </form>
-        <Button className={classes.margenArriba} color="secondary" variant="contained" >Buscar</Button>
+        <Button onClick={buscarServicios} className={classes.margenArriba} color="secondary" variant="contained" >Buscar</Button>
       </CardContent>
     </Card>
+  );
+}
+
+function SeleccionarServicio({servicio, agregarSeleccionado}) {
+  const classes = Estilos();
+  const [hecho_noHecho, setHecho_noHecho] = useState((<div><ClearIcon/></div>));
+  const [seleccion, setSeleccion] = useState(false);
+
+  const handleClick = () => {
+    agregarSeleccionado(servicio.id)
+    if(seleccion===false){
+      setSeleccion(true);
+      setHecho_noHecho(<div><DoneIcon/></div>);
+    }else{
+      setSeleccion(false);
+      setHecho_noHecho(<div><ClearIcon/></div>);
+    }
+  };
+
+  return (
+    <div className={classes.mostrarFlex}>
+      <Chip clickable variant="outlined" color="primary" label={servicio.nombre} icon={hecho_noHecho} onClick={handleClick}/>
+    </div>
   );
 }

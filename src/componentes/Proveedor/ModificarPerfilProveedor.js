@@ -23,9 +23,10 @@ export default function Registrar() {
     const [categorias, setcategorias] = useState([])
 
     const [datos, setdatos] = useState({
-        descripcion: state.datosSesion.descripcion,
-        estado: state.datosSesion.estado,
-        mostrar_telefono: state.datosSesion.mostrar_telefono,
+        descripcion: "",
+        estado: false,
+        mostrar_telefono: false,
+        pasarImagenes: []
     });
 
     const [imagenes, setimagenes] = useState([])
@@ -44,48 +45,54 @@ export default function Registrar() {
     }
 
     useEffect(()=>{
-        axios.get(
-            state.servidor+"/api/categorias"
-        )
-        .then(response => {
-            response.data.map((item)=>{
-                item["seleccionado"] = false
-
-                item.servicios.map((itemserv) =>{
-                    itemserv["seleccionado"] = false
-                })
-
-                if(state.datosSesion.servicios.length!==0){
-                    response.data.map((categoria) =>{
-                        categoria.servicios.map((servicio) =>{
-
-                            state.datosSesion.servicios.map((servicioSesion)=>{
-                                if(servicioSesion.categoria === categoria.id){
-                                    categoria.seleccionado = true
-                                }
-
-                                if(servicioSesion.id===servicio.id){
-                                    servicio.seleccionado = true
-                                }
-                            })
-
-                        })
-                    })
-                }                
+        if(state.jwt!=="" || state.publico===true){
+            //Asignamos el estado a las variables de los componentes
+            let pasar = state.datosSesion.imagenes_proveedor.map((item)=>(item.id))
+            setdatos({
+                descripcion: state.datosSesion.descripcion,
+                estado: state.datosSesion.estado,
+                mostrar_telefono: state.datosSesion.mostrar_telefono,
+                pasarImagenes: pasar
             })
-            setcategorias(response.data)
-        })
-        .catch(error => {
-            alert("Un error ha ocurrido al cargar las categorías.")
-            console.log(error.response)
-        }) 
-        
-        setdatos({
-            descripcion: state.datosSesion.descripcion,
-            estado: state.datosSesion.estado,
-            mostrar_telefono: state.datosSesion.mostrar_telefono,
-        })
-    },[])
+
+            //Buscamos las categorias para cargarlas en los checkboxes
+            axios.get(
+                state.servidor+"/api/categorias"
+            )
+            .then(response => {
+                response.data.map((item)=>{
+                    item["seleccionado"] = false
+
+                    item.servicios.map((itemserv) =>{
+                        itemserv["seleccionado"] = false
+                    })
+
+                    if(state.datosSesion.servicios.length!==0){
+                        response.data.map((categoria) =>{
+                            categoria.servicios.map((servicio) =>{
+
+                                state.datosSesion.servicios.map((servicioSesion)=>{
+                                    if(servicioSesion.categoria === categoria.id){
+                                        categoria.seleccionado = true
+                                    }
+
+                                    if(servicioSesion.id===servicio.id){
+                                        servicio.seleccionado = true
+                                    }
+                                })
+
+                            })
+                        })
+                    }                
+                })
+                setcategorias(response.data)
+            })
+            .catch(error => {
+                alert("Un error ha ocurrido al cargar las categorías.")
+                console.log(error.response)
+            }) 
+        }
+    },[state.jwt, state.publico])
 
     const cambiarCheckbox = (e) =>{  
         if(!controlGuardar)
@@ -159,12 +166,10 @@ export default function Registrar() {
                 }));
 
                 alert("Sus datos se han modificado correctamente!")
-                console.log("Cambio imagen:",cambioImagen)
                 if(imagenes.length!==0 && cambioImagen!==-1){
                     //Borramos las imagenes existentes de la base de datos
                     if(state.datosSesion.imagenes_proveedor.length!==0)
                     state.datosSesion.imagenes_proveedor.map(img => {
-                        console.log("borrar las imagenes",img)
                         eliminarImagenes(img)
                     })
                     
@@ -242,6 +247,8 @@ export default function Registrar() {
             })
         }
     }
+
+    //-----------------------------------------------------------------------------------------------------------------------------------------------------
     
     return (
         <div className= {classes.fondo}>
@@ -290,7 +297,7 @@ export default function Registrar() {
                         </Grid>
 
                         <Grid item xs={12} className={classes.inputAncho}>
-                            <SubirImagenes cantidad={10} funcionSetImagen={funcionSetImagen} ids={state.datosSesion.imagenes_proveedor.map((item)=>(item.id))}/>
+                            <SubirImagenes cantidad={10} funcionSetImagen={funcionSetImagen} ids={datos.pasarImagenes}/>
                         </Grid>
 
                         <Grid item xs={12} >

@@ -17,10 +17,11 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
   const classes = Estilos();
   const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
   const [categorias, setcategorias] = useState([])
+
   const [DatosPerfil, setDatosPerfil] = useState({
+    id: null,
     descripcion:"",
-    nombre:"",
-    apellido:"",
+    titulo:"",
     identidad_verificada: false,
     telefono: "",
     mostrar_telefono: false,
@@ -28,9 +29,12 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
   })
 
   useEffect(()=>{
-    if(datosPerfil!=null){
+  if (state.jwt!=="" || state.publico===true)
+    if(datosPerfil!==null){
       setDatosPerfil(datosPerfil)
+      console.log("datos perfil", datosPerfil)
       buscarCategorias(datosPerfil)
+      
     }
   },[datosPerfil])
 
@@ -58,7 +62,7 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
     <div className={classes.proveedorSticky}>
       <Paper elevation={5}>
         <Grid className={classes.padding} container direction="row" justify="space-between" alignItems="center">
-            <Grid item xs={12} className={esDePerfil && classes.EstiloPC}>
+            <Grid item xs={12} className={esDePerfil?classes.EstiloPC:classes.EstiloVacio}>
               <Avatar
               alt="Remy Sharp"
               //src={state.servidor+DatosPerfil.img_perfil.url}
@@ -67,8 +71,8 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
             </Grid>
             <Grid item xs={12} hidden={esDePerfil}>
               <Typography variant="h5" component="h3" align="center">
-                <Link to="/perfil-proveedor/" className={classes.EstiloLink}>
-                  {`${DatosPerfil.nombre} ${DatosPerfil.apellido}`}
+                <Link to={"/perfil-proveedor/"+DatosPerfil.id} className={classes.EstiloLink}>
+                  {DatosPerfil.titulo}
                   <Hidden xlDown={!DatosPerfil.identidad_verificada}>
                     <Tooltip title="Usuario verificado">
                       <IconButton><Verificado color="primary"/></IconButton>
@@ -102,9 +106,7 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
                         <Categorias key={i} categoria={categoria} /> 
                       ))
                     }
-                      
-                    <Divider/> 
-                    
+                    <Divider/>
                 </List>         
            </Grid>
            <Grid item xs={12}>
@@ -144,7 +146,7 @@ function Categorias({categoria}) {
                       {
                         categoria.servicios.map((servicio, i) => (
                           <Typography key={i} variant="h6" component="h5" align="left">
-                            <Link to="/publicacion" className={classes.EstiloLink}>
+                            <Link to={"/publicacion"} className={classes.EstiloLink}>
                               {servicio.nombre}
                             </Link>
                           </Typography>

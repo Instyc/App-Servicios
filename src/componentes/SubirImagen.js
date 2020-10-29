@@ -15,7 +15,6 @@ const SingleFileAutoSubmit = ({cantidad, funcionSetImagen, ids}) => {
 
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
     useEffect(()=>{
-      console.log(ids)
         if(state.datosSesion.id!==null && ids.some(id=>(id!==null))){
           let IDS = ""
           ids.map((id)=>{

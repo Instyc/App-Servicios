@@ -105,8 +105,17 @@ const Estilos = makeStyles((theme) => ({
     EstiloLink:{
         textDecoration:"none",
         color: theme.palette.secondary.main
-    }
-    
+    },
+    EstiloVacio:{
+        
+    },
+    Categoria: {
+        width:100,
+        height:100,
+        padding:0,
+        margin:"auto",
+        paddingTop:20
+    },
 }));
 
 export default Estilos;

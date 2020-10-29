@@ -119,23 +119,23 @@ export default function PrimarySearchAppBar() {
 
                 {/*<Link to="/proveedores" className={classes.botonesNav}><Button style={{padding:"20px"}}>Proveedores</Button></Link>*/}
 
-                <Link to="/solicitar-servicio" hidden={tipoUsuario!==1} className={tipoUsuario===1 && classes.botonesNav}>
+                <Link to="/solicitar-servicio" hidden={tipoUsuario!==1} className={tipoUsuario===1?classes.botonesNav:classes.EstiloVacio}>
                   <Button style={{padding:"20px"}}>Solicitar servicio</Button>
                 </Link>
 
-                <Link to="/mis-servicios-solicitados" hidden={tipoUsuario!==1} className={tipoUsuario===1 && classes.botonesNav}>
+                <Link to="/mis-servicios-solicitados" hidden={tipoUsuario!==1} className={tipoUsuario===1?classes.botonesNav:classes.EstiloVacio}>
                   <Button style={{padding:"20px"}}>Mis servicios solicitados</Button>
                 </Link>
 
-                <Link to="/categorias-solicitados" hidden={tipoUsuario!==0} className={tipoUsuario!==1 && classes.botonesNav}>
+                <Link to="/categorias-solicitados" hidden={tipoUsuario!==0} className={tipoUsuario!==1?classes.botonesNav:classes.EstiloVacio}>
                   <Button style={{padding:"20px"}}>Servicios solicitados</Button>
                 </Link>
 
-                <Link to="/mis-publicaciones" hidden={tipoUsuario!==2} className={tipoUsuario===2 && classes.botonesNav}>
+                <Link to="/mis-publicaciones" hidden={tipoUsuario!==2} className={tipoUsuario===2?classes.botonesNav:classes.EstiloVacio}>
                   <Button style={{padding:"20px"}}>Mis publicaciones</Button>
                 </Link>
                 
-                <Link to="/crear-publicacion" hidden={tipoUsuario!==2} className={tipoUsuario===2 && classes.botonesNav}>
+                <Link to="/crear-publicacion" hidden={tipoUsuario!==2} className={tipoUsuario===2?classes.botonesNav:classes.EstiloVacio}>
                   <Button style={{padding:"20px"}}>Crear publicación</Button>
                 </Link>
               </Grid>
@@ -222,7 +222,7 @@ export default function PrimarySearchAppBar() {
             </Menu>
           </div>
           
-          <div className={tipoUsuario===0 && classes.EstiloMovil}>
+          <div className={tipoUsuario===0?classes.EstiloMovil:classes.EstiloVacio}>
             <IconButton className={classes.hambur} onClick={desplegarMenu}>
               <MenuIcon/>
             </IconButton>
@@ -238,19 +238,19 @@ export default function PrimarySearchAppBar() {
                 <hr/>
               </Link>
               
-              <Link to="/publicaciones" className={classes.EstiloMovil} className={classes.EstiloLink}>
+              <Link to="/" className={classes.EstiloMovil} className={classes.EstiloLink}>
                 <MenuItem onClick={plegarMenu}>Explorar servicios</MenuItem>
               </Link>
-              <Link to="/categorias-solicitados" className={tipoUsuario>=2 && classes.EstiloMovil}  className={classes.EstiloLink}>
+              <Link to="/categorias-solicitados" className={tipoUsuario>=2?classes.EstiloMovil:classes.EstiloVacio}  className={classes.EstiloLink}>
                 <MenuItem onClick={plegarMenu}>Servicios solicitados</MenuItem>
               </Link>
 
               {/*Usuario*/}
               <div hidden={tipoUsuario<1 || tipoUsuario>2}>
-                <Link to="/solicitar-servicio" className={tipoUsuario===1 && classes.EstiloMovil} className={classes.EstiloLink}>
+                <Link to="/solicitar-servicio" className={tipoUsuario===1?classes.EstiloMovil:classes.EstiloVacio} className={classes.EstiloLink}>
                   <MenuItem onClick={plegarMenu}>Solicitar servicio</MenuItem>
                 </Link>
-                <Link to="/mis-servicios-solicitados" className={tipoUsuario===1 && classes.EstiloMovil} className={classes.EstiloLink}>
+                <Link to="/mis-servicios-solicitados" className={tipoUsuario===1?classes.EstiloMovil:classes.EstiloVacio} className={classes.EstiloLink}>
                   <MenuItem onClick={plegarMenu}>Mis servicios solicitados</MenuItem>
                 </Link>
               </div>

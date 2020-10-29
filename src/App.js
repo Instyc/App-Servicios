@@ -4,7 +4,7 @@ import './App.css';
 import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 
 //Material-UI
-import {CssBaseline, Container, Button} from '@material-ui/core/';
+import {CssBaseline, Container} from '@material-ui/core/';
 
 //Componentes de vistas
 import Nav from './componentes/Nav.js';
@@ -61,14 +61,14 @@ function App() {
                   <Route path="/modificar-publicacion"><CrearPublicacion modificar={true} tipoPublicacion={true}/></Route>
                   <Route path="/modificar-solicitud-servicio"><CrearPublicacion modificar={true} tipoPublicacion={false}/></Route>
                   
-                  <Route path="/publicaciones"> <Categoria tipoPublicacion={true}/></Route>
+                  <Route path="/publicaciones/:id"> <Categoria tipoPublicacion={true}/></Route>
 
-                  <Route path="/servicios-solicitados"><Categoria tipoPublicacion={false}/></Route>
+                  <Route path="/servicios-solicitados/:id"><Categoria tipoPublicacion={false}/></Route>
                   <Route path="/categorias-solicitados"><Inicio tipo={false}/></Route>
                   
                   <Route path="/registrar"><RegistrarSesion registrar={true}/></Route>
                   <Route path="/modificar-usuario"><RegistrarSesion registrar={false}/></Route>
-                  <Route path="/publicacion"><Publicacion/></Route>
+                  <Route path="/publicacion/:id"><Publicacion/></Route>
                   <Route path="/mis-publicaciones"><MisPublicaciones tipoPublicacion={true}/></Route>
                   <Route path="/mis-servicios-solicitados"><MisPublicaciones tipoPublicacion={false}/></Route>
                   <Route path="/modificar-proveedor"><ModificarPerfilProveedor/></Route>

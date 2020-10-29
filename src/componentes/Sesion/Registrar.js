@@ -2,7 +2,7 @@ import React,{useState, useEffect, useContext} from 'react';
 import {useHistory } from 'react-router-dom'
 
 //Material UI
-import {LinearProgress, FormControl ,Typography, TextField, Button, Divider, Link, Paper, Grid, Checkbox, FormControlLabel, Hidden} from '@material-ui/core/';
+import {LinearProgress, Typography, TextField, Button, Divider, Paper, Grid, Checkbox, FormControlLabel, Hidden} from '@material-ui/core/';
 
 //Libreria para consultar la API del servidor
 import axios from 'axios';
@@ -29,7 +29,6 @@ export default function Registrar({registrar}){
     const [ImagenDNI, setImagenDNI] = useState([])
 
     const funcionSetImagen = (file, cantidad, tipo) =>{
-        console.log("Imagen de modificar: ",file, tipo, cantidad)
         //Si es 0, entonces se agrega la imagen a su respectiva variable, si es 1 entonces se desea eliminar
         if(tipo===0){
             if(cantidad===2){
@@ -47,10 +46,6 @@ export default function Registrar({registrar}){
             }
         }
     }
-    
-    useEffect(()=>{
-        console.log("se ha modificado alguna imagen de usuario", ImagenDNI, ImagenPerfil)
-    },[ImagenDNI, ImagenPerfil])
 
     const [datos, setdatos] = useState({
         nombre:"",
@@ -68,21 +63,23 @@ export default function Registrar({registrar}){
     const [soyProveedor, setSoyProveedor] = useState(false);
 
     useEffect(()=>{
-        if(!registrar){            
-            setdatos({
-                nombre: state.datosSesion.nombre,
-                apellido: state.datosSesion.apellido,
-                email: state.datosSesion.email,
-                usuario: state.datosSesion.username,
-                telefono: state.datosSesion.telefono,
-                contrasena: "",
-                contrasena_rep: "",
-                dni: state.datosSesion.dni,
-                descripcion: state.datosSesion.descripcion,
-                tipo: state.datosSesion.tipo
-            })
+        if(state.jwt!=="" || state.publico===true){
+            if(!registrar){            
+                setdatos({
+                    nombre: state.datosSesion.nombre,
+                    apellido: state.datosSesion.apellido,
+                    email: state.datosSesion.email,
+                    usuario: state.datosSesion.username,
+                    telefono: state.datosSesion.telefono,
+                    contrasena: "",
+                    contrasena_rep: "",
+                    dni: state.datosSesion.dni,
+                    descripcion: state.datosSesion.descripcion,
+                    tipo: state.datosSesion.tipo
+                })
+            }
         }
-    },[])
+    },[state.jwt, state.publico])
 
     const cambiarInput = (e) =>{
         if(mensaje!=="")
@@ -128,7 +125,7 @@ export default function Registrar({registrar}){
             .then(response => {
                 setcargando(false)
 
-                console.log("log de registrar xd:", response.data)                
+                console.log("Usuario: ", response.data)                
                 dispatch({type:"setDatos", value: response.data})
 
                 //history.push("/")
@@ -140,15 +137,13 @@ export default function Registrar({registrar}){
     },[retorno])
 
     useEffect(()=>{
-        console.log("Se ejecuta por cambio de jwt", ImagenPerfil, ImagenDNI)
-        console.log(state.jwt)
         if(state.jwt!==""){
             let mandar = [...ImagenPerfil, ...ImagenDNI] 
 
             if((ImagenDNI.length+ImagenPerfil.length)!==0){
                 subirImagen(mandar)
             }else{
-                let auth = 'Bearer '+state.jwt;
+                //let auth = 'Bearer '+state.jwt;
                 
                 /*if(state.datosSesion.img_perfil!==null){
                     axios.delete(state.servidor+"/upload/files/"+state.datosSesion.img_perfil,
@@ -316,7 +311,7 @@ export default function Registrar({registrar}){
                     alert("Sus datos se han modificado correctamente!")
 
                     setcargando(false)
-                    //history.push("/")
+                    history.push("/")
                 })
                 .catch(error => {
                     let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
