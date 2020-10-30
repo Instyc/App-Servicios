@@ -4,6 +4,8 @@ import {Card, Hidden, Typography, Chip, Button, Grid, Tooltip, IconButton } from
 import Editar from '@material-ui/icons/Edit';
 import Pausa from '@material-ui/icons/Pause';
 import Eliminar from '@material-ui/icons/DeleteForever';
+import Alerta from '@material-ui/lab/Alert';
+import Verificado from '@material-ui/icons/CheckCircleOutline';
 
 import Estrellas from '../Estrellas.js';
 import Estilos from '../Estilos';
@@ -11,6 +13,7 @@ import {BotonContratar} from '../ContactarProveedor.js'
 
 import {Link} from "react-router-dom";
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
+import AlertaMensaje from '../AlertaMensaje.js';
 
 export default function FilaPublicacion({tipoPublicacion, datos, contactar}) {
   const classes = Estilos();
@@ -22,10 +25,12 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar}) {
     titulo: "",
     descripcion: "",
     precio_estimado: 0,
-    imagenes: [],
+    imagenes: [{formats:null}],
     servicio: "",
     estrellas:0,
-    Usuario_id: null
+    Usuario_id: {nombre:"", apellido: ""},
+    Servicio_id: {nombre:""},
+    pausado: false
   });
   
 
@@ -35,47 +40,58 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar}) {
       setPrecioPresupuesto("Precio estimado");
     }else{
       setPrecioPresupuesto("Presupuesto");
-    }   
+    }
   },[])
 
   useEffect(()=>{
     if(datos)
       setdatosPagina(datos)
-    let x = datos.Usuario_id===state.datosSesion.id
+    let x = datos.Usuario_id.id===state.datosSesion.id
     setnoMostrar(!x)
+    console.log(datos)
   },[datos])
 
   return (
     <Card className={classes.filaPublicacion}>
-      <Grid container spacing={1} justify="center"> 
-          <Grid container spacing={1} justify="center" alignItems="center"> 
+      <Grid container spacing={1} justify="center">
+          {
+            datosPagina.pausado && (<Alerta className={classes.inputAncho} style={{marginBottom:"10px"}} variant="outlined" severity="warning">
+              Esta publicación se encuentra pausada.
+            </Alerta>)
+          }
+          <Grid container spacing={1} justify="center" alignItems="center">
             <Grid item xs={12} md={3} sm={12} align="center">
               <img 
                 className={classes.imagenPublicacion}
-                src={datosPagina.imagenes.length!==0?state.servidor+datosPagina.imagenes[0].formats.thumbnail.url:""}
+                src={datosPagina.imagenes[0].formats!==null?state.servidor+datosPagina.imagenes[0].formats.thumbnail.url:state.servidor+datosPagina.imagenes[0].url}
                 alt="1° imagen"
               />
             </Grid>
             <Grid item xs={12} md={9} sm={12}>  
-                      
-                <Typography align="left" component="h5" variant="h5">
-                    {datosPagina.titulo}
-                  <Hidden xlDown={noMostrar}>  
-                    <Link to={tipoPublicacion?"/modificar-publicacion":"/modificar-solicitud-servicio"}>
-                      <Tooltip title="Editar publicación">
-                        <IconButton><Editar color="primary" /></IconButton>
-                      </Tooltip>
-                    </Link>
-                    <Tooltip title="Pausar publicación">
-                      <IconButton><Pausa color="primary" /></IconButton>
+              <Typography align="left" component="h5" variant="h5">
+                {`${datosPagina.Usuario_id.nombre} ${datosPagina.Usuario_id.apellido}`}
+                <Hidden xlDown={!datosPagina.Usuario_id.identidad_verificada}><Tooltip title="Usuario verificado">
+                  <IconButton style={{padding: 1}}><Verificado color="primary"/></IconButton>
+                </Tooltip></Hidden>
+              </Typography>
+
+              <Typography align="left" component="h5" variant="h5">
+                  {datosPagina.titulo}
+                <Hidden xlDown={noMostrar}>  
+                  <Link to={tipoPublicacion?"/modificar-publicacion":"/modificar-solicitud-servicio"}>
+                    <Tooltip title="Editar publicación">
+                      <IconButton><Editar color="primary" /></IconButton>
                     </Tooltip>
-                    <Tooltip title="Eliminar publicación">
-                      <IconButton><Eliminar color="secondary" /></IconButton>
-                    </Tooltip>
-                  </Hidden>  
-                </Typography>
-              
-              <div style={{overflow: "auto", textOverflow: "ellipsis", width: '100%', height:100, textJustify:"auto"}}> 
+                  </Link>
+                  <Tooltip title="Pausar publicación">
+                    <IconButton><Pausa color="primary" /></IconButton>
+                  </Tooltip>
+                  <Tooltip title="Eliminar publicación">
+                    <IconButton><Eliminar color="secondary" /></IconButton>
+                  </Tooltip>
+                </Hidden>  
+              </Typography>
+              <div style={{overflow: "auto", textOverflow: "ellipsis", textJustify:"auto"}}> 
                 <Typography>
                   {datosPagina.descripcion}
                 </Typography>
@@ -89,7 +105,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar}) {
             </Typography>
           </Grid>  
           <Grid item xs={4} sm={6} md={6} lg={3} align="center">
-            <Chip clickable variant="outlined" label={datosPagina.nombreServicio}/>
+            <Chip clickable variant="outlined" label={datosPagina.Servicio_id.nombre}/>
           </Grid>
 
           <Grid item xs={12} sm={6} md={6} lg={3} align="center">

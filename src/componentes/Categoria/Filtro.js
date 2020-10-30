@@ -13,7 +13,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 
 import Estilos from '../Estilos.js'
 
-export default function Filtro({servicios, agregarSeleccionado, buscarServicios}) {
+export default function Filtro({servicios, agregarSeleccionado, buscarServicios, inputBusqueda, setinputBusqueda}) {
   const classes = Estilos();
 
   return (
@@ -22,7 +22,6 @@ export default function Filtro({servicios, agregarSeleccionado, buscarServicios}
         <Typography variant="h5" component="h2">
           Seleccione los filtros deseados
         </Typography>
-
         <Grid container className={classes.margenArriba} spacing={2} justify="space-around" alignItems="center">    
           {
             servicios.map((servicio,i) => (
@@ -32,10 +31,13 @@ export default function Filtro({servicios, agregarSeleccionado, buscarServicios}
             ))
           }
         </Grid>
-        
-        <form className={classes.margenArriba} noValidate autoComplete="off">
-          <TextField id="outlined-basic" label="Buscar por nombre" variant="outlined" size="medium" fullWidth />
-        </form>
+        <TextField
+        className={classes.margenArriba}
+        value={inputBusqueda}
+        onChange={(e)=>{setinputBusqueda(e.target.value)}}
+        onKeyDown={(e)=>{if(e.key==='Enter'){buscarServicios()}}}
+        label="Buscar por nombre" variant="outlined"
+        size="medium" fullWidth/>
         <Button onClick={buscarServicios} className={classes.margenArriba} color="secondary" variant="contained" >Buscar</Button>
       </CardContent>
     </Card>

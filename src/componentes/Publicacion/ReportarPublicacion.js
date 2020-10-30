@@ -1,24 +1,20 @@
-import React from 'react';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
+import React, {useEffect, useState, useContext} from 'react'
+import axios from 'axios'
+
+//Material UI
+import {Tooltip, FormGroup, FormControlLabel, Checkbox, Modal, Backdrop, Fade, Typography, TextField, Button, Divider} from '@material-ui/core/';
 import Reportar from '@material-ui/icons/PriorityHigh';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
-import Tooltip from '@material-ui/core/Tooltip';
-import AlertaMensaje from '../AlertaMensaje.js';
-
 import Estilos from '../Estilos.js';
-import { Input } from '@material-ui/core';
 
-export default function ReportarPublicacion({esDePerfil}) {
+import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
+
+export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}) {
   const classes = Estilos();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [motivos, setmotivos] = useState([{id: null, nombre: "",tipo: false}])
+  const [motivosSeleccionados, setmotivosSeleccionados] = useState([])
+  const [descripcion, setdescripcion] = useState("")
+  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
 
   const handleOpen = () => {
     setOpen(true);
@@ -28,6 +24,69 @@ export default function ReportarPublicacion({esDePerfil}) {
     setOpen(false);
   };
 
+  useEffect(()=>{
+    if(state.jwt!=="" || state.publico===true){
+      axios.get(state.servidor+"/api/motivos?tipo="+esDePerfil)
+      .then(response => {
+        setmotivos(response.data)
+      })
+      .catch(error => {
+      alert("Un error ha ocurrido al cargar las motivos.")
+        console.log(error.response)
+      })
+    }
+  },[state.jwt, state.publico])
+
+  useEffect(()=>{
+    console.log(solicitud)
+  },[solicitud])
+
+
+  function seleccionarMotivo(idMotivo){
+    let esta = motivosSeleccionados.some((motivo) => motivo===idMotivo)
+
+    if(!esta){
+      setmotivosSeleccionados((arreglo)=>[...arreglo, idMotivo])
+    }else{
+      setmotivosSeleccionados(motivosSeleccionados.filter((motivo)=>motivo!==idMotivo))
+    }
+  }
+
+  function EnviarReporte(){
+    console.log(motivosSeleccionados)
+    let auth = 'Bearer '+state.jwt;
+    
+
+
+    if(motivosSeleccionados.length!==0)
+      axios.post(state.servidor+"/api/reportes",{
+        motivos: motivosSeleccionados,
+        Solicitud_id: solicitud.id,
+        Usuario_id: solicitud.Usuario_id.id,
+        accion: false,
+        estado: 0,
+        descripcion: descripcion
+      },{
+        headers: {
+            'Authorization': auth
+        },
+      })
+      .then(response => {
+        console.log(response.data)
+        handleClose()
+      })
+      .catch(error => {
+      alert("Un error ha ocurrido al cargar las motivos.")
+        console.log(error.response)
+      })
+    else
+      console.log("no se hace el post de reporte")
+  }
+
+  useEffect(()=>{
+    console.log(motivosSeleccionados)
+  },[motivosSeleccionados])
+  
   return (
     <div>
       <Tooltip title={esDePerfil?"Reportar proveedor de servicios":"Reportar publicación"}>
@@ -36,14 +95,13 @@ export default function ReportarPublicacion({esDePerfil}) {
         ><Reportar/>
         </Button>
       </Tooltip>
-            
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.mostrarFlex}
         open={open}
         onClose={handleClose}
-        closeAfterTransition
+        closeAfterTransition={true}
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
@@ -55,35 +113,24 @@ export default function ReportarPublicacion({esDePerfil}) {
                 Seleccione los motivos:
             </Typography>
             <FormGroup>
-            <FormControlLabel
-                control={
-                <Checkbox
-                    color="primary"
+            {
+              motivos.map((motivo,i)=>(
+                <FormControlLabel
+                  key={i}
+                  control={
+                  <Checkbox
+                    variant="error"
+                    onChange={()=>{seleccionarMotivo(motivo.id)}}
+                  />
+                  }
+                  label={motivo.nombre}
                 />
-                }
-                label="Motivo 1"
-            />
-            <FormControlLabel
-                control={
-                <Checkbox
-                    color="primary"
-                />
-                }
-                label="Motivo 2"
-            />
-            <FormControlLabel
-                control={
-                <Checkbox
-                    color="primary"
-                />
-                }
-                label="Motivo 3"
-            />
+              ))
+            }
             </FormGroup>
-            
-            <TextField className={classes.inputAncho} id="filled-basic" label="Informacion adicional" variant="filled" multiline/>
 
-            <AlertaMensaje mensaje="¡Reporte enviado!"/>   
+            <TextField className={classes.inputAncho} onChange={(e)=>{setdescripcion(e.target.value)}} value={descripcion} id="filled-basic" label="Informacion adicional" variant="filled" multiline/>
+            <Button className={classes.inputAncho} style={{marginTop:10}} size="large" variant="contained" color="primary" onClick={EnviarReporte}>Enviar</Button>
           </div>
         </Fade>
       </Modal>

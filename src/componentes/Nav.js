@@ -6,6 +6,7 @@ import {AccountCircle} from '@material-ui/icons/';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import PriorityHighIcon from '@material-ui/icons/PriorityHigh';
+import {useHistory} from 'react-router-dom'
 //Importamos componentes (Logica)
 import Inicio from "./Inicio/Inicio.js";
 import Publicacion from "./Publicacion/Publicacion.js";
@@ -18,6 +19,7 @@ import { ObtenerEstadoAplicacion } from '../Estados/AplicacionEstado'
 export default function PrimarySearchAppBar() {
   const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
   const classes = Estilos();
+  let history = useHistory();
   
   //Código de guardado del estado de la sesión
   React.useEffect(()=>{
@@ -70,9 +72,11 @@ export default function PrimarySearchAppBar() {
       username: "",
       identidad_verificada: false
     }});
+    
     dispatch({type:"setJwt", value: ""});
-
+    dispatch({type:"setPublico", value: true});
     localStorage.setItem('datosLocal', JSON.stringify(null));
+    history.push("/")
   };
 
   const desplegarPerfil = (event) => {

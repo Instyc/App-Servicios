@@ -10,6 +10,7 @@ import PublicacionInfo from './PublicacionInfo.js';
 import Opiniones from './Opiniones.js';
 import Estilos from '../Estilos.js';
 import {BotonContratar} from '../ContactarProveedor.js'
+import AlertaMensaje from '../AlertaMensaje.js';
 
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 import Categoria from '../Categoria/Categoria.js';
@@ -17,8 +18,8 @@ export default function Publicacion() {
     const classes = Estilos();
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
     let { id } = useParams();
-
     const [datosPerfil, setdatosPerfil] = useState({
+        id: null,
         descripcion:"",
         nombre:"",
         apellido:"",
@@ -28,12 +29,14 @@ export default function Publicacion() {
         servicios: []
     })
     const [datosPagina, setdatosPagina] = useState({
+        id: null,
         descripcion:"",
         titulo:"",
         precio_estimado: 0,
         tipo: false,
         pausado: false,
-        imagenes: []
+        imagenes: [],
+        Usuario_id: null
     })
 
     useEffect(()=>{
@@ -51,6 +54,7 @@ export default function Publicacion() {
 
     function obtenerUsuario(data){
         setdatosPagina({
+            id: data.id,
             titulo: data.titulo,
             descripcion: data.descripcion,
             precio_estimado: data.precio_estimado,
@@ -58,7 +62,8 @@ export default function Publicacion() {
             pausado: data.pausado,
             imagenes: data.imagenes,
             categoria: data.Categoria_id.nombre,
-            servicio: data.Servicio_id.nombre
+            servicio: data.Servicio_id.nombre,
+            Usuario_id: data.Usuario_id
         })
 
         let auth = state.jwt!==""?'Bearer '+state.jwt:"";
@@ -88,6 +93,7 @@ export default function Publicacion() {
 
     return (
         <div>
+            
             <Grid container direction="row" justify="center" alignItems="stretch">
                 <Grid item md={8} xs={12}>
                   <PublicacionInfo esDePerfil={false} datosPagina={datosPagina}/>
@@ -101,7 +107,7 @@ export default function Publicacion() {
                         </Grid> 
                     )
                 } 
-                <BotonContratar fijo={true} esDePerfil={false}/> 
+                <BotonContratar fijo={true} esDePerfil={false}/>
             </Grid>
         </div>
     )

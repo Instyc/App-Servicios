@@ -32,9 +32,7 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
   if (state.jwt!=="" || state.publico===true)
     if(datosPerfil!==null){
       setDatosPerfil(datosPerfil)
-      console.log("datos perfil", datosPerfil)
       buscarCategorias(datosPerfil)
-      
     }
   },[datosPerfil])
 

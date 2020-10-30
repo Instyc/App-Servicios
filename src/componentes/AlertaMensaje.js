@@ -9,26 +9,20 @@ import Button from '@material-ui/core/Button';
 function Alerta(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
-export default function AlertaMensaje({mensaje}) {
+export default function AlertaMensaje({mensaje, openModal}) {
     const classes = Estilos();
-    const [open, setOpen] = React.useState(false);
-
-    const handleClick = () => {
-        setOpen(true);
-    };
+    const [open, setOpen] = React.useState(openModal);
     
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
-    }
-    
+        }
         setOpen(false);
-      };
+    };
+    
     return (
        <div>
            <Grid container>
-                <Button className={classes.inputAncho} style={{marginTop:10}} size="large" variant="contained" color="primary" onClick={handleClick}>Enviar</Button>
-
                 <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
                     <Alerta onClose={handleClose} severity="success">
                         {mensaje}
