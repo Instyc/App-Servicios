@@ -58,8 +58,8 @@ function App() {
                   
                   <Route path="/crear-publicacion"><CrearPublicacion modificar={false} tipoPublicacion={true}/></Route>
                   <Route path="/solicitar-servicio"><CrearPublicacion modificar={false} tipoPublicacion={false}/></Route>
-                  <Route path="/modificar-publicacion"><CrearPublicacion modificar={true} tipoPublicacion={true}/></Route>
-                  <Route path="/modificar-solicitud-servicio"><CrearPublicacion modificar={true} tipoPublicacion={false}/></Route>
+                  <Route path="/modificar-publicacion/:id"><CrearPublicacion modificar={true} tipoPublicacion={true}/></Route>
+                  <Route path="/modificar-solicitud-servicio/:id"><CrearPublicacion modificar={true} tipoPublicacion={false}/></Route>
                   
                   <Route path="/publicaciones/:id"> <Categoria tipoPublicacion={true}/></Route>
 

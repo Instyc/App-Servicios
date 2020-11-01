@@ -1,18 +1,11 @@
 import React,{useState, useEffect, useContext} from 'react';
 import axios from 'axios'
+import {useHistory } from 'react-router-dom'
 
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-//import {useDropzone} from 'react-dropzone';
-import ImageGallery from 'react-image-gallery';
+import {Typography, TextField, FormControl, Button, Paper, Grid, Select, MenuItem, InputLabel, Hidden} from '@material-ui/core';
 import SubirImagenes from '../SubirImagen.js';
-import InputLabel from '@material-ui/core/InputLabel';
+import {useParams} from 'react-router-dom'
+import Cargando from '@material-ui/core/LinearProgress';
 
 import Estilos from '../Estilos.js';
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
@@ -20,20 +13,22 @@ import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 export default function CrearPublicacion({tipoPublicacion, modificar}) {
     const classes = Estilos();
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
-
+    let { id } = useParams();
+    let history = useHistory();
     const [precioPresupuesto, setPrecioPresupuesto] = useState("");
     const [titulo, setTitulo] = useState("");
     const [categorias, setcategorias] = useState([]);
     const [servicios, setservicios] = useState([]);
     const [cargando, setcargando] = useState(false);
     const [imagenes, setimagenes] = useState([]);
+    const [imagenesSubidas, setimagenesSubidas] = useState([]);
 
     //Datos de la pagina
     const [datosPagina, setdatosPagina] = useState({
         titulo:"",
-        precio_estimado:"",
-        categoria: "",
-        servicio: "",
+        precio_estimado: "",
+        Categoria_id: {nombre: ""},
+        Servicio_id: {nombre:""},
         descripcion:"",
         imagenes:[],
         pausado: false,
@@ -49,39 +44,58 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
             setTitulo(modificar?"Modificar solicitud de servicio":"Solicitar servicio");
             setPrecioPresupuesto("Presupuesto");
         }
-
-        if(modificar){
-            setdatosPagina({
-                titulo:"Mesas",
-                precio:"$300",
-                categoria:"Plomería",
-                servicio:"Destapar cloaca",
-                descripcion:"Mesas de algarrobo",
-                imagenes:[""]
+        if (state.jwt!=="" || state.publico===true){
+            setcargando(true)
+            axios.get(state.servidor+"/api/categorias")
+            .then(response => {
+                setcategorias(response.data)
+                setcargando(false)
+            })
+            .catch(error => {
+            alert("Un error ha ocurrido al cargar las categorías.")
+            console.log(error.response)
             })
         }
+    },[state.jwt, state.publico, tipoPublicacion, modificar])
 
-        axios.get(state.servidor+"/api/categorias")
-        .then(response => {
-            setcategorias(response.data)
-            setcargando(false)
-        console.log("Categorias:",response.data)
-        })
-        .catch(error => {
-        alert("Un error ha ocurrido al cargar las categorías.")
-        console.log(error.response)
-        }) 
-    },[])
+    useEffect(()=>{
+        if(modificar && categorias.length!==0){
+            setcargando(true)
+            axios.get(state.servidor+"/api/solicitud/"+id)
+            .then(response => {             
+                if (state.datosSesion.id===response.data.Usuario_id.id){
+                    response.data["imagenes"] = response.data.imagenes.map((imagen)=>(imagen.id))
+                    console.log(response.data)
 
+                    setdatosPagina(response.data)
+                    if (tipoPublicacion)
+                        categorias.map(cat =>{
+                            if(cat.id===response.data.Servicio_id.categoria){
+                                setservicios(cat.servicios)
+                            }
+                        })
+                }else{
+                    history.push("/")
+                }
+                setcargando(false)
+            })
+            .catch(error => {
+                alert("Un error ha ocurrido al cargar la solicitud.")
+                console.log(error.response)
+            })
+        }
+    },[categorias])
+    
+    //Funcion para captar los cambios en los inputs 
     function modificarInput(e){
         setdatosPagina({
             ...datosPagina,
             [e.target.name]: e.target.value
-        })  
-        console.log(datosPagina)
+        })
     }
     
-    const funcionSetImagen = (file, cantidad, tipo) =>{
+    const funcionSetImagen = (file, cantidad, tipo, subidas) =>{
+        console.log(subidas)
         //Si es 0, entonces se agrega la imagen a su respectiva variable, si es 1 entonces se desea eliminar
         if(tipo===0){
             setimagenes([...imagenes, file])
@@ -89,23 +103,35 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
             let aux = imagenes.filter(f => f !== file)
             setimagenes(aux)
         }
+        
+        setimagenesSubidas(subidas)
     }
-    useEffect(()=>{console.log(imagenes)},[imagenes])
 
     const guardarDatos = (e) => {
         e.preventDefault()
-
+        setcargando(true)
         const formData = new FormData()
 
-        for(let i =0; i<imagenes.length; i++){
+        console.log(imagenes)
+        console.log(imagenesSubidas)
+        let archivosPosta = imagenes.map((imagen) => {
+            imagenesSubidas.map(subida => {
+                if(subida !== imagen){
+                    return imagen
+                }
+            })
+        })
+        console.log(archivosPosta)
+
+        for(let i = 0; i<imagenes.length; i++){
             formData.append('files.imagenes', imagenes[i])
         }
         formData.append('data', JSON.stringify({
             titulo: datosPagina.titulo,
-            precio_estimado: datosPagina.precio_estimado,
+            precio_estimado: datosPagina.precio_estimado===""?0:datosPagina.precio_estimado,
             descripcion: datosPagina.descripcion,
-            Categoria_id: datosPagina.categoria.id,
-            Servicio_id: datosPagina.servicio.id,
+            Categoria_id: datosPagina.Categoria_id.id,
+            Servicio_id: datosPagina.Servicio_id.id,
             Usuario_id: state.datosSesion.id,
             pausado: false,
             bloqueado: false,
@@ -114,33 +140,66 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
 
         let auth = 'Bearer '+state.jwt;
 
-        axios.post(
-            state.servidor+"/api/solicitud",
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': auth
+        if (!modificar){
+            axios.post(
+                state.servidor+"/api/solicitud",
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': auth
+                    },
+            })
+            .then(response => {
+                console.log("Respuesta subir solicitud: ",response.data)
+                setcargando(false)
+                history.push("/")
+            })
+            .catch(error => {
+                console.log("Error, no se ha podido crear la solicitud.", error.response)
+            })
+        }else{
+            axios.put(
+                state.servidor+"/api/solicitud/"+id,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': auth
                 },
-        })
-        .then(response => {
-            console.log("Respuesta subir solicitud: ",response.data)
-        })
-        .catch(error => {
-            console.log("Error, no se ha podido crear la solicitud.", error.response)
-        })
-        
+            })
+            .then(response => {
+                console.log("Respuesta modificar solicitud: ",response.data)
+                setcargando(false)
+                history.push("/")
+            })
+            .catch(error => {
+                console.log("Error, no se ha podido modificar la solicitud.", error.response)
+            })
+        }
     }
     function seleccionarCategoria(e){
-        setservicios(e.target.value.servicios)
-
+        let categoriaSeleccionada = categorias.filter((cat) => cat.nombre === e.target.value)
+        setservicios(categoriaSeleccionada[0].servicios)
         setdatosPagina({
             ...datosPagina,
-            categoria: e.target.value,
-            servicio:""
+            Categoria_id: categoriaSeleccionada[0],
+            Servicio_id: {nombre:""}
         })
     }
-
+    function seleccionarServicio(e){
+        let servicioSeleccionado
+        categorias.map((cat) =>{
+            if(cat.nombre===datosPagina.Categoria_id.nombre){
+                servicioSeleccionado = cat.servicios.filter((serv) => serv.nombre === e.target.value)
+            }
+        })
+        console.log(servicioSeleccionado[0])
+        setdatosPagina({
+            ...datosPagina,
+            Servicio_id: servicioSeleccionado[0]   
+        })
+    }
 
     return (
     <div className={classes.fondo} >
@@ -180,39 +239,47 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
 
                         <Grid item sm={6} xs={12}>
                             <FormControl className={classes.inputAncho}>
-                                <InputLabel id="filled-basic"  variant="filled">Categoría</InputLabel>
-                                <Select value={datosPagina.categoria} name="categoria" onChange={seleccionarCategoria} id="filled-basic" label="Categoría" variant="filled" required>
+                                <InputLabel id="Categoria_id" variant="filled">Categoría</InputLabel>
+                                <Select
+                                    value={datosPagina.Categoria_id.nombre}
+                                    name="Categoria_id"
+                                    onChange={seleccionarCategoria}
+                                    id="Categoria_id"
+                                    labelId="Categoria_id"
+                                    variant="filled"
+                                    label="Categoría"
+                                    required>
                                     {
                                         categorias.map((categoria, i)=>(
-                                            <MenuItem key={i} value={categoria}>{categoria.nombre}</MenuItem>
+                                            <MenuItem key={i} value={categoria.nombre}>{categoria.nombre}</MenuItem>
                                         ))
                                     }
                                 </Select>
                             </FormControl>
                         </Grid>
-
-                        <Grid item sm={6} xs={12}>
-                            <FormControl className={classes.inputAncho}>
-                                <InputLabel id="filled-basic" variant="filled">Servicio</InputLabel>
-                                <Select 
-                                    value={datosPagina.servicio}
-                                    name="servicio" 
-                                    onChange={
-                                        (e)=>{setdatosPagina({
-                                            ...datosPagina,
-                                            [e.target.name]: e.target.value    
-                                        })
-                                        console.log(e.target.value)
-                                    }} 
-                                    label="Servicio" variant="filled" required>
-                                    {
-                                        servicios.map((servicio, i)=>(
-                                            <MenuItem key={i} value={servicio}>{servicio.nombre}</MenuItem>
-                                        ))
-                                    }   
-                                </Select>
-                            </FormControl>
-                        </Grid>
+                        
+                        <Hidden xlDown={!tipoPublicacion}>
+                            <Grid item sm={6} xs={12}>
+                                <FormControl className={classes.inputAncho}>
+                                    <InputLabel id="Servicio_id" variant="filled">Servicio</InputLabel>
+                                    <Select 
+                                        value={datosPagina.Servicio_id.nombre}
+                                        name="Servicio_id"
+                                        id="Servicio_id"
+                                        labelId="Servicio_id"
+                                        onChange={seleccionarServicio} 
+                                        label="Servicio"
+                                        variant="filled"
+                                        required>
+                                        {
+                                            servicios.map((servicio, i)=>(
+                                                <MenuItem key={i} value={servicio.nombre}>{servicio.nombre}</MenuItem>
+                                            ))
+                                        }   
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </Hidden>
 
                         <Grid item xs={12}>
                             <TextField
@@ -227,14 +294,18 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                         </Grid>
 
                         <Grid item xs={12} className={classes.inputAncho}>
-                            <SubirImagenes cantidad={10} funcionSetImagen={funcionSetImagen} ids={[]}/>
+                            <SubirImagenes cantidad={10} funcionSetImagen={funcionSetImagen} ids={datosPagina.imagenes}/>
+                        </Grid>
+                        
+                        <Grid item xs={12} className={classes.inputAncho}>
+                            {cargando && <Cargando/>}
                         </Grid>
 
                         <Grid item xs={6} align="center">
-                            <Button className={classes.botones} type="submit" size="large" variant="contained" color="primary">Guardar</Button>
+                            <Button className={classes.botones}  type="submit" size="large" variant="contained" color="primary">Guardar</Button>
                         </Grid>
                         <Grid item xs={6} align="center">
-                            <Button className={classes.botones} size="large" variant="contained" color="secondary">Cancelar</Button>
+                            <Button disabled={cargando} className={classes.botones} size="large" variant="contained" color="secondary">Cancelar</Button>
                         </Grid>
                     </Grid>
                 </FormControl>

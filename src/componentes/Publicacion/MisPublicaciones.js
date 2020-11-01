@@ -24,14 +24,15 @@ export default function MisPublicaciones({tipoPublicacion}) {
         setTituloPagina("Mis servicios solicitados");
       }
       if(state.jwt!=="" || state.publico===true){
+          console.log(state.servidor+"/api/solicitud?Usuario_id="+state.datosSesion.id+"&tipo="+tipoPublicacion)
           axios.get(state.servidor+"/api/solicitud?Usuario_id="+state.datosSesion.id+"&tipo="+tipoPublicacion)
           .then(response => {
             setsolicitudes(response.data)
             setcargando(false)
           })
           .catch(error => {
-          alert("Un error ha ocurrido al cargar las categorías.")
-          console.log(error.response)
+            alert("Un error ha ocurrido al cargar las solicitudes.")
+            console.log(error.response)
           }) 
       }
     },[state.jwt, state.publico, tipoPublicacion])    

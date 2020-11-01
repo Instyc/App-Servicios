@@ -12,6 +12,7 @@ const SingleFileAutoSubmit = ({cantidad, funcionSetImagen, ids}) => {
       setTimeout(() => { el.className = el.className.replace('show', '') }, 3000)
     }
     const [archivos, setarchivos] = useState([])
+    const [archivosSubidos, setarchivosSubidos] = useState([])
 
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
     useEffect(()=>{
@@ -30,25 +31,28 @@ const SingleFileAutoSubmit = ({cantidad, funcionSetImagen, ids}) => {
           })  
           .catch(error => {
               //let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
-              console.log("Error: ", error)
+              console.log("Error: ", error.response)
           })
         }
-    },[])
+    },[ids])
     
-    
+    //Se crea el archivo
     function hacerArchivo(imagenUrl) {
       let file
       fetch(imagenUrl).then(res => {
         res.arrayBuffer().then(buf => {
           file = new File([buf], 'image_data_url.jpg', { type: 'image/jpeg' })
-          setarchivos([...archivos, file])
+          setarchivos(arch => [...arch, file])
         })
       })
     }
+    useEffect(()=>{
+      console.log(archivos)
+    },[archivos])
   
     const getUploadParams = ({ file, meta }) => {
-
-      funcionSetImagen(file, cantidad, 0);
+      setarchivosSubidos([...archivosSubidos, file])
+      funcionSetImagen(file, cantidad, 0, archivosSubidos)
 
       //console.log(file)
 
@@ -74,6 +78,7 @@ const SingleFileAutoSubmit = ({cantidad, funcionSetImagen, ids}) => {
           maxFiles={cantidad}
           initialFiles={ids.length!==0?archivos:null}
           multiple={true}
+          maxSizeBytes={5000000}
           canCancel={false}
           accept="image/*"
           inputWithFilesContent={'Subir otra imagen'}

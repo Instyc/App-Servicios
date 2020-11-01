@@ -2,19 +2,23 @@ import React, {useEffect, useState, useContext} from 'react'
 import axios from 'axios'
 
 //Material UI
-import {Tooltip, FormGroup, FormControlLabel, Checkbox, Modal, Backdrop, Fade, Typography, TextField, Button, Divider} from '@material-ui/core/';
+import {CircularProgress, Tooltip, FormGroup, FormControlLabel, Checkbox, Modal, Backdrop, Fade, Typography, TextField, Button, Divider} from '@material-ui/core/';
 import Reportar from '@material-ui/icons/PriorityHigh';
 import Estilos from '../Estilos.js';
+import AlertaMensaje from '../AlertaMensaje.js';
 
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
 export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}) {
   const classes = Estilos();
+  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
   const [open, setOpen] = useState(false);
   const [motivos, setmotivos] = useState([{id: null, nombre: "",tipo: false}])
   const [motivosSeleccionados, setmotivosSeleccionados] = useState([])
   const [descripcion, setdescripcion] = useState("")
-  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+  const [abrir, setabrir] = useState(false)
+  const [cargando, setcargando] = useState(false)
+
 
   const handleOpen = () => {
     setOpen(true);
@@ -37,10 +41,6 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
     }
   },[state.jwt, state.publico])
 
-  useEffect(()=>{
-    console.log(solicitud)
-  },[solicitud])
-
 
   function seleccionarMotivo(idMotivo){
     let esta = motivosSeleccionados.some((motivo) => motivo===idMotivo)
@@ -53,10 +53,8 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
   }
 
   function EnviarReporte(){
-    console.log(motivosSeleccionados)
+    setcargando(true)
     let auth = 'Bearer '+state.jwt;
-    
-
 
     if(motivosSeleccionados.length!==0)
       axios.post(state.servidor+"/api/reportes",{
@@ -74,6 +72,10 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
       .then(response => {
         console.log(response.data)
         handleClose()
+        setabrir(true)
+        setcargando(false)
+        setmotivosSeleccionados([])
+        setdescripcion("")
       })
       .catch(error => {
       alert("Un error ha ocurrido al cargar las motivos.")
@@ -83,12 +85,10 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
       console.log("no se hace el post de reporte")
   }
 
-  useEffect(()=>{
-    console.log(motivosSeleccionados)
-  },[motivosSeleccionados])
-  
+
   return (
     <div>
+      {abrir && <AlertaMensaje mensaje="¡Se ha enviado su reporte correctamente!" abrir={abrir} setabrir={setabrir}/>}
       <Tooltip title={esDePerfil?"Reportar proveedor de servicios":"Reportar publicación"}>
         <Button
             onClick={handleOpen}
@@ -130,7 +130,8 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
             </FormGroup>
 
             <TextField className={classes.inputAncho} onChange={(e)=>{setdescripcion(e.target.value)}} value={descripcion} id="filled-basic" label="Informacion adicional" variant="filled" multiline/>
-            <Button className={classes.inputAncho} style={{marginTop:10}} size="large" variant="contained" color="primary" onClick={EnviarReporte}>Enviar</Button>
+            {cargando && <CircularProgress color="secondary"/>}
+            <Button disabled={cargando} className={classes.inputAncho} style={{marginTop:10}} size="large" variant="contained" color="primary" onClick={EnviarReporte}>Enviar</Button>
           </div>
         </Fade>
       </Modal>

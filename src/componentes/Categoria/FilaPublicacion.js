@@ -1,6 +1,6 @@
 import React,{useState, useEffect, useContext} from 'react';
 //Material-UI
-import {Card, Hidden, Typography, Chip, Button, Grid, Tooltip, IconButton } from '@material-ui/core/';
+import {Card, Hidden, Typography, Chip, Button, Grid, Tooltip, IconButton} from '@material-ui/core/';
 import Editar from '@material-ui/icons/Edit';
 import Pausa from '@material-ui/icons/Pause';
 import Eliminar from '@material-ui/icons/DeleteForever';
@@ -13,7 +13,6 @@ import {BotonContratar} from '../ContactarProveedor.js'
 
 import {Link} from "react-router-dom";
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
-import AlertaMensaje from '../AlertaMensaje.js';
 
 export default function FilaPublicacion({tipoPublicacion, datos, contactar}) {
   const classes = Estilos();
@@ -25,7 +24,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar}) {
     titulo: "",
     descripcion: "",
     precio_estimado: 0,
-    imagenes: [{formats:null}],
+    imagenes: [],
     servicio: "",
     estrellas:0,
     Usuario_id: {nombre:"", apellido: ""},
@@ -41,15 +40,17 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar}) {
     }else{
       setPrecioPresupuesto("Presupuesto");
     }
+    console.log(datos)
   },[])
 
   useEffect(()=>{
-    if(datos)
+    if(datos){
       setdatosPagina(datos)
+    }
     let x = datos.Usuario_id.id===state.datosSesion.id
     setnoMostrar(!x)
-    console.log(datos)
   },[datos])
+
 
   return (
     <Card className={classes.filaPublicacion}>
@@ -63,7 +64,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar}) {
             <Grid item xs={12} md={3} sm={12} align="center">
               <img 
                 className={classes.imagenPublicacion}
-                src={datosPagina.imagenes[0].formats!==null?state.servidor+datosPagina.imagenes[0].formats.thumbnail.url:state.servidor+datosPagina.imagenes[0].url}
+                src={datosPagina.imagenes.length!==0?state.servidor+datosPagina.imagenes[0].url:"https://i.pinimg.com/564x/2f/2e/26/2f2e2667a7116678f0e59abce4911482.jpg"}
                 alt="1° imagen"
               />
             </Grid>
@@ -78,7 +79,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar}) {
               <Typography align="left" component="h5" variant="h5">
                   {datosPagina.titulo}
                 <Hidden xlDown={noMostrar}>  
-                  <Link to={tipoPublicacion?"/modificar-publicacion":"/modificar-solicitud-servicio"}>
+                  <Link to={tipoPublicacion?"/modificar-publicacion/"+datosPagina.id:"/modificar-solicitud-servicio/"+datosPagina.id}>
                     <Tooltip title="Editar publicación">
                       <IconButton><Editar color="primary" /></IconButton>
                     </Tooltip>
@@ -104,9 +105,12 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar}) {
               {precioPresupuesto}: {datosPagina.precio_estimado}
             </Typography>
           </Grid>  
-          <Grid item xs={4} sm={6} md={6} lg={3} align="center">
-            <Chip clickable variant="outlined" label={datosPagina.Servicio_id.nombre}/>
-          </Grid>
+
+          {
+            (tipoPublicacion && datosPagina.Servicio_id!==null) && (<Grid item xs={4} sm={6} md={6} lg={3} align="center">
+            <Chip variant="outlined" label={datosPagina.Servicio_id.nombre}/>
+          </Grid>)
+          }
 
           <Grid item xs={12} sm={6} md={6} lg={3} align="center">
             <Estrellas valor={datos.estrellas} clickeable={false} cambiarValor={()=>{}}/>

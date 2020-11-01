@@ -10,10 +10,9 @@ import PublicacionInfo from './PublicacionInfo.js';
 import Opiniones from './Opiniones.js';
 import Estilos from '../Estilos.js';
 import {BotonContratar} from '../ContactarProveedor.js'
-import AlertaMensaje from '../AlertaMensaje.js';
 
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
-import Categoria from '../Categoria/Categoria.js';
+
 export default function Publicacion() {
     const classes = Estilos();
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
@@ -93,7 +92,6 @@ export default function Publicacion() {
 
     return (
         <div>
-            
             <Grid container direction="row" justify="center" alignItems="stretch">
                 <Grid item md={8} xs={12}>
                   <PublicacionInfo esDePerfil={false} datosPagina={datosPagina}/>
