@@ -13,24 +13,30 @@ import ClearIcon from '@material-ui/icons/Clear';
 
 import Estilos from '../Estilos.js'
 
-export default function Filtro({servicios, agregarSeleccionado, buscarServicios, inputBusqueda, setinputBusqueda}) {
+export default function Filtro({tipoPublicacion, servicios, agregarSeleccionado, buscarServicios, inputBusqueda, setinputBusqueda}) {
   const classes = Estilos();
 
   return (
     <Card className={classes.margenArriba} variant="outlined">
       <CardContent>
         <Typography variant="h5" component="h2">
-          Seleccione los filtros deseados
-        </Typography>
-        <Grid container className={classes.margenArriba} spacing={2} justify="space-around" alignItems="center">    
           {
-            servicios.map((servicio,i) => (
-              <Grid item xs={6} sm={4} md={3} lg={2}  key={i}>
-                <SeleccionarServicio key={i} servicio={servicio} agregarSeleccionado={agregarSeleccionado}/>
-              </Grid>
-            ))
+            tipoPublicacion?"Seleccione los filtros deseados":"Búsqueda por palabras:"
           }
-        </Grid>
+        </Typography>
+
+        {
+          tipoPublicacion &&
+          <Grid container className={classes.margenArriba} spacing={2} justify="space-around" alignItems="center">    
+            {
+              servicios.map((servicio,i) => (
+                <Grid item xs={6} sm={4} md={3} lg={2}  key={i}>
+                  <SeleccionarServicio key={i} servicio={servicio} agregarSeleccionado={agregarSeleccionado}/>
+                </Grid>
+              ))
+            }
+          </Grid>
+        }
         <TextField
         className={classes.margenArriba}
         value={inputBusqueda}

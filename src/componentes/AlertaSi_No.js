@@ -1,11 +1,15 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@material-ui/core';
+import Cargando from '@material-ui/core/LinearProgress';
 
 export default function Alerta({titulo, funcionAceptar, mensaje}) {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
+  const [cargando, setcargando] = useState(false)
   
-  const handleClose = (boole) => {
+  const handleClose = async (boole) => {
+    setcargando(true)
     funcionAceptar(boole)
+    setcargando(false)
     setOpen(false);
   };
 
@@ -30,6 +34,7 @@ export default function Alerta({titulo, funcionAceptar, mensaje}) {
           <Button onClick={()=>{handleClose(true)}} color="primary" autoFocus>
             Aceptar
           </Button>
+          {cargando && <Cargando/>}
         </DialogActions>
       </Dialog>
     </div>

@@ -37,6 +37,10 @@ export default function Categoria({tipoPublicacion}) {
             }) 
         }
 
+        buscarSolicitudes()
+    },[state.jwt, state.publico])
+
+    function buscarSolicitudes(){
         axios.get(state.servidor+"/api/solicitud?Categoria_id="+id+"&pausado=false&bloqueado=false&tipo="+tipoPublicacion)
         .then(response => {
           setsolicitudes(response.data)
@@ -46,7 +50,7 @@ export default function Categoria({tipoPublicacion}) {
             alert("Un error ha ocurrido al cargar las categorías.")
             console.log(error.response)
         })
-    },[state.jwt, state.publico])
+    }
 
     const agregarSeleccionado = (servicio) => {
         let encontrado = serviciosSeleccionados.some((elemento) => elemento===servicio);
@@ -91,7 +95,7 @@ export default function Categoria({tipoPublicacion}) {
         <div className={classes.fondo}>
             <Paper elevation={3} style={{width:950, padding: 15}}>
                 <Typography variant="h5" component="h2" align="center">{categoria.nombre}</Typography>
-                <Filtro inputBusqueda={inputBusqueda} setinputBusqueda={setinputBusqueda} servicios={servicios} agregarSeleccionado={agregarSeleccionado} buscarServicios={buscarServicios}/>
+                <Filtro tipoPublicacion={tipoPublicacion} inputBusqueda={inputBusqueda} setinputBusqueda={setinputBusqueda} servicios={servicios} agregarSeleccionado={agregarSeleccionado} buscarServicios={buscarServicios}/>
                 <br/>
                 {cargando && <Cargando/>}
                 {
@@ -101,7 +105,7 @@ export default function Categoria({tipoPublicacion}) {
                 }
                 {
                     solicitudes.map((solicitud, i)=>(
-                        <FilaPublicacion key={i} datos={solicitud} tipoPublicacion={tipoPublicacion} contactar={true}/>
+                        <FilaPublicacion key={i} buscarSolicitudes={buscarSolicitudes} datos={solicitud} tipoPublicacion={tipoPublicacion} contactar={true}/>
                     ))
                 }
             </Paper>

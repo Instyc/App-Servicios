@@ -24,18 +24,21 @@ export default function MisPublicaciones({tipoPublicacion}) {
         setTituloPagina("Mis servicios solicitados");
       }
       if(state.jwt!=="" || state.publico===true){
-          console.log(state.servidor+"/api/solicitud?Usuario_id="+state.datosSesion.id+"&tipo="+tipoPublicacion)
-          axios.get(state.servidor+"/api/solicitud?Usuario_id="+state.datosSesion.id+"&tipo="+tipoPublicacion)
-          .then(response => {
-            setsolicitudes(response.data)
-            setcargando(false)
-          })
-          .catch(error => {
-            alert("Un error ha ocurrido al cargar las solicitudes.")
-            console.log(error.response)
-          }) 
+        buscarSolicitudes()
       }
-    },[state.jwt, state.publico, tipoPublicacion])    
+    },[state.jwt, state.publico, tipoPublicacion])
+
+    function buscarSolicitudes(){
+      axios.get(state.servidor+"/api/solicitud?Usuario_id="+state.datosSesion.id+"&tipo="+tipoPublicacion)
+      .then(response => {
+        setsolicitudes(response.data)
+        setcargando(false)
+      })
+      .catch(error => {
+        alert("Un error ha ocurrido al cargar las solicitudes.")
+        console.log(error.response)
+      })
+  }
 
     return (
       <div className={classes.fondo}>
@@ -53,7 +56,7 @@ export default function MisPublicaciones({tipoPublicacion}) {
               }
               {
                   solicitudes.map((solicitud, i)=>(
-                      <FilaPublicacion key={i} datos={solicitud} tipoPublicacion={tipoPublicacion} contactar={true}/>
+                      <FilaPublicacion buscarSolicitudes={buscarSolicitudes} key={i} datos={solicitud} tipoPublicacion={tipoPublicacion} contactar={true}/>
                   ))
               }
           </Paper>

@@ -22,6 +22,7 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
     const [cargando, setcargando] = useState(false);
     const [imagenes, setimagenes] = useState([]);
     const [imagenesSubidas, setimagenesSubidas] = useState([]);
+    const [imagenesBorradas, setimagenesBorradas] = useState([]);
 
     //Datos de la pagina
     const [datosPagina, setdatosPagina] = useState({
@@ -52,8 +53,8 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                 setcargando(false)
             })
             .catch(error => {
-            alert("Un error ha ocurrido al cargar las categorías.")
-            console.log(error.response)
+                alert("Un error ha ocurrido al cargar las categorías.")
+                console.log(error.response)
             })
         }
     },[state.jwt, state.publico, tipoPublicacion, modificar])
@@ -65,8 +66,6 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
             .then(response => {             
                 if (state.datosSesion.id===response.data.Usuario_id.id){
                     response.data["imagenes"] = response.data.imagenes.map((imagen)=>(imagen.id))
-                    console.log(response.data)
-
                     setdatosPagina(response.data)
                     if (tipoPublicacion)
                         categorias.map(cat =>{
@@ -95,11 +94,12 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
     }
     
     const funcionSetImagen = (file, cantidad, tipo, subidas) =>{
-        console.log(subidas)
+        setimagenesSubidas(subidas)
         //Si es 0, entonces se agrega la imagen a su respectiva variable, si es 1 entonces se desea eliminar
         if(tipo===0){
             setimagenes([...imagenes, file])
         }else{
+            setimagenesBorradas(img => [...imagenesBorradas, file])
             let aux = imagenes.filter(f => f !== file)
             setimagenes(aux)
         }
@@ -112,26 +112,54 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
         setcargando(true)
         const formData = new FormData()
 
-        console.log(imagenes)
-        console.log(imagenesSubidas)
-        let archivosPosta = imagenes.map((imagen) => {
-            imagenesSubidas.map(subida => {
-                if(subida !== imagen){
-                    return imagen
-                }
-            })
+        let archivosNuevos = []
+        
+        //archivosNuevos es el arreglo que contiene los archivos que han sido agregados y no los que ya han sido subidos al servidor
+        imagenes.map((imagen) => {
+            let iguales = imagenesSubidas.some(img => img === imagen)
+            if(!iguales){
+                archivosNuevos.push(imagen)
+            }
         })
-        console.log(archivosPosta)
 
-        for(let i = 0; i<imagenes.length; i++){
-            formData.append('files.imagenes', imagenes[i])
+        //archivosBorrados es el arreglo que contiene los archivos que han sido subidos al servidor pero que han sido eliminados en el frontend
+        let archivosBorrados = []
+        imagenesBorradas.map((imagen) => {
+            let iguales = imagenesSubidas.some(img => img === imagen)
+
+            if(iguales){
+                archivosBorrados.push(imagen)
+            }
+        })
+        
+        //Si existen elementos dentro del arreglo imagenesBorradas, significa que se quieren borrar imágenes de la publicación
+        for(let indx = 0; indx < imagenesBorradas.length; indx++){
+            let id = Number(imagenesBorradas[indx].name)
+            
+            let auth = 'Bearer '+state.jwt;
+            axios.delete(state.servidor+"/upload/files/"+id,
+            {
+                headers: {
+                'Authorization': auth
+            },})
+            .then(response => {
+                console.log("Borrando imagenes", response)            
+            }).catch(error => {
+                alert("Error al borrar las imagenes")
+                console.log(error.response)
+            })
+        }
+
+        //Se cargan en el fromData las nuevas imágenes cargadas a la publicación, si es que las hay, y los datos modificados
+        for(let i = 0; i<archivosNuevos.length; i++){
+            formData.append('files.imagenes', archivosNuevos[i])
         }
         formData.append('data', JSON.stringify({
             titulo: datosPagina.titulo,
             precio_estimado: datosPagina.precio_estimado===""?0:datosPagina.precio_estimado,
             descripcion: datosPagina.descripcion,
             Categoria_id: datosPagina.Categoria_id.id,
-            Servicio_id: datosPagina.Servicio_id.id,
+            Servicio_id: tipoPublicacion?datosPagina.Servicio_id.id:null,
             Usuario_id: state.datosSesion.id,
             pausado: false,
             bloqueado: false,
@@ -139,7 +167,7 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
         }))
 
         let auth = 'Bearer '+state.jwt;
-
+        //Si se está creando una publicación, se procede a la creación del la entrada en la tabla correspondiente.
         if (!modificar){
             axios.post(
                 state.servidor+"/api/solicitud",
@@ -158,6 +186,7 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
             .catch(error => {
                 console.log("Error, no se ha podido crear la solicitud.", error.response)
             })
+        //Si se desea modificar una publicación, se envía la petición con los nuevos datos
         }else{
             axios.put(
                 state.servidor+"/api/solicitud/"+id,
@@ -178,6 +207,8 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
             })
         }
     }
+
+    //Al seleccionar una categoría, se procede a cargarlo en el campo correspondiente y setear los servicios que se deben mostrar
     function seleccionarCategoria(e){
         let categoriaSeleccionada = categorias.filter((cat) => cat.nombre === e.target.value)
         setservicios(categoriaSeleccionada[0].servicios)
@@ -187,6 +218,7 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
             Servicio_id: {nombre:""}
         })
     }
+
     function seleccionarServicio(e){
         let servicioSeleccionado
         categorias.map((cat) =>{
@@ -222,6 +254,7 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                             id="filled-basic"
                             label="Título de la publicación"
                             variant="filled"
+                            maxLength={50}
                             required/>
                         </Grid>
 
@@ -258,8 +291,9 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                             </FormControl>
                         </Grid>
                         
-                        <Hidden xlDown={!tipoPublicacion}>
-                            <Grid item sm={6} xs={12}>
+                        {
+                            tipoPublicacion &&
+                            (<Grid item sm={6} xs={12}>
                                 <FormControl className={classes.inputAncho}>
                                     <InputLabel id="Servicio_id" variant="filled">Servicio</InputLabel>
                                     <Select 
@@ -278,8 +312,8 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                                         }   
                                     </Select>
                                 </FormControl>
-                            </Grid>
-                        </Hidden>
+                            </Grid>)
+                        }
 
                         <Grid item xs={12}>
                             <TextField
@@ -289,12 +323,13 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                             className={classes.inputAncho}
                             id="filled-basic"
                             label="Descripción"
+                            maxLength={400}
                             multiline
                             variant="filled"/>
                         </Grid>
 
                         <Grid item xs={12} className={classes.inputAncho}>
-                            <SubirImagenes cantidad={10} funcionSetImagen={funcionSetImagen} ids={datosPagina.imagenes}/>
+                            <SubirImagenes cantidad={10} funcionSetImagen={funcionSetImagen} setcargando={setcargando} ids={datosPagina.imagenes}/>
                         </Grid>
                         
                         <Grid item xs={12} className={classes.inputAncho}>
@@ -302,10 +337,10 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                         </Grid>
 
                         <Grid item xs={6} align="center">
-                            <Button className={classes.botones}  type="submit" size="large" variant="contained" color="primary">Guardar</Button>
+                            <Button className={classes.botones} disabled={cargando} type="submit" size="large" variant="contained" color="primary">Guardar</Button>
                         </Grid>
                         <Grid item xs={6} align="center">
-                            <Button disabled={cargando} className={classes.botones} size="large" variant="contained" color="secondary">Cancelar</Button>
+                            <Button className={classes.botones} onClick={()=>history.push("/")} size="large" variant="contained" color="secondary">Cancelar</Button>
                         </Grid>
                     </Grid>
                 </FormControl>

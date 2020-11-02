@@ -1,11 +1,14 @@
 import React,{useState, useEffect, useContext} from 'react';
+import axios from 'axios'
 //Material-UI
 import {Card, Hidden, Typography, Chip, Button, Grid, Tooltip, IconButton} from '@material-ui/core/';
 import Editar from '@material-ui/icons/Edit';
 import Pausa from '@material-ui/icons/Pause';
+import Despausar from '@material-ui/icons/PlayArrow';
 import Eliminar from '@material-ui/icons/DeleteForever';
 import Alerta from '@material-ui/lab/Alert';
 import Verificado from '@material-ui/icons/CheckCircleOutline';
+import AlertaSi_No from '../AlertaSi_No.js';
 
 import Estrellas from '../Estrellas.js';
 import Estilos from '../Estilos';
@@ -14,11 +17,14 @@ import {BotonContratar} from '../ContactarProveedor.js'
 import {Link} from "react-router-dom";
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
-export default function FilaPublicacion({tipoPublicacion, datos, contactar}) {
+export default function FilaPublicacion({tipoPublicacion, datos, contactar, buscarSolicitudes}) {
   const classes = Estilos();
   const [precioPresupuesto, setPrecioPresupuesto] = useState("");
   const [noMostrar, setnoMostrar] = useState(true);
   const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+  const [preguntarPausa, setpreguntarPausa] = useState(false);
+  const [preguntarEliminar, setpreguntarEliminar] = useState(false);
+
   const [datosPagina, setdatosPagina] = useState({
     id: null,
     titulo: "",
@@ -40,7 +46,6 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar}) {
     }else{
       setPrecioPresupuesto("Presupuesto");
     }
-    console.log(datos)
   },[])
 
   useEffect(()=>{
@@ -51,6 +56,50 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar}) {
     setnoMostrar(!x)
   },[datos])
 
+
+  const eliminarPublicacion = (boole) =>{
+    let auth = 'Bearer '+state.jwt;
+    if(boole){
+      axios.delete(
+        state.servidor+"/api/solicitud/"+datosPagina.id,{
+          headers: {'Authorization': auth},
+        }
+        )
+        .then(response => {
+          console.log("Respuesta eliminar: ",response.data)
+          buscarSolicitudes()
+        })
+        .catch(error => {
+          console.log("Error, no se ha podido eliminar la publicación.", error.response)
+        })
+      }
+    setpreguntarEliminar(false)
+  } 
+  
+  const pausarPublicacion = (boole) =>{
+    let auth = 'Bearer '+state.jwt;
+    if(boole){
+      let Pausa = !datosPagina.pausado
+      axios.put(
+      state.servidor+"/api/solicitud/"+datosPagina.id,{
+        pausado: Pausa
+      },{
+        headers: {'Authorization': auth},
+      }
+      )
+      .then(response => {
+        console.log("Respuesta pausa: ",response.data)
+      })
+      .catch(error => {
+        console.log("Error, no se ha podido pausar la publicación.", error.response)
+      })
+      setdatosPagina(prevState => ({
+        ...prevState,
+        pausado: Pausa
+      }))
+    }
+    setpreguntarPausa(false)
+  }
 
   return (
     <Card className={classes.filaPublicacion}>
@@ -80,16 +129,34 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar}) {
                   {datosPagina.titulo}
                 <Hidden xlDown={noMostrar}>  
                   <Link to={tipoPublicacion?"/modificar-publicacion/"+datosPagina.id:"/modificar-solicitud-servicio/"+datosPagina.id}>
-                    <Tooltip title="Editar publicación">
-                      <IconButton><Editar color="primary" /></IconButton>
-                    </Tooltip>
+                  <Tooltip title="Editar publicación">
+                    <IconButton ><Editar color="primary" /></IconButton>
+                  </Tooltip>
                   </Link>
                   <Tooltip title="Pausar publicación">
-                    <IconButton><Pausa color="primary" /></IconButton>
+                    <IconButton onClick={()=>{setpreguntarPausa(true)}}>{datosPagina.pausado?<Despausar color="primary" />:<Pausa color="primary" />}</IconButton>
                   </Tooltip>
                   <Tooltip title="Eliminar publicación">
-                    <IconButton><Eliminar color="secondary" /></IconButton>
+                    <IconButton onClick={()=>{setpreguntarEliminar(true)}}><Eliminar color="secondary" /></IconButton>
                   </Tooltip>
+                  {
+                    preguntarPausa &&
+                    <AlertaSi_No
+                    mensaje={datosPagina.pausado?
+                    'La publicación "'+datosPagina.titulo+'" volverá a aparecer en la sección de búsqueda.'
+                    :'La publicación "'+datosPagina.titulo+'" será pausada y no se mostrará en la sección de búsqueda.'}
+                    funcionAceptar={pausarPublicacion}
+                    titulo={datosPagina.pausado?
+                    "¿Está seguro que quiere despausar la publicación?"
+                    :"¿Está seguro que quiere pausar la publicación?"}/> 
+                  }
+                  {
+                    preguntarEliminar &&
+                    <AlertaSi_No
+                    mensaje={'Se va a eliminar la publicación "'+datosPagina.titulo+'", esta acción no se puede revertir.'}
+                    funcionAceptar={eliminarPublicacion}
+                    titulo="¿Está seguro que quiere eliminar la publicación?"/>
+                  }
                 </Hidden>  
               </Typography>
               <div style={{overflow: "auto", textOverflow: "ellipsis", textJustify:"auto"}}> 

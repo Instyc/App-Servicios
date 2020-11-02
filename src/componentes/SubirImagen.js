@@ -4,7 +4,7 @@ import Dropzone from 'react-dropzone-uploader'
 import axios from 'axios'
 import { ObtenerEstadoAplicacion } from '../Estados/AplicacionEstado'
 
-const SingleFileAutoSubmit = ({cantidad, funcionSetImagen, ids}) => {
+const SingleFileAutoSubmit = ({cantidad, funcionSetImagen, ids, setcargando}) => {
     const toast = (innerHTML) => {
       const el = document.getElementById('toast')
       el.innerHTML = innerHTML
@@ -26,7 +26,7 @@ const SingleFileAutoSubmit = ({cantidad, funcionSetImagen, ids}) => {
           axios.get(state.servidor+"/upload/files?"+IDS)
           .then(response => {
             response.data.map((dat) => {
-              hacerArchivo(state.servidor+dat.url)
+              hacerArchivo(dat)
             })
           })  
           .catch(error => {
@@ -37,21 +37,19 @@ const SingleFileAutoSubmit = ({cantidad, funcionSetImagen, ids}) => {
     },[ids])
     
     //Se crea el archivo
-    function hacerArchivo(imagenUrl) {
+    function hacerArchivo(imagen) {
+      let imagenUrl = state.servidor+imagen.url
       let file
       fetch(imagenUrl).then(res => {
         res.arrayBuffer().then(buf => {
-          file = new File([buf], 'image_data_url.jpg', { type: 'image/jpeg' })
-          setarchivos(arch => [...arch, file])
+          file = new File([buf], ""+imagen.id, { type: 'image/jpeg' })
+          setarchivos([...archivos, file])
+          setarchivosSubidos(arch => [...arch, file])
         })
       })
     }
-    useEffect(()=>{
-      console.log(archivos)
-    },[archivos])
-  
+
     const getUploadParams = ({ file, meta }) => {
-      setarchivosSubidos([...archivosSubidos, file])
       funcionSetImagen(file, cantidad, 0, archivosSubidos)
 
       //console.log(file)
@@ -61,14 +59,25 @@ const SingleFileAutoSubmit = ({cantidad, funcionSetImagen, ids}) => {
   
     const handleChangeStatus = ({ meta, file }, status) => {
       if (status === 'removed') {
-        funcionSetImagen(file, cantidad, 1);
+        funcionSetImagen(file, cantidad, 1, archivosSubidos);
+        
+        //let indice = archivosSubidos.indexOf(file)
+        //console.log(indice)
+
+      }
+      if (status === 'uploading'){
+        setcargando(true)
+      }
+      if (status === 'done'){
+        setcargando(false)
+      }
+
 
         /*toast(`${meta.name} uploaded!`)
         remove()*/
       }/* else if (status === 'aborted') {
         toast(`${meta.name}, upload failed...`)
       }*/
-    }
   
     return (
       <React.Fragment>
