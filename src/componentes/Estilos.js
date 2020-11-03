@@ -13,7 +13,7 @@ const Estilos = makeStyles((theme) => ({
         justifyContent: 'center',
         alignItems: 'center',
         flexWrap: 'wrap',
-        padding: 10,
+        padding: 10, 
         minHeight:"calc(100vh - 130px)",
     },
     proveedorSticky:{

@@ -25,6 +25,7 @@ import MisPublicaciones from './componentes/Publicacion/MisPublicaciones.js';
 import PreguntasFrecuentes from './componentes/Footer/PreguntasFrecuentes.js';
 import SobreNosotros from './componentes/Footer/SobreNosotros.js';
 import AdministrarCategorias from './componentes/GestionAdministrador/AdministrarCategorias.js';
+import VerificarMiIdentidad from './componentes/Proveedor/VerificarMiIdentidad.js';
 
 //import Chat from './componentes/Chat/Chat.js';
 
@@ -74,6 +75,7 @@ function App() {
                   <Route path="/modificar-proveedor"><ModificarPerfilProveedor/></Route>
                   <Route path="/verificar-identidad"><VerificarIdentidad/></Route>
                   <Route path="/gestionar-reclamos"><PestanaReportes/></Route>
+                  <Route path="/verificar-mi-identidad"><VerificarMiIdentidad/></Route>
 
                   <Route path="/perfil-proveedor/:id"><MiPerfil/></Route>
 

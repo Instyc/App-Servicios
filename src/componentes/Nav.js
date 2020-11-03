@@ -217,6 +217,15 @@ export default function PrimarySearchAppBar() {
                 </MenuItem>
               </div>
 
+              <div hidden={tipoUsuario!==2 || state.datosSesion.espera_verificacion===true || state.datosSesion.identidad_verificada === true}>
+                <MenuItem onClick={plegarPerfil}>
+                  <ListItemIcon>
+                    <PriorityHighIcon fontSize="small" /> 
+                  </ListItemIcon>
+                  <Link to={"/verificar-mi-identidad/"} className={classes.EstiloLink}><Typography variant="inherit">Verificar mi identidad</Typography></Link>
+                </MenuItem>
+              </div>
+
               <MenuItem onClick={cerrarSesion}>
                 <ListItemIcon>
                   <PriorityHighIcon fontSize="small" />

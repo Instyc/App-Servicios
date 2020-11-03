@@ -34,6 +34,7 @@ export default function Publicacion() {
         precio_estimado: 0,
         tipo: false,
         pausado: false,
+        bloqueado: false,
         imagenes: [],
         Usuario_id: null
     })
@@ -45,7 +46,7 @@ export default function Publicacion() {
                 obtenerUsuario(response.data)
             })
             .catch(error => {
-                alert("Un error ha ocurrido al buscar el usuario.")
+                alert("Un error ha ocurrido al buscar la solicitud.")
                 console.log(error.response)
             }) 
         }
@@ -61,8 +62,9 @@ export default function Publicacion() {
             pausado: data.pausado,
             imagenes: data.imagenes,
             categoria: data.Categoria_id.nombre,
-            servicio: data.Servicio_id.nombre,
-            Usuario_id: data.Usuario_id
+            servicio: data.tipo?data.Servicio_id.nombre:null,
+            Usuario_id: data.Usuario_id,
+            bloqueado: data.bloqueado,
         })
 
         let auth = state.jwt!==""?'Bearer '+state.jwt:"";
@@ -81,7 +83,9 @@ export default function Publicacion() {
                     identidad_verificada: response.data.identidad_verificada,
                     telefono: response.data.telefono,
                     mostrar_telefono: response.data.mostrar_telefono,
-                    servicios: response.data.servicios
+                    servicios: response.data.servicios,
+                    bloqueado: response.data.bloqueado,
+                    pausado: response.data.estado,
                 })
             })
             .catch(error => {

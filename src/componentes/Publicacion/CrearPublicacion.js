@@ -21,6 +21,7 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
     const [servicios, setservicios] = useState([]);
     const [cargando, setcargando] = useState(false);
     const [imagenes, setimagenes] = useState([]);
+
     const [imagenesSubidas, setimagenesSubidas] = useState([]);
     const [imagenesBorradas, setimagenesBorradas] = useState([]);
 
@@ -162,9 +163,9 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
             Servicio_id: tipoPublicacion?datosPagina.Servicio_id.id:null,
             Usuario_id: state.datosSesion.id,
             pausado: false,
-            bloqueado: false,
             tipo: tipoPublicacion
         }))
+
 
         let auth = 'Bearer '+state.jwt;
         //Si se está creando una publicación, se procede a la creación del la entrada en la tabla correspondiente.
@@ -199,6 +200,8 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
             })
             .then(response => {
                 console.log("Respuesta modificar solicitud: ",response.data)
+                if (response.data.bloqueado)
+                    modificarBloqueadoReporte()
                 setcargando(false)
                 history.push("/")
             })
@@ -206,6 +209,42 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                 console.log("Error, no se ha podido modificar la solicitud.", error.response)
             })
         }
+    }
+
+    function modificarBloqueadoReporte(){
+        let auth = 'Bearer '+state.jwt;
+
+        axios.get(
+            state.servidor+"/api/reportes?Solicitud_id="+datosPagina.id,
+            {
+                headers: {
+                    'Authorization': auth
+            },
+        })
+        .then(response => {
+            console.log("Set bloqueado false: ",response.data)
+            let reportes_ = response.data.filter((reporte)=>reporte.estado === 1)
+
+            reportes_.map(report => {
+                axios.put(
+                    state.servidor+"/api/reportes/"+report.id,{
+                        estado: -1
+                    },{
+                        headers: {
+                            'Authorization': auth
+                    },
+                })
+                .then(response => {
+                    console.log("estado -1: ",response.data)                    
+                })
+                .catch(error => {
+                    console.log("1.", error.response)
+                })
+            })
+        })
+        .catch(error => {
+            console.log("2.", error.response)
+        })
     }
 
     //Al seleccionar una categoría, se procede a cargarlo en el campo correspondiente y setear los servicios que se deben mostrar

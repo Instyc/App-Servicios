@@ -25,7 +25,6 @@ export default function Inicio({tipo}) {
     .then(response => {
       setcategorias(response.data)
       setcargando(false)
-      console.log("Categorias:",response.data)
     })
     .catch(error => {
       alert("Un error ha ocurrido al cargar las categorías.")

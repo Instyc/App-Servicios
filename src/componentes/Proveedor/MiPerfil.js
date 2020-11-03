@@ -17,8 +17,9 @@ export default function MiPerfil() {
         mostrar_telefono: false,
         servicios: [],
         imagenes: [],
+        bloqueado: false,
         //Datos de publicación
-        precio_estimado: 0,
+        precio_estimado: "perfil",
         pausado: false,
         tipo: false,
         categoria:"",
@@ -46,7 +47,10 @@ export default function MiPerfil() {
                     telefono: response.data.telefono,
                     mostrar_telefono: response.data.mostrar_telefono,
                     servicios: response.data.servicios,
-                    imagenes: response.data.imagenes_proveedor
+                    imagenes: response.data.imagenes_proveedor,
+                    bloqueado: response.data.bloqueado,
+                    pausado:  response.data.estado,
+                    precio_estimado: "perfil"
                 })
                 console.log(response.data)
             })

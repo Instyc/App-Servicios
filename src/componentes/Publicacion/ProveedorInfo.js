@@ -7,6 +7,7 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Verificado from '@material-ui/icons/CheckCircleOutline';
+import Alerta from '@material-ui/lab/Alert';
 
 import Estilos from '../Estilos.js';
 import Estrellas from '../Estrellas.js';
@@ -25,7 +26,9 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
     identidad_verificada: false,
     telefono: "",
     mostrar_telefono: false,
-    servicios: []
+    servicios: [],
+    pausado: false,
+    bloqueado: false
   })
 
   useEffect(()=>{
@@ -67,6 +70,7 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
               src="https://i.pinimg.com/originals/69/1d/0c/691d0c155896f8ec64280648cac6fa22.jpg"
               className={classes.imagenPublicacion}/>
             </Grid>
+
             <Grid item xs={12} hidden={esDePerfil}>
               <Typography variant="h5" component="h3" align="center">
                 <Link to={"/perfil-proveedor/"+DatosPerfil.id} className={classes.EstiloLink}>
@@ -79,6 +83,19 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
                 </Link>
               </Typography>
            </Grid>
+
+           <Grid item xs={12} hidden={esDePerfil}>
+           {
+              DatosPerfil.pausado && (<Alerta className={classes.inputAncho} style={{marginBottom:"10px"}} variant="outlined" severity="warning">
+                Este proveedor ha pausado sus servicios.
+              </Alerta>)
+            }
+            {
+              DatosPerfil.bloqueado && (<Alerta className={classes.inputAncho} style={{marginBottom:"10px"}} variant="outlined" severity="error">
+                Este proveedor se encuentra bloqueado.
+              </Alerta>)
+            }
+            </Grid>
 
            <Grid item xs={12} hidden={esDePerfil}>
               <Divider/> 

@@ -36,15 +36,18 @@ export default function Categoria({tipoPublicacion}) {
             console.log(error.response)
             }) 
         }
-
         buscarSolicitudes()
     },[state.jwt, state.publico])
 
     function buscarSolicitudes(){
         axios.get(state.servidor+"/api/solicitud?Categoria_id="+id+"&pausado=false&bloqueado=false&tipo="+tipoPublicacion)
         .then(response => {
-          setsolicitudes(response.data)
-          setcargando(false)
+            //Filtramos las publicaciones donde sus proveedores no estén pausados
+            setsolicitudes(response.data.filter((solicitud)=>
+            (
+                solicitud.Usuario_id.estado === false && solicitud.Usuario_id.bloqueado===false))
+            )
+            setcargando(false)
         })
         .catch(error => {
             alert("Un error ha ocurrido al cargar las categorías.")
@@ -82,7 +85,11 @@ export default function Categoria({tipoPublicacion}) {
 
         axios.get(state.servidor+"/api/solicitud?"+IDS+"pausado=false&bloqueado=false&tipo="+tipoPublicacion+"&titulo_contains="+inputBusqueda)
         .then(response => {
-          setsolicitudes(response.data)
+        
+          setsolicitudes(response.data.filter((solicitud)=>
+          (
+            solicitud.Usuario_id.estado === false && solicitud.Usuario_id.bloqueado===false))
+          )
           setcargando(false)
         })
         .catch(error => {

@@ -3,20 +3,20 @@ import {Link} from 'react-router-dom';
 import axios from 'axios'
 
 //Material-UI
-import {Paper, List, ListItem, Collapse, ListItemText, Grid, Typography, Button, Tooltip, TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel} from '@material-ui/core';
+import {LinearProgress, Paper, List, ListItem, Collapse, ListItemText, Grid, Typography, Button, Tooltip, TextField, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel} from '@material-ui/core';
 import {ExpandLess, ExpandMore}  from '@material-ui/icons';
 import Ojo from '@material-ui/icons/Visibility';
 import Flechita from '@material-ui/icons/ArrowForwardIos';
 import Aceptar from '@material-ui/icons/Check';
 import Rechazar from '@material-ui/icons/Clear';
+import Alerta from '@material-ui/lab/Alert';
 
 import Estilos from '../Estilos.js';
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
-export default function GestionarReportes({estadoReporte, reportes, modificarReporte}) {
+export default function GestionarReportes({estadoReporte, reportes, modificarReporte, cargando}) {
     const classes = Estilos();
     const [titulo, setTitulo] = useState("");
-
     
     useEffect(()=>{
         //Dependiendo de si accedemos a los reclamos en espera, al historial de reclamos o a los reclamos nuevos, se muestra el título correspodiente
@@ -26,22 +26,24 @@ export default function GestionarReportes({estadoReporte, reportes, modificarRep
             setTitulo("Reportes en espera");
         else
             setTitulo("Historial de reportes");
-        
-    },[])  
-
-    useEffect(()=>{
-        console.log(reportes)
-    },[reportes])
-
+    },[])
   
   return (
-    <div className={classes.fondo}>
+    <div className={classes.fondo} >
       <Paper elevation={5}>
         <Grid className={classes.filaPublicacion}  container justify="center">
-            <Typography variant="h4" component="h1" align="left">
-                {titulo}
-            </Typography>
             <Grid item xs={12}>
+                <Typography variant="h4" component="h1" align="center">
+                    {titulo}
+                </Typography>
+            </Grid>
+            <Grid item xs={12}>
+                <br/>
+                {
+                    !cargando && reportes.length===0 && (<Alerta variant="outlined" severity="info">
+                    No hay reportes para mostrar.
+                    </Alerta>)
+                }  
                 {
                     reportes.map((datos, i) =>
                         <Reporte key={i} datos={datos} modificarReporte={modificarReporte}/>
@@ -60,7 +62,7 @@ function Reporte({datos, modificarReporte}) {
     let color;
     switch (datos.estado) {
         case -1:
-            color = "cian"
+            color = "#5d9b9b"
             break;
         case 0:
             color = "gray"
@@ -77,19 +79,22 @@ function Reporte({datos, modificarReporte}) {
     }
     return (
         <Paper className={classes.filaPublicacion} style={{background: color}} variant="outlined" square>
-            <Grid container direction="row" justify="center">             
+            <Grid container direction="row" justify="center">
                 <Grid item xs={12} lg={9} md={9} sm={12}>
                     <Button disabled>
                         <Typography color="secondary" variant="h5" component="h2" align="left" >
-                            {datos.Solicitud_id.titulo}
+                            {datos.Solicitud_id===null?"Reporte al usuario ":datos.Solicitud_id.titulo}
                         </Typography>
                     </Button>
 
-                    <Link to={"/publicacion/"+datos.Solicitud_id.id} className={classes.EstiloLink}>
-                        <Tooltip title="Vista previa">
-                            <Button><Ojo color="primary" /></Button>
-                        </Tooltip>
-                    </Link>
+                    {
+                        datos.Solicitud_id!==null &&
+                        <Link to={"/publicacion/"+datos.Solicitud_id.id} className={classes.EstiloLink}>
+                            <Tooltip title="Vista previa">
+                                <Button><Ojo color="primary" /></Button>
+                            </Tooltip>
+                        </Link>
+                    }
                         
                     <Button disabled>
                         <Flechita/>
@@ -144,6 +149,8 @@ function DesplegarInformacion({datos, modificarReporte}) {
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
     const [open, setOpen] = useState(false);
     const [accion, setaccion] = useState(false);
+    const [cargando, setcargando] = useState(false);
+
     const classes = Estilos();
 
     const handleClick = () => {
@@ -151,16 +158,31 @@ function DesplegarInformacion({datos, modificarReporte}) {
     };
 
     function enviarDatos(descripcion, aceptado){
+        setcargando(true)
         let auth = 'Bearer '+state.jwt;
         let estado = 2
+        
+        //Si se acepta el reclamo
         if(aceptado){
+            //Si la acción tomada es pausar la publicación o continuar con la pausa
             if(accion){
+                //El estado se setea en "en espera de respuesta"
                 estado = 1
+                //Bloqueamos la publicación, si es que ya no lo está
+                if(datos.estado!==-1)
+                    cambiarVariableBloqueado(datos, true)
+            //Si no se pausa o se despausa
             }else{
+                //El estado se setea en "concluído"
                 estado = 3
+                //Si el estado del reporte era "respondido", se desbloquea la publicación
+                if(datos.estado===-1){
+                    cambiarVariableBloqueado(datos, false)
+                }
             }
         }
-
+        
+        //Si aceptado es true, entonces el reporte es aceptado y se le notifica al usuario
         if(aceptado===true){
             axios.post(
                 state.servidor+"/api/notificaciones/",{
@@ -175,18 +197,19 @@ function DesplegarInformacion({datos, modificarReporte}) {
             })
             .then(response => {
                 console.log("Se ha podido crear la notificacion: ",response.data)
-                actualizarReporte(response.data.id, descripcion, estado)
+                actualizarReporte(response.data.id, estado)
             })
             .catch(error => {
                 console.log("Error, no se ha podido crear la notificacion.", error.response)
                 alert("Error, no se ha podido crear la notificacion.")
             })
         }else{
-            actualizarReporte(null, descripcion, estado)
+            //Si aceptado es false, entonces el reporte es descartado, luego se actualiza el estado del reporte
+            actualizarReporte(null, estado)
         }
-        
     }
-    function actualizarReporte(notificacion, descripcion, estado){
+
+    function actualizarReporte(notificacion, estado){
         let auth = 'Bearer '+state.jwt;
         axios.put(
             state.servidor+"/api/reportes/"+datos.id,{
@@ -194,16 +217,37 @@ function DesplegarInformacion({datos, modificarReporte}) {
                 estado: estado,
                 notificacion: notificacion,
                 Administrador_id: state.datosSesion.id
-            },{
-                headers: {'Authorization': auth},
+            },{headers: {'Authorization': auth},
         })
         .then(response => {
             console.log("Se ha podido crear el reporte: ",response.data)
+            setcargando(false)
+
+            /*El siguiente método actualiza el arreglo de objetos de reporte del componente pestanaReportes, 
+            con el objetivo de que el reporte cambie de estado y se muestre en su respectivo tab*/
             modificarReporte(response.data)
         })
         .catch(error => {
             console.log("Error, no se ha podido crear el reporte.", error.response)
             alert("Error, no se ha podido crear el reporte.")
+        })
+    }
+    
+    function cambiarVariableBloqueado(datos, bool){
+        let auth = 'Bearer '+state.jwt;
+        let ruta = datos.Solicitud_id===null?"users/":"api/solicitud/"
+        let _id = datos.Solicitud_id===null?datos.Usuario_id.id:datos.Solicitud_id.id
+        console.log(state.servidor+"/"+ruta+_id)
+        axios.put(
+            state.servidor+"/"+ruta+_id,{
+                bloqueado: bool,
+            },{headers: {'Authorization': auth},})
+        .then(response => {
+            console.log("Se ha podido bloquear",response.data)
+        })
+        .catch(error => {
+            console.log("Error, no se ha podido bloquear.", error.response)
+            alert("Error, no se ha podido bloquear .")
         })
     }
 
@@ -227,8 +271,16 @@ function DesplegarInformacion({datos, modificarReporte}) {
                         datos.estado<=0 && <FormControl component="fieldset" align="left">
                             <FormLabel required component="legend">Acción</FormLabel>
                                 <RadioGroup disabled={datos.estado>0} row aria-label="Accion" value={accion} onChange={(e)=>{setaccion(!accion)}}>
-                                    <FormControlLabel value="true" checked={accion} control={<Radio />} label="Pausar publicación" />
-                                    <FormControlLabel value="false" checked={!accion} control={<Radio />} label="No hacer nada" />
+                                    <FormControlLabel
+                                    value="true"
+                                    checked={accion}
+                                    control={<Radio />}
+                                    label={datos.estado===-1?"Continuar con la publicación pausada":"Pausar publicación"} />
+                                    <FormControlLabel
+                                    value="false"
+                                    checked={!accion}
+                                    control={<Radio />}
+                                    label={datos.estado===-1?"Despausar publicación":"No hacer nada"} />
                                 </RadioGroup>
                         </FormControl>
                     }
@@ -237,9 +289,14 @@ function DesplegarInformacion({datos, modificarReporte}) {
                             {datos.accion?"La publicación fue pausada":"No se pausó la publicación"}
                         </Typography>
                     }
-
+                    {
+                        cargando && <LinearProgress />
+                    }
                     <div hidden={datos.estado>0}>
-                        <ParteNuevos enviarDatos={enviarDatos}/>
+                        {
+                            datos.estado===-1 && <ParteEspera_Historial datos={datos.notificacion}/>
+                        }
+                        <ParteNuevos enviarDatos={enviarDatos} cargando={cargando} esRespuesta={datos.estado===-1}/>
                     </div>
                     
                     <div hidden={datos.estado<=0}>
@@ -251,7 +308,7 @@ function DesplegarInformacion({datos, modificarReporte}) {
     )
 }
 
-const ParteNuevos = ({enviarDatos}) =>{
+const ParteNuevos = ({enviarDatos, cargando, esRespuesta}) =>{
     const [descripcion, setdescripcion] = useState("")
     return(
         <div>
@@ -267,10 +324,10 @@ const ParteNuevos = ({enviarDatos}) =>{
             </Grid>
 
             <div align="center">
-                <Button startIcon={<Aceptar/>} onClick={()=>{enviarDatos(descripcion, true)}}>
-                    Aceptar reclamo
+                <Button disabled={cargando} startIcon={<Aceptar/>} onClick={()=>{enviarDatos(descripcion, true)}}>
+                    {esRespuesta?"Confirmar acción":"Aceptar reclamo"}
                 </Button>
-                <Button color="secondary" startIcon={<Rechazar/>} onClick={()=>{enviarDatos(descripcion, false)}}>
+                <Button disabled={cargando} color="secondary" startIcon={<Rechazar/>} onClick={()=>{enviarDatos(descripcion, false)}}>
                     Descartar reclamo
                 </Button>
             </div>

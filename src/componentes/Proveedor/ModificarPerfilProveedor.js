@@ -297,7 +297,7 @@ export default function Registrar() {
                         </Grid>
 
                         <Grid item xs={12} className={classes.inputAncho}>
-                            <SubirImagenes cantidad={10} funcionSetImagen={funcionSetImagen} ids={datos.pasarImagenes}/>
+                            <SubirImagenes setcargando={setcargando} cantidad={10} funcionSetImagen={funcionSetImagen} ids={datos.pasarImagenes}/>
                         </Grid>
 
                         <Grid item xs={12} >

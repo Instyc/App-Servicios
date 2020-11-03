@@ -28,7 +28,8 @@ export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) 
     descripcion:"",
     imagenes:[""],
     pausado: false,
-    Usuario_id: null
+    bloqueado: false,
+    Usuario_id: null,
   });
 
   useEffect(()=>{
@@ -37,7 +38,7 @@ export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) 
       let img = datosPagina.imagenes.map((imagen)=>{
         return ({
           original: state.servidor+imagen.url,
-          thumbnail: state.servidor+imagen.formats.thumbnail.url
+          thumbnail: state.servidor+imagen.url
         })
       })
       setimagenes(img)
@@ -52,17 +53,24 @@ export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) 
         tipo: datosPagina.tipo,
         pausado: datosPagina.pausado,
         imagenes: datosPagina.imagenes,
+        bloqueado: datosPagina.bloqueado,
         Usuario_id: datosPagina.Usuario_id
       })
     }
 },[datosPagina, state.jwt, state.publico])
+
   return (
     <div className={classes.mostrarFlex}>
       <Paper elevation={5} >
         <Grid className={classes.padding} container direction="row" justify="space-between" alignItems="center">
             {
               DatosPagina.pausado && (<Alerta className={classes.inputAncho} style={{marginBottom:"10px"}} variant="outlined" severity="warning">
-                Esta publicación se encuentra pausada.
+                {DatosPagina.precio_estimado==="perfil"?"Este proveedor ha pausado sus servicios.":"Esta publicación se encuentra pausada."}
+              </Alerta>)
+            }
+            {
+              DatosPagina.bloqueado && (<Alerta className={classes.inputAncho} style={{marginBottom:"10px"}} variant="outlined" severity="error">
+                {DatosPagina.precio_estimado==="perfil"?"Este proveedor se encuentra bloqueado.":"Esta publicación se encuentra bloqueada."}
               </Alerta>)
             }
             <Grid item xs={12} hidden={!esDePerfil} className={esDePerfil?classes.EstiloMovil:classes.EstiloVacio}>
@@ -92,6 +100,7 @@ export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) 
             <Grid item xs={esDePerfil?2:6} sm={1}>
               <ReportarPublicacion esDePerfil={esDePerfil} solicitud={DatosPagina}/>
             </Grid>
+
             <Grid item xs={6} hidden={esDePerfil}>
                 <Typography variant="h6" component="h3" align="left">
                   {DatosPagina.tipo?"Precio estimado:":"Presupuesto:"} ${DatosPagina.precio_estimado}

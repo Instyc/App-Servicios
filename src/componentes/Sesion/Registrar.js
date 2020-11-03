@@ -56,7 +56,8 @@ export default function Registrar({registrar}){
         contrasena:"",
         contrasena_rep:"",
         dni:"",
-        descripcion:""
+        descripcion:"",
+        
     });
 
     //Proveedor
@@ -241,7 +242,8 @@ export default function Registrar({registrar}){
                         confirmed: false,
                         estado: false,
                         mostrar_telefono: false,
-                        identidad_verificada: false
+                        identidad_verificada: false,
+                        espera_verificacion: false
                     })
                     .then(response => {
                         // Se registró el usuario correctamente

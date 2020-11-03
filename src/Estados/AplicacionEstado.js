@@ -30,7 +30,8 @@ const estadoInicial = {
         ubicacion: "",
         updated_at: "",
         username: "",
-        identidad_verificada: false
+        identidad_verificada: false,
+        imagenes_dni: []
     }
 };
 

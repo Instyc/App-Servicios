@@ -109,6 +109,11 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
               Esta publicación se encuentra pausada.
             </Alerta>)
           }
+          {
+            datosPagina.bloqueado && (<Alerta className={classes.inputAncho} style={{marginBottom:"10px"}} variant="outlined" severity="error">
+              Esta publicación se encuentra bloqueada, contacte a un administrador.
+            </Alerta>)
+          }
           <Grid container spacing={1} justify="center" alignItems="center">
             <Grid item xs={12} md={3} sm={12} align="center">
               <img 

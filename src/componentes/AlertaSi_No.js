@@ -6,7 +6,7 @@ export default function Alerta({titulo, funcionAceptar, mensaje}) {
   const [open, setOpen] = useState(true);
   const [cargando, setcargando] = useState(false)
   
-  const handleClose = async (boole) => {
+  const handleClose = (boole) => {
     setcargando(true)
     funcionAceptar(boole)
     setcargando(false)

@@ -2,7 +2,7 @@ import React, {useEffect, useState, useContext} from 'react'
 import axios from 'axios'
 
 //Material UI
-import {CircularProgress, Tooltip, FormGroup, FormControlLabel, Checkbox, Modal, Backdrop, Fade, Typography, TextField, Button, Divider} from '@material-ui/core/';
+import {CircularProgress, Tooltip, FormGroup, FormControlLabel, Checkbox, Modal, Backdrop, Fade, Typography, TextField, Button, Hidden} from '@material-ui/core/';
 import Reportar from '@material-ui/icons/PriorityHigh';
 import Estilos from '../Estilos.js';
 import AlertaMensaje from '../AlertaMensaje.js';
@@ -18,7 +18,7 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
   const [descripcion, setdescripcion] = useState("")
   const [abrir, setabrir] = useState(false)
   const [cargando, setcargando] = useState(false)
-
+  const [mensaje, setmensaje] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -43,8 +43,9 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
 
 
   function seleccionarMotivo(idMotivo){
+    if(mensaje===true)
+      setmensaje(false)
     let esta = motivosSeleccionados.some((motivo) => motivo===idMotivo)
-
     if(!esta){
       setmotivosSeleccionados((arreglo)=>[...arreglo, idMotivo])
     }else{
@@ -59,8 +60,8 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
     if(motivosSeleccionados.length!==0)
       axios.post(state.servidor+"/api/reportes",{
         motivos: motivosSeleccionados,
-        Solicitud_id: solicitud.id,
-        Usuario_id: solicitud.Usuario_id.id,
+        Solicitud_id: esDePerfil?null:solicitud.id,
+        Usuario_id: esDePerfil?solicitud.id:solicitud.Usuario_id.id,
         accion: false,
         estado: 0,
         descripcion: descripcion
@@ -71,6 +72,7 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
       })
       .then(response => {
         console.log(response.data)
+        setmensaje(false)
         handleClose()
         setabrir(true)
         setcargando(false)
@@ -82,7 +84,8 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
         console.log(error.response)
       })
     else
-      console.log("no se hace el post de reporte")
+      setcargando(false)
+      setmensaje(true)
   }
 
 
@@ -112,7 +115,7 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
             <Typography variant="h5" component="h2" align="center">
                 Seleccione los motivos:
             </Typography>
-            <FormGroup>
+            <FormGroup required>
             {
               motivos.map((motivo,i)=>(
                 <FormControlLabel
@@ -129,9 +132,16 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
             }
             </FormGroup>
 
+            <Hidden xlDown={!mensaje || cargando}>
+              <Typography color="error">
+                Debe seleccionar un motivo.
+              </Typography>
+            </Hidden>
+
             <TextField className={classes.inputAncho} onChange={(e)=>{setdescripcion(e.target.value)}} value={descripcion} id="filled-basic" label="Informacion adicional" variant="filled" multiline/>
             {cargando && <CircularProgress color="secondary"/>}
             <Button disabled={cargando} className={classes.inputAncho} style={{marginTop:10}} size="large" variant="contained" color="primary" onClick={EnviarReporte}>Enviar</Button>
+            
           </div>
         </Fade>
       </Modal>

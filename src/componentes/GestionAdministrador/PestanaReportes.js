@@ -3,10 +3,7 @@ import axios from 'axios'
 
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
+import {AppBar, Backdrop, CircularProgress, Box, Tab, Tabs} from '@material-ui/core';
 
 import GestionarReportes from './GestionarReportes.js'
 
@@ -60,9 +57,14 @@ const useStyles = makeStyles((theme) => ({
     padding: 10,
     minHeight:"calc(100vh - 130px)",
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
 
 export default function PestanaReportes() {
+  const [cargando, setcargando] = useState(false);
   const classes = useStyles();
   const [value, setValue] = useState(0);
   const [reportes, setreportes] = useState([]);
@@ -75,14 +77,14 @@ export default function PestanaReportes() {
 
   useEffect(()=>{
     if (state.jwt!=="" || state.publico===true){
-        //setcargando(true)
+        setcargando(true)
         let auth = 'Bearer '+state.jwt;
 
         axios.get(state.servidor+"/api/reportes",{
           headers: {'Authorization': auth}})
         .then(response => {
           setreportes(response.data)
-          //setcargando(false)
+          setcargando(false)
         })
         .catch(error => {
             alert("Un error ha ocurrido al cargar las categorías.")
@@ -92,7 +94,6 @@ export default function PestanaReportes() {
   },[state.jwt, state.publico])
 
   function modificarReporte(report){
-    console.log(report)
     setreportes(
       reportes.map((reporte)=>{
         if(report.id===reporte.id){
@@ -105,7 +106,7 @@ export default function PestanaReportes() {
 
   return (
     <div className={classes.root} style={{margin:"10px 0px", padding:"20px"}}>
-      <div>
+      <>
         <AppBar position="static" color="default">
           <Tabs
             value={value}
@@ -115,25 +116,27 @@ export default function PestanaReportes() {
             indicatorColor="primary"
             textColor="primary"
             aria-label="scrollable force tabs example"
-            centered
           >
             <Tab label="Gestionar nuevos reportes" icon={<Nuevo />} {...a11yProps(0)} />
             <Tab label="Reportes en espera" icon={<Reloj />} {...a11yProps(1)} />
             <Tab label="Historial de reportes" icon={<Check />} {...a11yProps(2)} />
           </Tabs>
         </AppBar>
+        <Backdrop className={classes.backdrop} open={cargando}>
+          <CircularProgress/>
+        </Backdrop>
         <TabPanel value={value} index={0}>
-          <GestionarReportes estadoReporte={0} modificarReporte={modificarReporte} reportes={reportes.filter((reporte)=>(reporte.estado===0))}/>
+          <GestionarReportes estadoReporte={0} cargando={cargando} modificarReporte={modificarReporte} reportes={reportes.filter((reporte)=>(reporte.estado<=0))}/>
         </TabPanel>
 
         <TabPanel value={value} index={1}>
-          <GestionarReportes estadoReporte={1} modificarReporte={()=>{}} reportes={reportes.filter((reporte)=>(reporte.estado===1))}/>
+          <GestionarReportes estadoReporte={1} cargando={cargando} modificarReporte={()=>{}} reportes={reportes.filter((reporte)=>(reporte.estado===1))}/>
         </TabPanel>
 
         <TabPanel value={value} index={2}>
-          <GestionarReportes estadoReporte={2} modificarReporte={()=>{}} reportes={reportes.filter((reporte)=>(reporte.estado>=2))}/>
+          <GestionarReportes estadoReporte={2} cargando={cargando} modificarReporte={()=>{}} reportes={reportes.filter((reporte)=>(reporte.estado>=2))}/>
         </TabPanel>
-        </div>
+      </>
     </div>
   );
 }
