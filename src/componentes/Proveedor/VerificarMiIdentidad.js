@@ -103,54 +103,65 @@ export default function VerificarMiIdentidad(){
         for(let i = 0; i<archivosNuevos.length; i++){
             formData.append('files', archivosNuevos[i])
         }
+        
+        
+        if(archivosNuevos.length!==0){
+            formData.append('ref', 'user')
+            formData.append('refId', state.datosSesion.id)
+            formData.append('field', 'imagenes_dni')
+            formData.append('source', 'users-permissions')
 
-        formData.append('ref', 'user')
-        formData.append('refId', state.datosSesion.id)
-        formData.append('field', 'imagenes_dni')
-        formData.append('source', 'users-permissions')
+            let auth = 'Bearer '+state.jwt;
 
-        let auth = 'Bearer '+state.jwt;
-
-        axios.post(
-            state.servidor+"/upload",
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': auth
-                },
-            })
-        .then(response => {
-            console.log("Respuesta imagen: ",response.data)
-            //Se modifica el perfil del usuario incluyendo los nuevos datos.
-            axios.put(
-                state.servidor+"/users/"+state.datosSesion.id,{
-                    dni: DNI,
-                    espera_verificacion: true
-                },{
+            axios.post(
+                state.servidor+"/upload",
+                formData,
+                {
                     headers: {
+                        'Content-Type': 'multipart/form-data',
                         'Authorization': auth
-                },})
+                    },
+                })
             .then(response => {
-                dispatch({type:"setDatos", value: response.data})
-                localStorage.setItem('datosLocal', JSON.stringify({
-                    jwt: state.jwt,
-                    datosSesion: response.data
-                }));
-                console.log("Datos: ",response.data)
-                
-                setcargando(false)
-                history.push("/")
+                console.log("Respuesta imagen: ",response.data)
+                guardarDatos()
             })
             .catch(error => {
-                console.log("Error, no se han podido enviar los datos.", error.response)
+                alert("Error al cargar las imágenes.")
+                console.log("Error: ", error.response)
             })
+        }else{
+            guardarDatos()
+        }
+        
+        
+    }
+
+    function guardarDatos(){
+        let auth = 'Bearer '+state.jwt;
+        //Se modifica el perfil del usuario incluyendo los nuevos datos.
+        axios.put(
+            state.servidor+"/users/"+state.datosSesion.id,{
+                dni: DNI,
+                espera_verificacion: true
+            },{
+                headers: {
+                    'Authorization': auth
+            },})
+        .then(response => {
+            dispatch({type:"setDatos", value: response.data})
+            localStorage.setItem('datosLocal', JSON.stringify({
+                jwt: state.jwt,
+                datosSesion: response.data
+            }));
+            console.log("Datos: ",response.data)
+            
+            setcargando(false)
+            history.push("/")
         })
         .catch(error => {
-            alert("Error al cargar las imágenes.")
-            console.log("Error: ", error.response)
+            console.log("Error, no se han podido enviar los datos.", error.response)
         })
-        
     }
     
     return (

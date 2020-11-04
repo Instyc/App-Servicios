@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, createContext} from "react";
+import React, { useReducer, createContext} from "react";
 
 const initialState = {
     estadoEditado: false,
@@ -18,10 +18,10 @@ const reducer = (state, action) => {
 const ObtenerEstado = createContext(initialState);
 
 function ProveerEstadoCategoria({ children }) {
-    const [state, dispatch] = useReducer(reducer, initialState);
+    const [stateCategoria, dispatchCategoria] = useReducer(reducer, initialState);
 
     return (
-        <ObtenerEstado.Provider value={{ state, dispatch }}>
+        <ObtenerEstado.Provider value={{ stateCategoria, dispatchCategoria }}>
             {children}
         </ObtenerEstado.Provider>
     );

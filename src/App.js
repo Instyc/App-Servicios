@@ -26,6 +26,7 @@ import PreguntasFrecuentes from './componentes/Footer/PreguntasFrecuentes.js';
 import SobreNosotros from './componentes/Footer/SobreNosotros.js';
 import AdministrarCategorias from './componentes/GestionAdministrador/AdministrarCategorias.js';
 import VerificarMiIdentidad from './componentes/Proveedor/VerificarMiIdentidad.js';
+import Notificaciones from './componentes/Notificaciones/Notificaciones.js';
 
 //import Chat from './componentes/Chat/Chat.js';
 
@@ -78,6 +79,8 @@ function App() {
                   <Route path="/verificar-mi-identidad"><VerificarMiIdentidad/></Route>
 
                   <Route path="/perfil-proveedor/:id"><MiPerfil/></Route>
+
+                  <Route path="/notificaciones"><Notificaciones/></Route>
 
                   <Route path="/administrar-categorias">
                     <ProveerEstadoCategoria>

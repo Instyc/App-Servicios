@@ -1,47 +1,58 @@
 import React,{useEffect, useState, useContext} from 'react';
-
+import axios from 'axios'
 //Material-UI
 import {TableRow, TableContainer, TableCell, TableBody, Box, Table, Collapse, Paper, Grid, Typography, TextField, Tooltip, IconButton, Hidden } from '@material-ui/core';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import Agregar from '@material-ui/icons/AddCircle';
-import Editar from '@material-ui/icons/Edit';
-import Eliminar from '@material-ui/icons/DeleteForever';
-import Guardar from '@material-ui/icons/Save';
-import Cancelar from '@material-ui/icons/ClearTwoTone';
+
+import {AddCircle as Agregar, Edit as Editar, DeleteForever as Eliminar, Save as Guardar, ClearTwoTone as Cancelar} from '@material-ui/icons';
 
 import Estilos from '../Estilos.js';
 import AlertaSi_No from '../AlertaSi_No.js';
 import PropTypes from 'prop-types';
 
 import {  ObtenerEstado, ProveerEstadoCategoria  } from '../../Estados/CategoriaEstado'
+import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
 export default function AdministrarCategorias() {
   const classes = Estilos();
+  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+  const { stateCategoria, dispatchCategoria } = useContext(ObtenerEstado);
 
-  const { state, dispatch } = useContext(ObtenerEstado);
-
-  const [editarControl, seteditarControl] = useState(false);
-  const [filas, setfilas] = useState([
-    'Categoría 1',
-    'Categoría 2',
-    'Categoría 3',
-    'Categoría 4',
-    'Categoría 5',
-  ]);
+  const [categorias, setcategorias] = useState([])
+  useEffect(()=>{
+    console.log()
+  },[stateCategoria])
 
   useEffect(()=>{
-    console.log(state.estadoEditado);
+    //setcargando(true)
+    if(state.jwt!==""){
+        axios.get(state.servidor+"/api/categorias/")
+        .then(response => {
+            setcategorias(response.data)
+            console.log(response.data)
+        })
+        .catch(error => {
+          alert("Un error ha ocurrido al cargar las categorías.")
+          console.log(error.response)
+        }) 
+    }
+  },[state.jwt])
+
+  const [editarControl, seteditarControl] = useState(false);
+
+  useEffect(()=>{
+    console.log(stateCategoria.estadoEditado);
   },[])
   
-  const agregarCategoria = () =>{
+  /*const agregarCategoria = () =>{
     setfilas(["",...filas])
-    dispatch({type:'setVerdad'});
-  }
+    dispatchCategoria({type:'setVerdad'});
+  }*/
   
   return (
     <div className={classes.fondo}>
-      <Paper elevation={5} style={{maxWidth:800}}>
+      <Paper elevation={5} style={{maxWidth:"%90"}}>
         <Grid className={classes.filaPublicacion} container justify="center">
             <Typography variant="h4" component="h1" align="center">
               Administrar categorías y servicios 
@@ -50,15 +61,26 @@ export default function AdministrarCategorias() {
             <Grid item xs={12}>
                 <Typography variant="h5" component="h3" align="left">
                     Categorías
-                    <Hidden xlDown={state.estadoEditado}>
+                    <Hidden xlDown={stateCategoria.estadoEditado}>
                       <Tooltip title="Agregar categoría">
-                          <IconButton onClick={agregarCategoria}><Agregar color="primary" /></IconButton>
+                          <IconButton ><Agregar color="primary" /></IconButton>
                       </Tooltip>
                     </Hidden>
                 </Typography>
             </Grid>
+
             <Grid item xs={12}>
-                <TablaCategorias filas={filas}/>
+              <TableContainer component={Paper}>
+                <Table aria-label="collapsible table">
+                    <TableBody>
+                    {
+                      categorias.map((categoria, i) => (
+                        <Categoria key={i} categoria={categoria}/>
+                      ))
+                    }
+                    </TableBody>
+                </Table>
+              </TableContainer>
             </Grid>
         </Grid>
       </Paper>
@@ -66,22 +88,8 @@ export default function AdministrarCategorias() {
   );
 }
 
-function TablaCategorias({filas}) {
-  return (
-      <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-          <TableBody>
-          {filas.map((fila, i) => (
-              <Categoria key={i} categoria={fila}/>
-          ))}
-          </TableBody>
-      </Table>
-      </TableContainer>
-  );
-}
-
 function Categoria({categoria}) {
-  const { state, dispatch } = useContext(ObtenerEstado);
+  const { stateCategoria, dispatchCategoria } = useContext(ObtenerEstado);
   const [open, setOpen] = useState(false);
   const [editar, seteditar] = useState(false);
   const [abrir, setabrir] = useState(false);
@@ -94,7 +102,7 @@ function Categoria({categoria}) {
 
   const agregarServicio = () =>{
     setservicios(["",...servicios])
-    dispatch({type:'setVerdad'});
+    dispatchCategoria({type:'setVerdad'});
   }
 
   useEffect(()=>{
@@ -107,11 +115,11 @@ function Categoria({categoria}) {
   
   const editarNombre = () =>{
     seteditar(true)
-    dispatch({type:'setVerdad'})
+    dispatchCategoria({type:'setVerdad'})
   }
 
   const cancelarEditar = () =>{
-    dispatch({type:'setFalso'})
+    dispatchCategoria({type:'setFalso'})
     seteditar(false)
   }
   const guardarEditar = () =>{
@@ -147,7 +155,7 @@ function Categoria({categoria}) {
         </TableCell>
 
         <TableCell align="right">
-            <Hidden xlDown={state.estadoEditado}>
+            <Hidden xlDown={stateCategoria.estadoEditado}>
               <Tooltip title="Editar categoría">
                   <IconButton onClick={editarNombre}><Editar color="primary" /></IconButton>
               </Tooltip>
@@ -166,7 +174,7 @@ function Categoria({categoria}) {
             <Box margin={1}>
               <Typography variant="h6" gutterBottom >
                 Servicios
-                <Hidden xlDown={state.estadoEditado}>
+                <Hidden xlDown={stateCategoria.estadoEditado}>
                   <Tooltip title="Nuevo servicio">
                       <IconButton onClick={agregarServicio}><Agregar color="primary" /></IconButton>
                   </Tooltip>
@@ -193,11 +201,11 @@ function Categoria({categoria}) {
 function FilaServicio({nombre}) {
     const [editar, seteditar] = useState(false);
     const [abrir, setabrir] = useState(false);
-    const { state, dispatch } = useContext(ObtenerEstado);
+    const { stateCategoria, dispatchCategoria } = useContext(ObtenerEstado);
     
     const editarNombre = () =>{
       seteditar(true)
-      dispatch({type:'setVerdad'})
+      dispatchCategoria({type:'setVerdad'})
     }
     
     useEffect(()=>{
@@ -209,7 +217,7 @@ function FilaServicio({nombre}) {
     },[nombre])
   
     const cancelarEditar = () =>{
-      dispatch({type:'setFalso'})
+      dispatchCategoria({type:'setFalso'})
       seteditar(false)
     }
 
@@ -240,7 +248,7 @@ function FilaServicio({nombre}) {
             </TableCell>
 
             <TableCell align="right">
-              <Hidden xlDown={state.estadoEditado}>
+              <Hidden xlDown={stateCategoria.estadoEditado}>
                 <Tooltip title="Editar servicio">
                     <IconButton onClick={editarNombre}><Editar color="primary" /></IconButton>
                 </Tooltip>

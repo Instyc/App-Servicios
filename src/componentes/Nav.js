@@ -1,5 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
+import axios from 'axios'
 //Material-UI
 import {makeStyles, ListItemIcon, Grid, AppBar, Toolbar, IconButton, Typography, Badge, MenuItem, Menu, Button} from '@material-ui/core/';
 import {AccountCircle} from '@material-ui/icons/';
@@ -12,7 +13,7 @@ import Inicio from "./Inicio/Inicio.js";
 import Publicacion from "./Publicacion/Publicacion.js";
 import InicioSesion from "./Sesion/InicioSesion.js";
 import Estilos from './Estilos.js';
-import RealizarOpinion from './Notificaciones/RealizarOpinion.js';
+import NotificacionesNav from './Notificaciones/NotificacionesNav.js';
 
 import { ObtenerEstadoAplicacion } from '../Estados/AplicacionEstado'
 
@@ -20,15 +21,52 @@ export default function PrimarySearchAppBar() {
   const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
   const classes = Estilos();
   let history = useHistory();
+
+  const [notificaciones, setnotificaciones] = useState([])
   
   //Código de guardado del estado de la sesión
   React.useEffect(()=>{
     let sesion = localStorage.getItem('datosLocal') || null;
     let sesionObjeto = JSON.parse(sesion)
-
+    
     if(sesionObjeto!==null){
-      dispatch({type:"setDatos", value: sesionObjeto.datosSesion});
-      dispatch({type:"setJwt", value: sesionObjeto.jwt});
+      dispatch({type:"setDatos", value: sesionObjeto.datosSesion})
+      dispatch({type:"setJwt", value: sesionObjeto.jwt})
+      let auth = 'Bearer '+sesionObjeto.jwt;
+      //dispatch({type:"setDatos", value: sesionObjeto.datosSesion});
+      //dispatch({type:"setJwt", value: sesionObjeto.jwt});
+      axios
+      .get(state.servidor+"/users/"+sesionObjeto.datosSesion.id,{
+        headers: {
+            'Authorization': auth
+        },
+      })
+      .then(response => {
+          // Se registró el usuario correctamente
+          console.log('Se ha iniciado sesion correctamente.', response.data)
+          dispatch({type:"setDatos", value: response.data})
+          dispatch({type:"setJwt", value: sesionObjeto.jwt})
+          
+          localStorage.setItem('datosLocal', JSON.stringify({
+            jwt: sesionObjeto.jwt,
+            datosSesion: response.data
+          }));
+      })
+      .catch(error => {
+        console.log("Error: ",error.response)
+      });
+
+      axios.get(state.servidor+"/api/notificaciones?receptor="+sesionObjeto.datosSesion.id+"&leido=false",{
+        headers: {'Authorization': auth},
+      })
+      .then(response => {
+        console.log(response.data)
+        setnotificaciones(response.data.reverse())
+      })
+      .catch(error => {
+        alert("Un error ha ocurrido al buscar las notificaciones.")
+        console.log(error.response)
+      })
     }else{
       dispatch({type:"setPublico", value: true});
     }
@@ -37,6 +75,7 @@ export default function PrimarySearchAppBar() {
   const [despPerf, setdespPerf] = useState(null);
   const [despMenu, setdespMenu] = useState(null);
   const [despNoti, setdespNoti] = useState(null);
+  const [traerNotificaciones, settraerNotificaciones] = useState(false);
   
   const [tipoUsuario, setTipoUsuario] = useState(state.datosSesion.tipo);
   
@@ -92,6 +131,7 @@ export default function PrimarySearchAppBar() {
     setdespMenu(null);
   };
   const desplegarNoti = (event) => {
+    settraerNotificaciones(true)
     setdespNoti(event.currentTarget);
   };
   const plegarNoti = () => {
@@ -161,18 +201,15 @@ export default function PrimarySearchAppBar() {
  
           <div hidden={tipoUsuario===0}>
               {/*Desplegar notificaciones*/}
-              <IconButton aria-label="show 17 new notifications" color="inherit" onClick={desplegarNoti}>
-                <Badge badgeContent={17} color="secondary">
-                  <NotificationsIcon />
+              <IconButton color="inherit" onClick={desplegarNoti}>
+                <Badge badgeContent={notificaciones.length} color="secondary">
+                  <NotificationsIcon /> 
                 </Badge>
               </IconButton>
               <Menu id="simple-menu" anchorEl={despNoti} keepMounted open={Boolean(despNoti)} onClose={plegarNoti}>
-                <MenuItem onClick={plegarNoti}>
-                  <ListItemIcon>
-                    <PriorityHighIcon fontSize="small"/>
-                  </ListItemIcon>
-                  <RealizarOpinion/>
-                </MenuItem>
+                {
+                  traerNotificaciones && <NotificacionesNav notificaciones={notificaciones} plegarNoti={plegarNoti}/>
+                }
               </Menu>
 
               {/*Desplegar perfil*/}

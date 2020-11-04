@@ -98,7 +98,7 @@ export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) 
             </Grid>
             
             <Grid item xs={esDePerfil?2:6} sm={1}>
-              <ReportarPublicacion esDePerfil={esDePerfil} solicitud={DatosPagina}/>
+              {state.publico===false && <ReportarPublicacion esDePerfil={esDePerfil} solicitud={DatosPagina}/>}
             </Grid>
 
             <Grid item xs={6} hidden={esDePerfil}>

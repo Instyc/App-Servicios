@@ -19,7 +19,8 @@
     "react-dropzone-uploader": "^2.11.0",
     "react-image-gallery": "^1.0.8",
     "react-images-upload": "^1.2.8",
-    "react-lightbox-component": "^1.2.1"
+    "react-lightbox-component": "^1.2.1",
+    "timeago.js": "^4.0.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.4",

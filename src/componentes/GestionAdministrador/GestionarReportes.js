@@ -73,7 +73,7 @@ function Reporte({datos, modificarReporte}) {
         case 2:
             color = "#FFDED3"
             break;
-        default:
+        case 3:
             color = "#D6FFD3"
             break;
     }
@@ -161,13 +161,25 @@ function DesplegarInformacion({datos, modificarReporte}) {
         setcargando(true)
         let auth = 'Bearer '+state.jwt;
         let estado = 2
+        let datosNoti = "Su "+(datos.Solicitud_id!==null?"publicación":"perfil")+" tiene una sugerencia de modificación. \nMensaje de la administración: "+descripcion
         
-        //Si se acepta el reclamo
+        /**
+         * estado:-1 ->Reporte respondido por el usuario
+         * estado: 0 ->Reporte esperando a ser atendido
+         * estado: 1 ->Reporte en espera, el proveedor debe modificar su perfil/publicación
+         * estado: 2 ->Reporte rechazado
+         * estado: 3 ->Reporte concluido
+         */
+
+        //Si se acepta el reporte
         if(aceptado){
             //Si la acción tomada es pausar la publicación o continuar con la pausa
             if(accion){
                 //El estado se setea en "en espera de respuesta"
                 estado = 1
+                datosNoti = datos.Solicitud_id!==null?
+                "Su publicación ha sido pausada por un administrador, deberá modificarla para que vuelva a estar disponible al público. \nMensaje de la administración: "+descripcion:
+                "Su perfil ha sido bloqueado por un adminitrador, deberá modificarlo para que vuelva a estar disponible al público. \nMensaje de la administración: "+descripcion
                 //Bloqueamos la publicación, si es que ya no lo está
                 if(datos.estado!==-1)
                     cambiarVariableBloqueado(datos, true)
@@ -178,6 +190,8 @@ function DesplegarInformacion({datos, modificarReporte}) {
                 //Si el estado del reporte era "respondido", se desbloquea la publicación
                 if(datos.estado===-1){
                     cambiarVariableBloqueado(datos, false)
+                    aceptado = true
+                    datosNoti = datos.Solicitud_id!==null?"¡Su publicación se encuentra nuevamente disponible!":"¡Su perfil se encuentra nuevamente disponible!"
                 }
             }
         }
@@ -190,14 +204,15 @@ function DesplegarInformacion({datos, modificarReporte}) {
                     emisor: state.datosSesion.id,
                     receptor: datos.Usuario_id.id,
                     solicitud: datos.Solicitud_id!==null?datos.Solicitud_id.id:null,
-                    datos_notificacion: descripcion,
+                    datos_notificacion: datosNoti,
                     leido: false
                 },{
                     headers: {'Authorization': auth},
             })
             .then(response => {
                 console.log("Se ha podido crear la notificacion: ",response.data)
-                actualizarReporte(response.data.id, estado)
+                if (datos.estado!==-1)
+                    actualizarReporte(response.data.id, estado)
             })
             .catch(error => {
                 console.log("Error, no se ha podido crear la notificacion.", error.response)
