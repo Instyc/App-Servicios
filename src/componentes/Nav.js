@@ -1,13 +1,10 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
+import {BrowserRouter as Router, Switch, Route, Link, useHistory} from "react-router-dom";
 import axios from 'axios'
 //Material-UI
 import {makeStyles, ListItemIcon, Grid, AppBar, Toolbar, IconButton, Typography, Badge, MenuItem, Menu, Button} from '@material-ui/core/';
-import {AccountCircle} from '@material-ui/icons/';
-import MenuIcon from '@material-ui/icons/Menu';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import PriorityHighIcon from '@material-ui/icons/PriorityHigh';
-import {useHistory} from 'react-router-dom'
+import {Chat, AccountCircle, Menu as MenuIcon, Notifications as NotificationsIcon, PriorityHigh as PriorityHighIcon} from '@material-ui/icons'
+
 //Importamos componentes (Logica)
 import Inicio from "./Inicio/Inicio.js";
 import Publicacion from "./Publicacion/Publicacion.js";
@@ -21,8 +18,13 @@ export default function PrimarySearchAppBar() {
   const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
   const classes = Estilos();
   let history = useHistory();
-
+  const [despPerf, setdespPerf] = useState(null);
+  const [despMenu, setdespMenu] = useState(null);
+  const [despNoti, setdespNoti] = useState(null);
+  const [traerNotificaciones, settraerNotificaciones] = useState(false);
+  const [tipoUsuario, setTipoUsuario] = useState(state.datosSesion.tipo);
   const [notificaciones, setnotificaciones] = useState([])
+  const [mensajesnoleidos, setmensajesnoleidos] = useState([])
   
   //Código de guardado del estado de la sesión
   React.useEffect(()=>{
@@ -51,6 +53,7 @@ export default function PrimarySearchAppBar() {
             jwt: sesionObjeto.jwt,
             datosSesion: response.data
           }));
+          mensajesNoleidos(sesionObjeto.jwt, response.data)
       })
       .catch(error => {
         console.log("Error: ",error.response)
@@ -67,17 +70,42 @@ export default function PrimarySearchAppBar() {
         alert("Un error ha ocurrido al buscar las notificaciones.")
         console.log(error.response)
       })
+      
     }else{
       dispatch({type:"setPublico", value: true});
     }
   },[])
-
-  const [despPerf, setdespPerf] = useState(null);
-  const [despMenu, setdespMenu] = useState(null);
-  const [despNoti, setdespNoti] = useState(null);
-  const [traerNotificaciones, settraerNotificaciones] = useState(false);
   
-  const [tipoUsuario, setTipoUsuario] = useState(state.datosSesion.tipo);
+  function mensajesNoleidos(jwt, user){
+    let auth = 'Bearer '+jwt;
+
+    
+      axios.get(state.servidor+"/api/chats/",{
+          headers: {'Authorization': auth},
+        })
+      .then(response => {
+        //Obtenemos todos los chats del sistema y filtramos segun el id de receptor o emisor
+        let chats_ = response.data.filter(chat => (chat.receptor.id === user.id || chat.emisor.id === user.id))
+        let cantidad = 0
+        console.log(chats_)
+        chats_.map(chat_=>{
+          if(chat_.emisor.id===user.id){
+            cantidad+= chat_.noleido_emisor
+          }
+
+          if(chat_.receptor.id===user.id){
+            cantidad+= chat_.noleido_receptor
+          }
+        })
+        
+        setmensajesnoleidos(cantidad)
+      })
+      .catch(error => {
+        console.log("Un error ha ocurrido al buscar las notificaciones.")
+        console.log(error.response)
+      })
+    
+  }
   
   useEffect(()=>{
     setTipoUsuario(state.datosSesion.tipo)
@@ -211,6 +239,16 @@ export default function PrimarySearchAppBar() {
                   traerNotificaciones && <NotificacionesNav notificaciones={notificaciones} plegarNoti={plegarNoti}/>
                 }
               </Menu>
+
+              {/*Componente chats*/}
+                <Link to="/mis-chats" style={{color:"black"}}>
+                  <IconButton color="inherit">
+                      <Badge badgeContent={mensajesnoleidos} color="secondary">
+                        <Chat />
+                      </Badge>
+                  </IconButton>
+                </Link>
+             
 
               {/*Desplegar perfil*/}
               <IconButton

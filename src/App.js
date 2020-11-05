@@ -28,7 +28,7 @@ import AdministrarCategorias from './componentes/GestionAdministrador/Administra
 import VerificarMiIdentidad from './componentes/Proveedor/VerificarMiIdentidad.js';
 import Notificaciones from './componentes/Notificaciones/Notificaciones.js';
 
-//import Chat from './componentes/Chat/Chat.js';
+import Chat from './componentes/Chat/Chat.js';
 
 import { ObtenerEstado, ProveerEstadoCategoria } from './Estados/CategoriaEstado'
 import { ObtenerEstadoAplicacion, ProveerEstadoAplicacion } from './Estados/AplicacionEstado'
@@ -43,6 +43,7 @@ import TemaClaro from './TemaClaro'
 const theme = createMuiTheme(TemaClaro);
 
 function App() { 
+  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
 
   return (
     <div className="App" style={{height: "auto"}}>
@@ -91,7 +92,7 @@ function App() {
                   <Route path="/preguntas-frecuentes"><PreguntasFrecuentes/></Route>
                   <Route path="/sobre-nosotros"><SobreNosotros/></Route>
 
-                  {/*<Route path="/chat-contactos"><Chat/></Route>*/}
+                  <Route path="/mis-chats"><Chat state={state}/></Route>
                 </Switch>
               </Container>
           </React.Fragment>

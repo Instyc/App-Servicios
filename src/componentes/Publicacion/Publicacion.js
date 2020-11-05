@@ -108,8 +108,11 @@ export default function Publicacion() {
                             <ProveedorInfo esDePerfil={false} datosPerfil={datosPerfil}/>
                         </Grid> 
                     )
-                } 
-                <BotonContratar fijo={true} esDePerfil={false}/>
+                }
+                {
+                    datosPerfil.id!==state.datosSesion.id &&
+                    <BotonContratar fijo={true} esDePerfil={false} datos={{idS: datosPagina.id, idP: datosPerfil.id, nombre: datosPerfil.titulo}} />
+                }
             </Grid>
         </div>
     )

@@ -69,7 +69,14 @@ export default function MiPerfil() {
             <Grid item md={4} xs={12} >
                 <ProveedorInfo esDePerfil={true} datosPerfil={datosPagina}/>
             </Grid>
-            <BotonContratar fijo={true} esDePerfil={true}/> 
+            {
+                datosPagina.id!==state.datosSesion.id &&
+                datosPagina.servicios.length!==0 &&
+                <BotonContratar
+                fijo={true}
+                esDePerfil={true}
+                datos={{idS: null, idP: datosPagina.id, nombre: datosPagina.titulo, servicios: datosPagina.servicios}}/>
+            }
         </Grid>
     )
 }

@@ -16,6 +16,7 @@ import {BotonContratar} from '../ContactarProveedor.js'
 
 import {Link} from "react-router-dom";
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
+import { FormatListBulletedRounded } from '@material-ui/icons';
 
 export default function FilaPublicacion({tipoPublicacion, datos, contactar, buscarSolicitudes}) {
   const classes = Estilos();
@@ -33,7 +34,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
     imagenes: [],
     servicio: "",
     estrellas:0,
-    Usuario_id: {nombre:"", apellido: ""},
+    Usuario_id: {id: null, nombre:"", apellido: ""},
     Servicio_id: {nombre:""},
     pausado: false
   });
@@ -85,8 +86,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
         pausado: Pausa
       },{
         headers: {'Authorization': auth},
-      }
-      )
+      })
       .then(response => {
         console.log("Respuesta pausa: ",response.data)
       })
@@ -188,9 +188,15 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
             <Estrellas valor={datos.estrellas} clickeable={false} cambiarValor={()=>{}}/>
           </Grid>
           
-          <Grid item xs={6} sm={6} md={6} lg={3} align="center" hidden={!contactar}>
-            <BotonContratar/>
-          </Grid>
+          {
+            datosPagina.Usuario_id.id!==state.datosSesion.id &&
+            <Grid item xs={6} sm={6} md={6} lg={3} align="center" hidden={!contactar}>
+              <BotonContratar
+              fijo={false}
+              esDePerfil={false}
+              datos={{idS: datosPagina.id, idP: datosPagina.Usuario_id.id, nombre: `${datosPagina.Usuario_id.nombre} ${datosPagina.Usuario_id.apellido}`}}/>
+            </Grid>
+          }
            
         <Grid item xs={6} lg={12} md={12} sm={6} align="center">
           <Link to={"/publicacion/"+datosPagina.id} style={{textDecoration:"none", padding: 0, color:"black"}}>
