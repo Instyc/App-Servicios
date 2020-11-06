@@ -29,7 +29,6 @@ export function BotonContratar({fijo, esDePerfil, datos}) {
     };
 
   useEffect(()=>{
-    console.log(datos)
     if (esDePerfil){
       let cat = {}
       let arrCat = []

@@ -161,9 +161,7 @@ function Categorias({categoria}) {
                       {
                         categoria.servicios.map((servicio, i) => (
                           <Typography key={i} variant="h6" component="h5" align="left">
-                            <Link to={"/publicacion"} className={classes.EstiloLink}>
-                              {servicio.nombre}
-                            </Link>
+                            {servicio.nombre}
                           </Typography>
                         ))
                       }

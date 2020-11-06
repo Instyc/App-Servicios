@@ -56,7 +56,7 @@ export default function MisPublicaciones({tipoPublicacion}) {
               }
               {
                   solicitudes.map((solicitud, i)=>(
-                      <FilaPublicacion buscarSolicitudes={buscarSolicitudes} key={i} datos={solicitud} tipoPublicacion={tipoPublicacion} contactar={true}/>
+                      <FilaPublicacion buscarSolicitudes={buscarSolicitudes} resenas={null} key={i} datos={solicitud} tipoPublicacion={tipoPublicacion} contactar={true}/>
                   ))
               }
           </Paper>

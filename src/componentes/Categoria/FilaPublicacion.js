@@ -18,13 +18,14 @@ import {Link} from "react-router-dom";
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 import { FormatListBulletedRounded } from '@material-ui/icons';
 
-export default function FilaPublicacion({tipoPublicacion, datos, contactar, buscarSolicitudes}) {
+export default function FilaPublicacion({tipoPublicacion, datos, contactar, buscarSolicitudes, resenas}) {
   const classes = Estilos();
   const [precioPresupuesto, setPrecioPresupuesto] = useState("");
   const [noMostrar, setnoMostrar] = useState(true);
   const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
   const [preguntarPausa, setpreguntarPausa] = useState(false);
   const [preguntarEliminar, setpreguntarEliminar] = useState(false);
+  const [promedio, setpromedio] = useState(0);
 
   const [datosPagina, setdatosPagina] = useState({
     id: null,
@@ -56,6 +57,18 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
     let x = datos.Usuario_id.id===state.datosSesion.id
     setnoMostrar(!x)
   },[datos])
+
+  useEffect(()=>{
+    if(resenas!==null){
+      let total = 0
+      resenas.resenas.map((resena)=>{
+        if(resena.proveedor.id===datos.Usuario_id.id){
+          total+=resena.recomendacion
+        }
+      })
+      setpromedio(total)
+    }
+  },[resenas])
 
 
   const eliminarPublicacion = (boole) =>{
@@ -174,7 +187,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
 
           <Grid item xs={8} sm={12} md={6} lg={3} align="center">
             <Typography component="h6" variant="h6" color="secondary">
-              {precioPresupuesto}: {datosPagina.precio_estimado}
+              {precioPresupuesto}: ${datosPagina.precio_estimado}
             </Typography>
           </Grid>  
 
@@ -185,7 +198,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
           }
 
           <Grid item xs={12} sm={6} md={6} lg={3} align="center">
-            <Estrellas valor={datos.estrellas} clickeable={false} cambiarValor={()=>{}}/>
+            <Estrellas valor={promedio} clickeable={false} cambiarValor={()=>{}}/>
           </Grid>
           
           {

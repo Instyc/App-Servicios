@@ -3,6 +3,7 @@ import axios from 'axios'
 
 import './EstiloChat.css'
 import {
+    ChatItem,
     MessageBox,
     ChatList,
     SystemMessage,
@@ -16,7 +17,8 @@ import {
     Popup,
     MeetingList,
 } from './ComponentesChat'; 
-
+import {IconButton, AppBar, Toolbar, Typography, Button as Boton, Grid, Tooltip} from '@material-ui/core/';
+import {KeyboardReturn as Atras, StarRate} from '@material-ui/icons/';
 import you from './Miniatura.png'
 
 import FaSearch from 'react-icons/lib/fa/search';
@@ -28,8 +30,10 @@ import FaSquare from 'react-icons/lib/md/crop-square';
 //import loremIpsum from 'lorem-ipsum';
 //import Identicon from './identicon.js';  
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
+import Estilos from '../Estilos.js'
 
 export function Chat(){
+    const classes = Estilos();
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
     const [cargando, setcargando] = useState(false)
     const [chats, setchats] = useState([])
@@ -38,6 +42,7 @@ export function Chat(){
     const [chatSeleccionado, setchatSeleccionado] = useState(null);
     
     const [contenido, setcontenido] = useState("");
+    const [atras, setatras] = useState(false);
     
     useEffect(()=>{
         let auth = 'Bearer '+state.jwt;
@@ -98,6 +103,8 @@ export function Chat(){
                             receptor: chat.receptor,
                             noleido_emisor: chat.noleido_emisor,
                             noleido_receptor: chat.noleido_receptor,
+                            categoria: chat.categoria,
+                            solicitud: chat.solicitud,
                         }
                     }
                 }))
@@ -109,9 +116,18 @@ export function Chat(){
         }
     },[state.jwt])
 
+    useEffect(()=>{
+        if(chats.length!==0){
+            //console.log(chats)
+            setchatSeleccionado(chats[0].chat)
+            setmensajes(chats[0].chat.mensajes)
+        }
+    },[chats])
+
     function actualizarMensajes(chat){
         setmensajes(chat.mensajes)
         setchatSeleccionado(chat)
+        setatras(false)
         let auth = 'Bearer '+state.jwt;
 
         //Si abrimos el chat debemos actualizar el valor de los mensajes no leidos a 0
@@ -243,9 +259,31 @@ export function Chat(){
         }
     }, [chats])
 
+    function enviarNotificacion(){
+        let auth = 'Bearer '+state.jwt;
+        //Generamos una notificación
+        axios.post(
+            state.servidor+"/api/notificaciones/",{
+                tipo: 2,
+                emisor: chatSeleccionado.receptor.id,
+                receptor: chatSeleccionado.emisor.id,
+                solicitud: chatSeleccionado.solicitud===null?null:chatSeleccionado.solicitud.id,
+                datos_notificacion: chatSeleccionado.categoria===null?"":String(chatSeleccionado.categoria.id+"_"+chatSeleccionado.categoria.nombre),
+                leido: false
+            },
+            {headers: {'Authorization': auth},})
+        .then(response => {
+            console.log("Se ha podido crear la notificacion: ",response.data)
+        })
+        .catch(error => {
+            console.log("Error, no se ha podido crear la notificacion.", error.response)
+            alert("Error, no se ha podido crear la notificacion.")
+        })
+    }
+
     return (
-        <div className='container'>
-            <div className='chat-list'>
+        <div className='container' >
+            <div className='chat-list' className={atras?classes.EstiloMovil:classes.EstiloPC}>
                 <SideBar
                     top={
                         <div>
@@ -261,8 +299,50 @@ export function Chat(){
                         </div>
                     }/>
             </div>
-            <div
-                className='right-panel'>
+            <IconButton
+                className={classes.EstiloMovil}
+                style={{
+                    position: atras?"relative":"absolute",
+                    left: "0px",
+                    top: "70px",
+                    zIndex: 100,
+                }}
+                onClick={()=>{setatras(!atras)}}
+            >
+                <Atras/>
+            </IconButton>
+            <div className={atras?classes.EstiloPC:classes.EstiloVacio} className='right-panel'>
+                {
+                    chatSeleccionado!==null &&
+                        <ChatItem
+                            avatar={you}
+                            alt={'Reactjs'}
+                            title={chatSeleccionado.title}
+                            subtitle={chatSeleccionado.emisor.id===state.datosSesion.id?
+                                `${chatSeleccionado.receptor.nombre} ${chatSeleccionado.receptor.apellido}`:
+                                `${chatSeleccionado.emisor.nombre} ${chatSeleccionado.emisor.apellido}`}
+                            date={null}
+                            unread={0}
+                        />
+                }
+                {
+                    chatSeleccionado!==null && !atras &&
+                    (chatSeleccionado.solicitud===null?(chatSeleccionado.receptor.id===state.datosSesion.id):
+                    (chatSeleccionado.solicitud.tipo?chatSeleccionado.receptor.id===state.datosSesion.id:chatSeleccionado.emisor.id===state.datosSesion.id)) &&
+                    <div>
+                        <Tooltip title="Una vez que lleves a cabo tu servicio, ¡Puedes solicitar al cliente que te deje una reseña!" arrow>
+                                <Boton onClick={enviarNotificacion} color="primary" className={classes.BotonSolicitar} variant="contained">
+                                    Petición de reseña
+                                </Boton>
+                        </Tooltip>
+                        <Tooltip title="Una vez que lleves a cabo tu servicio, ¡Puedes solicitar al cliente que te deje una reseña!" arrow>
+                                <Boton onClick={enviarNotificacion} color="primary" className={classes.BotonSolicitarMovil} variant="contained">
+                                    <StarRate/>
+                                </Boton>
+                        </Tooltip>
+                    </div>
+                }
+                
                 <MessageList
                     className='message-list'
                     lockable={true}

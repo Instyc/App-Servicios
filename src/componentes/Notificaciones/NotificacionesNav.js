@@ -10,6 +10,7 @@ import Alerta from '@material-ui/lab/Alert';
 //Estilos
 import Estilos from '../Estilos.js'
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
+import { EmojiSymbolsRounded } from '@material-ui/icons';
 
 export default function NotificacionesNav({plegarNoti, notificaciones}) {
     const classes = Estilos();
@@ -32,6 +33,7 @@ export default function NotificacionesNav({plegarNoti, notificaciones}) {
                                             {noti.tipo===1 && (noti.datos_notificacion===""?
                                             '¡Tu solicitud de verificación de identidad ha sido aceptada!':
                                             'Tu solicitud de verificación de identidad ha sido rechazada.')}
+                                            {noti.tipo===2 && (`¡Tienes una nueva solicitud de reseña de ${noti.emisor.nombre} ${noti.emisor.apellido}!`)}
                                         </Typography>
                                     </Link>
                                 </Grid>

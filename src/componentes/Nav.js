@@ -24,7 +24,7 @@ export default function PrimarySearchAppBar() {
   const [traerNotificaciones, settraerNotificaciones] = useState(false);
   const [tipoUsuario, setTipoUsuario] = useState(state.datosSesion.tipo);
   const [notificaciones, setnotificaciones] = useState([])
-  const [mensajesnoleidos, setmensajesnoleidos] = useState([])
+  const [mensajesnoleidos, setmensajesnoleidos] = useState(0)
   
   //Código de guardado del estado de la sesión
   React.useEffect(()=>{
@@ -87,7 +87,6 @@ export default function PrimarySearchAppBar() {
         //Obtenemos todos los chats del sistema y filtramos segun el id de receptor o emisor
         let chats_ = response.data.filter(chat => (chat.receptor.id === user.id || chat.emisor.id === user.id))
         let cantidad = 0
-        console.log(chats_)
         chats_.map(chat_=>{
           if(chat_.emisor.id===user.id){
             cantidad+= chat_.noleido_emisor

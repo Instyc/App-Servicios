@@ -65,6 +65,7 @@ export default function Publicacion() {
             servicio: data.tipo?data.Servicio_id.nombre:null,
             Usuario_id: data.Usuario_id,
             bloqueado: data.bloqueado,
+            servicio_id: data.tipo?data.Servicio_id.id:null,
         })
 
         let auth = state.jwt!==""?'Bearer '+state.jwt:"";
@@ -99,7 +100,7 @@ export default function Publicacion() {
             <Grid container direction="row" justify="center" alignItems="stretch">
                 <Grid item md={8} xs={12}>
                   <PublicacionInfo esDePerfil={false} datosPagina={datosPagina}/>
-                  {datosPagina.tipo && <Opiniones/>}
+                  {datosPagina.tipo && <Opiniones datos={datosPagina}/>}
                 </Grid>  
 
                 {

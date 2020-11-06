@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import axios from 'axios'
 //Material-UI
 import {IconButton, LinearProgress, Collapse, Hidden, ListItemText, ListItem, List, Paper, Grid, Typography, Button, TextField} from '@material-ui/core/';
-import {DeleteForever as Eliminar, FiberNew as Nuevo, Assignment as Reporte, EmojiPeople as Identidad} from '@material-ui/icons/';
+import {DeleteForever as Eliminar, FiberNew as Nuevo, Assignment as Reporte, EmojiPeople as Identidad, Star as Resena} from '@material-ui/icons/';
 import Alerta from '@material-ui/lab/Alert';
 import 'react-lightbox-component/build/css/index.css';
 import { format, register } from 'timeago.js';
@@ -10,14 +10,14 @@ import { format, register } from 'timeago.js';
 import Estilos from '../Estilos.js'
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 import { red } from '@material-ui/core/colors';
-
+import RealizarOpinion from './RealizarOpinion.js'
 export default function VerificarIdentidad() {
     const classes = Estilos();
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
     const [notificaciones, setnotificaciones] = useState([])
     const [cargando, setcargando] = useState(false);
     
-    const [iconos, seticonos] = useState([<Reporte style={{ fontSize: "75px" }}/>, <Identidad style={{ fontSize: "75px" }}/>]);
+    const [iconos, seticonos] = useState([<Reporte style={{ fontSize: "75px" }}/>, <Identidad style={{ fontSize: "75px" }}/>, <Resena style={{ fontSize: "75px" }}/>]);
     //
     const localeFunc = (number, index, totalSec) => {
         // number: the timeago / timein number;
@@ -96,7 +96,7 @@ export default function VerificarIdentidad() {
         .catch(error => {
             alert("Un error ha ocurrido al cambiar la variable true.")
             console.log(error.response)
-        }) 
+        })
     }
 
     return (
@@ -127,17 +127,28 @@ export default function VerificarIdentidad() {
                                         }
                                     </Grid>
                                     <Grid item xs={10} sm={8} md={10} lg={10}>
-                                            <Typography variant="h5" component="h5" align="left">
-                                                {noti.tipo===0 && (noti.solicitud!==null?
-                                                    'Reporte a la publicación "'+noti.solicitud.titulo+'"':
-                                                    'Reporte a su perfil')}
-                                                {noti.tipo===1 && 'Respuesta a tu solicitud de verificación de identidad'}
-                                                {" - "+format(new Date(noti.created_at),"spanish")}
-                                                {!noti.leido && <Nuevo style={{ color: red[500] }}/>}
-                                            </Typography>
-                                        <Typography align="justify">
-                                            {noti.datos_notificacion!==""?noti.datos_notificacion:"¡Felicitaciones! Tu perfil ahora está verificado."}
+                                        <Typography variant="h5" component="h5" align="left">
+                                            {noti.tipo===0 && (noti.solicitud!==null?
+                                                'Reporte a la publicación "'+noti.solicitud.titulo+'"':
+                                                'Reporte a su perfil')}
+                                            {noti.tipo===1 && 'Respuesta a tu solicitud de verificación de identidad'}
+                                            {noti.tipo===2 && (noti.datos_notificacion===""?
+                                                ('Nueva solicitud de reseña a la publicación "'+noti.solicitud.titulo+'"'):
+                                                ('Nueva solicitud de reseña a la categoría "'+noti.datos_notificacion.split("_")[1]+'"'))}
+                                            {" - "+format(new Date(noti.created_at),"spanish")}
+                                            {!noti.leido && <Nuevo style={{ color: red[500] }}/>}
                                         </Typography>
+                                        <Typography align="justify">
+                                            {noti.tipo<2?(noti.datos_notificacion!==""?noti.datos_notificacion:"¡Felicitaciones! Tu perfil ahora está verificado."):
+                                            (noti.datos_notificacion===""?('Tienes una nueva petición de reseña al servicio "'+noti.solicitud.titulo):(
+                                            'Tienes una nueva petición de reseña a la categoría "'+noti.datos_notificacion.split("_")[1]))
+                                            }
+                                            {noti.tipo===2 && '" realizado por el proveedor '+`${noti.emisor.nombre} ${noti.emisor.apellido}`+'. ¡Cuéntanos tu experiencia haciendo click en el botón!'}
+                                        </Typography>
+                                        {
+                                            noti.tipo===2 && <div align="center"><RealizarOpinion datos={noti} eliminarNotificacion={eliminarNotificacion}/></div>
+                                        }
+                                        
                                     </Grid>
                                     <Grid item xs={2} sm={2} md={1} lg={1} align="center">
                                         {

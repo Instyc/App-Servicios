@@ -58,7 +58,7 @@ const Estilos = makeStyles((theme) => ({
         border: '1px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
-        backgroundColor: theme.palette.primary.light
+        backgroundColor: theme.palette.secondary.dark
     },
     pantallaMedia:{
         maxWidth: 800, 
@@ -116,6 +116,30 @@ const Estilos = makeStyles((theme) => ({
         margin:"auto",
         paddingTop:20
     },
+    BotonSolicitar:{
+        display: 'inline',
+        '@media (max-width:1075px)': {
+            display: 'none',
+        },
+        position: "absolute",
+        left: "90%",
+        top: "35px",
+        transform: "translate(-70%, -50%)",
+        zIndex: 1000,
+        width: "195px",
+    },
+    BotonSolicitarMovil:{
+        display: 'none',
+        '@media (max-width:1075px)': {
+            display: 'inline',
+        },
+        position: "absolute",
+        left: "90%",
+        top: "35px",
+        transform: "translate(-70%, -50%)",
+        zIndex: 1000,
+    },
+    
 }));
 
 export default Estilos;

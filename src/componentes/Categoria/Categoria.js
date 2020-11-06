@@ -20,6 +20,7 @@ export default function Categoria({tipoPublicacion}) {
     const [servicios, setservicios] = useState([])
     const [solicitudes, setsolicitudes] = useState([])
     const [cargando, setcargando] = useState(false)
+    const [resenas_servicio, setresenas_servicio] = useState(null)
 
     const [inputBusqueda, setinputBusqueda] = useState("")
 
@@ -98,6 +99,40 @@ export default function Categoria({tipoPublicacion}) {
         })
     }
 
+    useEffect(()=>{
+        if(servicios.length!==0){
+            let ids_ = ""
+            servicios.map((servicio_)=>{
+                ids_+="servicios="+servicio_.id+"&"
+            })
+            //console.log(ids_)
+
+            
+            axios.get(state.servidor+"/api/resenas?"+ids_)
+            .then(response => {
+                console.log(response.data)
+                let servicios_resena = {}
+
+                servicios.map((serv_=>{
+                    if(!servicios_resena.hasOwnProperty(serv_.nombre)){
+                        servicios_resena[serv_.nombre] = {resenas:[]}
+                    }
+                }))
+                //console.log(servicios_resena)
+                response.data.map((resena=>{
+                    resena.servicios.map(serv_=>{
+                        servicios_resena[serv_.nombre].resenas.push(resena)
+                    })
+                }))
+                setresenas_servicio(servicios_resena)
+            })
+            .catch(error => {
+                alert("Un error ha ocurrido al buscar los servicios.")
+                console.log(error.response)
+            })
+        }
+    },[servicios])
+
     return (
         <div className={classes.fondo}>
             <Paper elevation={3} style={{width:950, padding: 15}}>
@@ -112,7 +147,13 @@ export default function Categoria({tipoPublicacion}) {
                 }
                 {
                     solicitudes.map((solicitud, i)=>(
-                        <FilaPublicacion key={i} buscarSolicitudes={buscarSolicitudes} datos={solicitud} tipoPublicacion={tipoPublicacion} contactar={true}/>
+                        <FilaPublicacion
+                        key={i}
+                        resenas={solicitud.tipo?(resenas_servicio===null?null:resenas_servicio[solicitud.Servicio_id.nombre]):null}
+                        buscarSolicitudes={buscarSolicitudes}
+                        datos={solicitud}
+                        tipoPublicacion={tipoPublicacion}
+                        contactar={true}/>
                     ))
                 }
             </Paper>
