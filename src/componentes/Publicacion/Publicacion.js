@@ -25,6 +25,8 @@ export default function Publicacion() {
         identidad_verificada: false,
         telefono: "",
         mostrar_telefono: false,
+        pausado: false,
+        bloqueado: false,
         servicios: []
     })
     const [datosPagina, setdatosPagina] = useState({
@@ -111,7 +113,8 @@ export default function Publicacion() {
                     )
                 }
                 {
-                    datosPerfil.id!==state.datosSesion.id &&
+                    //Si no es el dueño de la publicación, y si el proveedor o la publicación no se encuentrar pausada o bloqueada, entonces ofrecemos la posibilidad de contactarlo 
+                    datosPerfil.id!==state.datosSesion.id && !datosPagina.pausado && !datosPagina.bloqueado && !datosPerfil.pausado && !datosPerfil.bloqueado &&
                     <BotonContratar fijo={true} esDePerfil={false} datos={{idS: datosPagina.id, idP: datosPerfil.id, nombre: datosPerfil.titulo}} />
                 }
             </Grid>

@@ -140,10 +140,12 @@ export default function VerificarIdentidad() {
                                         </Typography>
                                         <Typography align="justify">
                                             {noti.tipo<2?(noti.datos_notificacion!==""?noti.datos_notificacion:"¡Felicitaciones! Tu perfil ahora está verificado."):
-                                            (noti.datos_notificacion===""?('Tienes una nueva petición de reseña al servicio "'+noti.solicitud.titulo):(
-                                            'Tienes una nueva petición de reseña a la categoría "'+noti.datos_notificacion.split("_")[1]))
-                                            }
-                                            {noti.tipo===2 && '" realizado por el proveedor '+`${noti.emisor.nombre} ${noti.emisor.apellido}`+'. ¡Cuéntanos tu experiencia haciendo click en el botón!'}
+                                            (noti.datos_notificacion===""?
+                                            (noti.solicitud.tipo?('Tienes una nueva petición de reseña al servicio "'+noti.solicitud.titulo):
+                                            ('Tienes una nueva petición de reseña al servicio ofrecido por el proveedor '+
+                                            `${noti.emisor.nombre} ${noti.emisor.apellido}`+' por tu solicitud "'+noti.solicitud.titulo+'". ¡Cuéntanos tu experiencia haciendo click en el botón!')):
+                                            ('Tienes una nueva petición de reseña a la categoría "'+noti.datos_notificacion.split("_")[1]))}
+                                            {noti.tipo===2 && noti.solicitud.tipo && '" realizada por el proveedor '+`${noti.emisor.nombre} ${noti.emisor.apellido}`+'. ¡Cuéntanos tu experiencia haciendo click en el botón!'}
                                         </Typography>
                                         {
                                             noti.tipo===2 && <div align="center"><RealizarOpinion datos={noti} eliminarNotificacion={eliminarNotificacion}/></div>

@@ -77,7 +77,8 @@ export function BotonContratar({fijo, esDePerfil, datos}) {
         emisor: state.datosSesion.id,
         receptor: datos.idP,
         solicitud: datos.idS,
-        categoria: esDePerfil?cat_selecc[0].id:null
+        categoria: esDePerfil?cat_selecc[0].id:null,
+        peticion: false
       },{
         headers: {'Authorization': auth},
       })

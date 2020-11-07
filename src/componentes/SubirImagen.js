@@ -16,24 +16,25 @@ const SingleFileAutoSubmit = ({cantidad, funcionSetImagen, ids, setcargando}) =>
 
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
     useEffect(()=>{
-        if(state.datosSesion.id!==null && ids.some(id=>(id!==null))){
-          let IDS = ""
-          ids.map((id)=>{
-            if(id!==null){
-              IDS+="id_in="+id+"&"
-            }
+      console.log(ids)
+      if(state.datosSesion.id!==null && ids.some(id=>(id!==null))){
+        let IDS = ""
+        ids.map((id)=>{
+          if(id!==null){
+            IDS+="id_in="+id+"&"
+          }
+        })
+        axios.get(state.servidor+"/upload/files?"+IDS)
+        .then(response => {
+          response.data.map((dat) => {
+            hacerArchivo(dat)
           })
-          axios.get(state.servidor+"/upload/files?"+IDS)
-          .then(response => {
-            response.data.map((dat) => {
-              hacerArchivo(dat)
-            })
-          })  
-          .catch(error => {
-              //let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
-              console.log("Error: ", error.response)
-          })
-        }
+        })  
+        .catch(error => {
+            //let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
+            console.log("Error: ", error.response)
+        })
+      }
     },[ids])
     
     //Se crea el archivo

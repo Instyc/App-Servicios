@@ -114,7 +114,8 @@ function Resena({opinion}) {
                         {opinion.descripcion}
                     </Typography> 
                 </Grid>
-                    <Grid item xs={4} align="left">
+                {
+                    true && <Grid item xs={4} align="left">
                         <Tooltip title="Me sirve">
                             <Button startIcon={<Like/>}>
                                 {opinion.votos_positivos}
@@ -126,6 +127,8 @@ function Resena({opinion}) {
                             </Button>
                         </Tooltip>
                     </Grid>
+                }
+                
                     {
                         opinion.servicios.map((servicio, i)=>(
                             <Grid key={i} item xs={2} align="center">

@@ -38,13 +38,14 @@ const Estilos = makeStyles((theme) => ({
         marginTop: 10,
     },
     imagenPublicacion:{
-        borderRadius: "50%",
+        borderRadius: "6px",
         objectFit: "cover",
-        border: "2px solid #000",
+        border: "1px solid #000",
         width: 170,
         height: 170,
         margin: "auto",
-        marginBottom: 15
+        marginBottom: 15,
+        marginTop: 15
     },
     gridRegistro:{
         maxWidth:550, 

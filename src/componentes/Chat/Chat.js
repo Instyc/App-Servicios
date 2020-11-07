@@ -17,15 +17,12 @@ import {
     Popup,
     MeetingList,
 } from './ComponentesChat'; 
-import {IconButton, AppBar, Toolbar, Typography, Button as Boton, Grid, Tooltip} from '@material-ui/core/';
+import {IconButton, Button as Boton, Tooltip} from '@material-ui/core/';
 import {KeyboardReturn as Atras, StarRate} from '@material-ui/icons/';
+import AlertaSi_No from '../AlertaSi_No.js';
+import AlertaMensaje from '../AlertaMensaje.js';
 import you from './Miniatura.png'
 
-import FaSearch from 'react-icons/lib/fa/search';
-import FaComments from 'react-icons/lib/fa/comments';
-import FaClose from 'react-icons/lib/fa/close';
-import FaMenu from 'react-icons/lib/md/more-vert';
-import FaSquare from 'react-icons/lib/md/crop-square';
 
 //import loremIpsum from 'lorem-ipsum';
 //import Identicon from './identicon.js';  
@@ -40,6 +37,9 @@ export function Chat(){
     const [chatsOrdenados, setchatsOrdenados] = useState([])
     const [mensajes, setmensajes] = useState([]);
     const [chatSeleccionado, setchatSeleccionado] = useState(null);
+    const [confirmacion, setconfirmacion] = useState(false);
+    const [abrir, setabrir] = useState(false);
+    const [deshabilitado, setdeshabilitado] = useState(false);
     
     const [contenido, setcontenido] = useState("");
     const [atras, setatras] = useState(false);
@@ -105,6 +105,7 @@ export function Chat(){
                             noleido_receptor: chat.noleido_receptor,
                             categoria: chat.categoria,
                             solicitud: chat.solicitud,
+                            peticion: chat.peticion
                         }
                     }
                 }))
@@ -123,6 +124,11 @@ export function Chat(){
             setmensajes(chats[0].chat.mensajes)
         }
     },[chats])
+
+    useEffect(() => {
+        if (chatSeleccionado!==null && chatSeleccionado.peticion)
+            setdeshabilitado(true)
+    }, [chatSeleccionado])
 
     function actualizarMensajes(chat){
         setmensajes(chat.mensajes)
@@ -177,6 +183,7 @@ export function Chat(){
             }
             ))
             setmensajes(msjs)
+            setdeshabilitado(response.data.peticion)
         })
         .catch(error => {
             alert("Un error ha ocurrido al cargar los mensajes.")
@@ -259,26 +266,49 @@ export function Chat(){
         }
     }, [chats])
 
-    function enviarNotificacion(){
-        let auth = 'Bearer '+state.jwt;
-        //Generamos una notificación
-        axios.post(
-            state.servidor+"/api/notificaciones/",{
-                tipo: 2,
-                emisor: chatSeleccionado.receptor.id,
-                receptor: chatSeleccionado.emisor.id,
-                solicitud: chatSeleccionado.solicitud===null?null:chatSeleccionado.solicitud.id,
-                datos_notificacion: chatSeleccionado.categoria===null?"":String(chatSeleccionado.categoria.id+"_"+chatSeleccionado.categoria.nombre),
-                leido: false
-            },
-            {headers: {'Authorization': auth},})
-        .then(response => {
-            console.log("Se ha podido crear la notificacion: ",response.data)
-        })
-        .catch(error => {
-            console.log("Error, no se ha podido crear la notificacion.", error.response)
-            alert("Error, no se ha podido crear la notificacion.")
-        })
+    function enviarNotificacion(boole){
+        setconfirmacion(false)
+        if (boole){
+            let auth = 'Bearer '+state.jwt;
+            //Seteamos los ids de emisores y receptores de la notificación
+            let emisor = chatSeleccionado.receptor.id
+            let receptor = chatSeleccionado.emisor.id
+            
+            if (chatSeleccionado.solicitud!==null){
+                //Si el tipo de la solicitud es false, significa que es una solicitud y que el emisor de la notificación es el emisor del chat
+                if (!chatSeleccionado.solicitud.tipo){
+                    emisor = chatSeleccionado.emisor.id
+                    receptor = chatSeleccionado.receptor.id
+                }
+            }
+            axios.post(
+                state.servidor+"/api/notificaciones/",{
+                    tipo: 2,
+                    emisor: emisor,
+                    receptor: receptor,
+                    solicitud: chatSeleccionado.solicitud===null?null:chatSeleccionado.solicitud.id,
+                    datos_notificacion: chatSeleccionado.categoria===null?"":String(chatSeleccionado.categoria.id+"_"+chatSeleccionado.categoria.nombre),
+                    leido: false
+                },
+                {headers: {'Authorization': auth},})
+            .then(response => {
+                console.log("Se ha podido crear la notificacion: ",response.data)
+                let auth = 'Bearer '+state.jwt;
+                axios.put(state.servidor+"/api/chats/"+chatSeleccionado.id,{
+                    peticion: true
+                },{
+                    headers: {'Authorization': auth},
+                }).then(response => {
+                    console.log(response.data)
+                    setdeshabilitado(true)
+                })
+                setabrir(true)
+            })
+            .catch(error => {
+                console.log("Error, no se ha podido crear la notificacion.", error.response)
+                alert("Error, no se ha podido crear la notificacion.")
+            })
+        }
     }
 
     return (
@@ -329,20 +359,23 @@ export function Chat(){
                     chatSeleccionado!==null && !atras &&
                     (chatSeleccionado.solicitud===null?(chatSeleccionado.receptor.id===state.datosSesion.id):
                     (chatSeleccionado.solicitud.tipo?chatSeleccionado.receptor.id===state.datosSesion.id:chatSeleccionado.emisor.id===state.datosSesion.id)) &&
-                    <div>
-                        <Tooltip title="Una vez que lleves a cabo tu servicio, ¡Puedes solicitar al cliente que te deje una reseña!" arrow>
-                                <Boton onClick={enviarNotificacion} color="primary" className={classes.BotonSolicitar} variant="contained">
-                                    Petición de reseña
-                                </Boton>
-                        </Tooltip>
-                        <Tooltip title="Una vez que lleves a cabo tu servicio, ¡Puedes solicitar al cliente que te deje una reseña!" arrow>
-                                <Boton onClick={enviarNotificacion} color="primary" className={classes.BotonSolicitarMovil} variant="contained">
-                                    <StarRate/>
-                                </Boton>
-                        </Tooltip>
-                    </div>
+                        <div>
+                            <Boton disabled={deshabilitado} onClick={()=>setconfirmacion(true)} color="primary" className={classes.BotonSolicitar} variant="contained">
+                                Petición de reseña
+                            </Boton>
+                            <Boton disabled={deshabilitado} onClick={()=>setconfirmacion(true)} color="primary" className={classes.BotonSolicitarMovil} variant="contained">
+                                <StarRate/>
+                            </Boton>
+                        </div>
                 }
-                
+                {
+                    confirmacion &&
+                    <AlertaSi_No
+                    mensaje="Esta acción solo se debe realizar cuando ya se haya cumplido con el servicio pactado. ¿Está seguro que quiere enviar la petición?"
+                    funcionAceptar={enviarNotificacion}
+                    titulo="Enviar petición de reseña al cliente"/> 
+                }
+                <AlertaMensaje mensaje="¡Petición de reseña enviada!" setabrir={setabrir} abrir={abrir}/>
                 <MessageList
                     className='message-list'
                     lockable={true}

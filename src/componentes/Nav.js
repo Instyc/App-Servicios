@@ -198,10 +198,6 @@ export default function PrimarySearchAppBar() {
                   <Button style={{padding:"20px"}}>Mis servicios solicitados</Button>
                 </Link>
 
-                <Link to="/categorias-solicitados" hidden={tipoUsuario!==0} className={tipoUsuario!==1?classes.botonesNav:classes.EstiloVacio}>
-                  <Button style={{padding:"20px"}}>Servicios solicitados</Button>
-                </Link>
-
                 <Link to="/mis-publicaciones" hidden={tipoUsuario!==2} className={tipoUsuario===2?classes.botonesNav:classes.EstiloVacio}>
                   <Button style={{padding:"20px"}}>Mis publicaciones</Button>
                 </Link>
@@ -328,9 +324,6 @@ export default function PrimarySearchAppBar() {
               <Link to="/" className={classes.EstiloMovil} className={classes.EstiloLink}>
                 <MenuItem onClick={plegarMenu}>Explorar servicios</MenuItem>
               </Link>
-              <Link to="/categorias-solicitados" className={tipoUsuario>=2?classes.EstiloMovil:classes.EstiloVacio}  className={classes.EstiloLink}>
-                <MenuItem onClick={plegarMenu}>Servicios solicitados</MenuItem>
-              </Link>
 
               {/*Usuario*/}
               <div hidden={tipoUsuario<1 || tipoUsuario>2}>
@@ -350,12 +343,11 @@ export default function PrimarySearchAppBar() {
                 <Link to="/mis-publicaciones" className={classes.EstiloMovil} className={classes.EstiloLink}>
                   <MenuItem onClick={plegarMenu}>Mis publicaciones</MenuItem>
                 </Link>
-                <Link to="/chat-contactos" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Gestionar contactos (chat)</MenuItem></Link>
               </div>
 
               {/*Administrador*/}
               <div hidden={tipoUsuario!==3}>
-                <Link to="/gestionar-reclamos" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Gestionar reclamos</MenuItem></Link>
+                <Link to="/gestionar-reclamos" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Gestionar reportes</MenuItem></Link>
                 <Link to="/verificar-identidad" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Verificar identidades </MenuItem></Link>
                 <Link to="/administrar-categorias" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Administrar categorías </MenuItem></Link>
               </div>

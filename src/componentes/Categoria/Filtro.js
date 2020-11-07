@@ -1,29 +1,30 @@
-import React from 'react';
-import {useState} from 'react';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import Chip from '@material-ui/core/Chip';
-import DoneIcon from '@material-ui/icons/Done';
-import ClearIcon from '@material-ui/icons/Clear';
-
+import React,{useState, useEffect} from 'react';
+import {Chip, Grid, TextField, Typography, Button, Card, FormControlLabel, Checkbox, CardContent} from '@material-ui/core/';
+import {Done as Done, Clear as Clear} from '@material-ui/icons';
 
 import Estilos from '../Estilos.js'
 
-export default function Filtro({tipoPublicacion, servicios, agregarSeleccionado, buscarServicios, inputBusqueda, setinputBusqueda}) {
+export default function Filtro({tipoPublicacion, settipoPublicacion, servicios, agregarSeleccionado, buscarServicios, inputBusqueda, setinputBusqueda}) {
   const classes = Estilos();
+  const [tipo,settipo] = useState(false)
 
+  useEffect(()=>{
+    settipoPublicacion(!tipo)
+  },[tipo])
   return (
     <Card className={classes.margenArriba} variant="outlined">
       <CardContent>
         <Typography variant="h5" component="h2">
-          {
-            tipoPublicacion?"Seleccione los filtros deseados":"Búsqueda por palabras:"
-          }
+          Seleccione los filtros deseados
         </Typography>
+
+        <Grid item xs={12}>    
+          <FormControlLabel
+            className={classes.inputAncho}
+            control={<Checkbox checked={tipo} name="tipo" onChange={(e)=>{settipo(e.target.checked)}}/>}
+            label="Filtrar por publicaciones de solicitudes de servicios de usuarios."
+          />
+        </Grid>
 
         {
           tipoPublicacion &&
@@ -37,13 +38,15 @@ export default function Filtro({tipoPublicacion, servicios, agregarSeleccionado,
             }
           </Grid>
         }
+        
         <TextField
-        className={classes.margenArriba}
-        value={inputBusqueda}
-        onChange={(e)=>{setinputBusqueda(e.target.value)}}
-        onKeyDown={(e)=>{if(e.key==='Enter'){buscarServicios()}}}
-        label="Buscar por nombre" variant="outlined"
-        size="medium" fullWidth/>
+          className={classes.margenArriba}
+          value={inputBusqueda}
+          onChange={(e)=>{setinputBusqueda(e.target.value)}}
+          onKeyDown={(e)=>{if(e.key==='Enter'){buscarServicios()}}}
+          label="Buscar por nombre" variant="outlined"
+          size="medium" fullWidth
+        />
         <Button onClick={buscarServicios} className={classes.margenArriba} color="secondary" variant="contained" >Buscar</Button>
       </CardContent>
     </Card>
@@ -52,23 +55,23 @@ export default function Filtro({tipoPublicacion, servicios, agregarSeleccionado,
 
 function SeleccionarServicio({servicio, agregarSeleccionado}) {
   const classes = Estilos();
-  const [hecho_noHecho, setHecho_noHecho] = useState((<div><ClearIcon/></div>));
+  const [hecho_noHecho, setHecho_noHecho] = useState(false);
   const [seleccion, setSeleccion] = useState(false);
 
   const handleClick = () => {
     agregarSeleccionado(servicio.id)
     if(seleccion===false){
       setSeleccion(true);
-      setHecho_noHecho(<div><DoneIcon/></div>);
+      setHecho_noHecho(true);
     }else{
       setSeleccion(false);
-      setHecho_noHecho(<div><ClearIcon/></div>);
+      setHecho_noHecho(false);
     }
   };
 
   return (
     <div className={classes.mostrarFlex}>
-      <Chip clickable variant="outlined" color="primary" label={servicio.nombre} icon={hecho_noHecho} onClick={handleClick}/>
+      <Chip clickable variant="outlined" color="primary" label={servicio.nombre} icon={hecho_noHecho?<Done/>:<Clear/>} onClick={handleClick}/>
     </div>
   );
 }

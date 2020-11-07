@@ -64,10 +64,7 @@ function App() {
                   <Route path="/modificar-publicacion/:id"><CrearPublicacion modificar={true} tipoPublicacion={true}/></Route>
                   <Route path="/modificar-solicitud-servicio/:id"><CrearPublicacion modificar={true} tipoPublicacion={false}/></Route>
                   
-                  <Route path="/publicaciones/:id"> <Categoria tipoPublicacion={true}/></Route>
-
-                  <Route path="/servicios-solicitados/:id"><Categoria tipoPublicacion={false}/></Route>
-                  <Route path="/categorias-solicitados"><Inicio tipo={false}/></Route>
+                  <Route path="/publicaciones/:id"> <Categoria/></Route>
                   
                   <Route path="/registrar"><RegistrarSesion registrar={true}/></Route>
                   <Route path="/modificar-usuario"><RegistrarSesion registrar={false}/></Route>

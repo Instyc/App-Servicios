@@ -11,7 +11,7 @@ import Alerta from '@material-ui/lab/Alert';
 
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
-export default function Categoria({tipoPublicacion}) {
+export default function Categoria() {
     const classes = Estilos();
     let { id } = useParams()
     const [serviciosSeleccionados, setServiciosSeleccionados] = useState([])
@@ -22,6 +22,7 @@ export default function Categoria({tipoPublicacion}) {
     const [cargando, setcargando] = useState(false)
     const [resenas_servicio, setresenas_servicio] = useState(null)
 
+    const [tipoPublicacion, settipoPublicacion] = useState(true)
     const [inputBusqueda, setinputBusqueda] = useState("")
 
     useEffect(()=>{
@@ -33,8 +34,8 @@ export default function Categoria({tipoPublicacion}) {
                 setservicios(response.data.servicios)
             })
             .catch(error => {
-            alert("Un error ha ocurrido al cargar las categorías.")
-            console.log(error.response)
+                alert("Un error ha ocurrido al cargar las categorías.")
+                console.log(error.response)
             }) 
         }
         buscarSolicitudes()
@@ -44,11 +45,13 @@ export default function Categoria({tipoPublicacion}) {
         axios.get(state.servidor+"/api/solicitud?Categoria_id="+id+"&pausado=false&bloqueado=false&tipo="+tipoPublicacion)
         .then(response => {
             //Filtramos las publicaciones donde sus proveedores no estén pausados
-            setsolicitudes(response.data.filter((solicitud)=>
-            (
-                solicitud.Usuario_id.estado === false && solicitud.Usuario_id.bloqueado===false))
-            )
             setcargando(false)
+            if (tipoPublicacion){
+                let filtro = response.data.filter((solicitud)=>(solicitud.Usuario_id.estado === false && solicitud.Usuario_id.bloqueado===false))
+                setsolicitudes(filtro)
+            }else{
+                setsolicitudes(response.data)
+            }
         })
         .catch(error => {
             alert("Un error ha ocurrido al cargar las categorías.")
@@ -77,20 +80,25 @@ export default function Categoria({tipoPublicacion}) {
         })
 
         if(IDS.length===1){
-            servicios.map((servicio)=>{
-                if(servicio!==null){
-                    IDS+="Servicio_id="+servicio.id+"&"
-                }
-            })
+            if (tipoPublicacion){
+                servicios.map((servicio)=>{
+                    if(servicio!==null){
+                        IDS+="Servicio_id="+servicio.id+"&"
+                    }
+                })
+            }else{
+                IDS+="Categoria_id="+id+"&"
+            }
         }
 
         axios.get(state.servidor+"/api/solicitud?"+IDS+"pausado=false&bloqueado=false&tipo="+tipoPublicacion+"&titulo_contains="+inputBusqueda)
         .then(response => {
-        
-          setsolicitudes(response.data.filter((solicitud)=>
-          (
-            solicitud.Usuario_id.estado === false && solicitud.Usuario_id.bloqueado===false))
-          )
+            if (tipoPublicacion){
+                let filtro = response.data.filter((solicitud)=>(solicitud.Usuario_id.estado === false && solicitud.Usuario_id.bloqueado===false))
+                setsolicitudes(filtro)
+            }else{
+                setsolicitudes(response.data)
+            }
           setcargando(false)
         })
         .catch(error => {
@@ -105,29 +113,23 @@ export default function Categoria({tipoPublicacion}) {
             servicios.map((servicio_)=>{
                 ids_+="servicios="+servicio_.id+"&"
             })
-            //console.log(ids_)
-
-            
             axios.get(state.servidor+"/api/resenas?"+ids_)
             .then(response => {
-                console.log(response.data)
                 let servicios_resena = {}
-
-                servicios.map((serv_=>{
-                    if(!servicios_resena.hasOwnProperty(serv_.nombre)){
-                        servicios_resena[serv_.nombre] = {resenas:[]}
-                    }
-                }))
-                //console.log(servicios_resena)
                 response.data.map((resena=>{
                     resena.servicios.map(serv_=>{
+                      if(!servicios_resena.hasOwnProperty(serv_.nombre)){
+                        servicios_resena[serv_.nombre] = {resenas:[]}
                         servicios_resena[serv_.nombre].resenas.push(resena)
+                      }else{
+                        servicios_resena[serv_.nombre].resenas.push(resena)
+                      }
                     })
                 }))
                 setresenas_servicio(servicios_resena)
             })
             .catch(error => {
-                alert("Un error ha ocurrido al buscar los servicios.")
+                alert("Un error ha ocurrido al buscar las reseñas.")
                 console.log(error.response)
             })
         }
@@ -137,7 +139,15 @@ export default function Categoria({tipoPublicacion}) {
         <div className={classes.fondo}>
             <Paper elevation={3} style={{width:950, padding: 15}}>
                 <Typography variant="h5" component="h2" align="center">{categoria.nombre}</Typography>
-                <Filtro tipoPublicacion={tipoPublicacion} inputBusqueda={inputBusqueda} setinputBusqueda={setinputBusqueda} servicios={servicios} agregarSeleccionado={agregarSeleccionado} buscarServicios={buscarServicios}/>
+                <Filtro
+                    tipoPublicacion={tipoPublicacion}
+                    settipoPublicacion={settipoPublicacion}
+                    inputBusqueda={inputBusqueda}
+                    setinputBusqueda={setinputBusqueda}
+                    servicios={servicios}
+                    agregarSeleccionado={agregarSeleccionado}
+                    buscarServicios={buscarServicios}
+                />
                 <br/>
                 {cargando && <Cargando/>}
                 {

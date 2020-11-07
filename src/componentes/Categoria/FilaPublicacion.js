@@ -51,22 +51,24 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
   },[])
 
   useEffect(()=>{
-    if(datos){
+    if(datos.Usuario_id!==null){
       setdatosPagina(datos)
+      let x = datos.Usuario_id.id===state.datosSesion.id
+      setnoMostrar(!x)
     }
-    let x = datos.Usuario_id.id===state.datosSesion.id
-    setnoMostrar(!x)
   },[datos])
 
   useEffect(()=>{
-    if(resenas!==null){
-      let total = 0
+    if(resenas!==null && resenas!==undefined ){
+      
+      let total = 0, i = 0
       resenas.resenas.map((resena)=>{
         if(resena.proveedor.id===datos.Usuario_id.id){
           total+=resena.recomendacion
+          i++
         }
       })
-      setpromedio(total)
+      setpromedio(total/i)
     }
   },[resenas])
 
@@ -197,9 +199,12 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
           </Grid>)
           }
 
-          <Grid item xs={12} sm={6} md={6} lg={3} align="center">
-            <Estrellas valor={promedio} clickeable={false} cambiarValor={()=>{}}/>
-          </Grid>
+          {
+            tipoPublicacion &&
+            <Grid item xs={12} sm={6} md={6} lg={3} align="center">
+              <Estrellas valor={promedio} clickeable={false} cambiarValor={()=>{}}/>
+            </Grid>
+          }
           
           {
             datosPagina.Usuario_id.id!==state.datosSesion.id &&

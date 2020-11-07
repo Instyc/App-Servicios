@@ -124,9 +124,6 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
                     <Divider/>
                 </List>         
            </Grid>
-           <Grid item xs={12}>
-               Ubicacion
-           </Grid>
            <Hidden xlDown={!DatosPerfil.mostrar_telefono}>
             <Grid item xs={12}>
                 <Button startIcon={<PhoneIcon/>}>

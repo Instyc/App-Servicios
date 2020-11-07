@@ -7,7 +7,6 @@ import ImageGallery from 'react-image-gallery';
 import Estrellas from '../Estrellas.js';
 import ReportarPublicacion from './ReportarPublicacion.js'
 import Estilos from '../Estilos.js';
-import AlertaMensaje from '../AlertaMensaje.js';
 import Alerta from '@material-ui/lab/Alert';
 
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
@@ -73,13 +72,38 @@ export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) 
                 {DatosPagina.precio_estimado==="perfil"?"Este proveedor se encuentra bloqueado.":"Esta publicación se encuentra bloqueada."}
               </Alerta>)
             }
-            <Grid item xs={12} hidden={!esDePerfil} className={esDePerfil?classes.EstiloMovil:classes.EstiloVacio}>
+            <Grid item lg={12} hidden={!esDePerfil} className={esDePerfil?classes.EstiloMovil:classes.EstiloVacio}>
               <Avatar
               alt="Remy Sharp"
               src="https://i.pinimg.com/originals/69/1d/0c/691d0c155896f8ec64280648cac6fa22.jpg"
               className={classes.imagenPublicacion} />
             </Grid>
-            <Grid item xs={esDePerfil?10:6} sm={esDePerfil?11:7}>
+
+            <Grid item lg={4} md={4} sm={12} hidden={esDePerfil}>
+                <Typography variant="h6" component="h3" align="left">
+                  {DatosPagina.tipo?"Precio estimado:":"Presupuesto:"} ${DatosPagina.precio_estimado}
+                </Typography>
+            </Grid>
+
+            <Grid hidden={esDePerfil} item lg={7} md={7} sm={11} align="right">
+              <div align="right">
+                <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+                  <Typography color="inherit">{DatosPagina.categoria}</Typography>
+                  {
+                    datosPagina.tipo &&
+                    <Typography color="inherit">{DatosPagina.servicio}</Typography>
+                  }
+                </Breadcrumbs>
+                  </div>
+            </Grid>
+            
+            {state.publico===false && !esDePerfil && !DatosPagina.bloqueado &&
+              <Grid item lg={1} md={1} sm={1}>
+                <ReportarPublicacion esDePerfil={esDePerfil} solicitud={DatosPagina}/>
+              </Grid>
+            }
+            
+            <Grid item xs={esDePerfil?11:12} sm={esDePerfil?11:12}>
               <Typography variant="h5" component="h1" align="left">
                 {DatosPagina.titulo}
                 {
@@ -90,27 +114,11 @@ export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) 
               </Typography>
             </Grid>
 
-            <Grid hidden={esDePerfil} item xs={6} sm={4} align-items="last baseline">
-              <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-                <Typography color="inherit">{DatosPagina.categoria}</Typography>
-                <Typography color="inherit">{DatosPagina.servicio}</Typography>
-              </Breadcrumbs>
-            </Grid>
-            
-            <Grid item xs={esDePerfil?2:6} sm={1}>
-              {state.publico===false && <ReportarPublicacion esDePerfil={esDePerfil} solicitud={DatosPagina}/>}
-            </Grid>
-
-            <Grid item xs={6} hidden={esDePerfil}>
-                <Typography variant="h6" component="h3" align="left">
-                  {DatosPagina.tipo?"Precio estimado:":"Presupuesto:"} ${DatosPagina.precio_estimado}
-                </Typography>
-            </Grid>
-            <Grid item xs={6} sm={6} hidden={esDePerfil}>
-                <Typography variant="h6" component="h3">
-                    <Estrellas clickeable={false} valor={DatosPagina.estrella}/>
-                </Typography>
-            </Grid>
+            {state.publico===false && esDePerfil && !DatosPagina.bloqueado &&
+              <Grid item lg={1} md={1} sm={1}>
+                <ReportarPublicacion esDePerfil={esDePerfil} solicitud={DatosPagina}/>
+              </Grid>
+            }
             
             <Grid item xs={12}>
                 <Typography variant="body1" component="p" align="justify"> 

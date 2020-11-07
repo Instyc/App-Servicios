@@ -11,6 +11,7 @@ import Estilos from '../Estilos.js';
 import SeleccionarServicio from '../SeleccionarServicio.js';
 
 import axios from 'axios';
+import AlertaMensaje from '../AlertaMensaje.js';
 
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
@@ -21,26 +22,30 @@ export default function Registrar() {
     const [cargando, setcargando] = useState(false)
     const [controlGuardar, setcontrolGuardar] = useState(false)
     const [categorias, setcategorias] = useState([])
+    const [serviciosSeleccionados, setserviciosSeleccionados] = useState([])
+    const [mensaje, setmensaje] = useState(false)
+    const [abrir, setabrir] = useState(false)
 
     const [datos, setdatos] = useState({
         descripcion: "",
         estado: false,
         mostrar_telefono: false,
-        pasarImagenes: []
+        pasarImagenes: [] 
     });
 
     const [imagenes, setimagenes] = useState([])
-    const [cambioImagen, setcambioImagen] = useState(-1)
-    const funcionSetImagen = (file, cantidad, tipo) =>{
+    const [imagenesBorradas, setimagenesBorradas] = useState([]);
+    const [imagenesSubidas, setimagenesSubidas] = useState([]);
+
+    const funcionSetImagen = (file, cantidad, tipo, subidas) =>{
+        setimagenesSubidas(subidas)
         //Si es 0, entonces se agrega la imagen a su respectiva variable, si es 1 entonces se desea eliminar
         if(tipo===0){
-            let obj = {file:file, nueva: true}
-            setimagenes([...imagenes, obj])
-            setcambioImagen(cambioImagen+1);
+            setimagenes([...imagenes, file])
         }else{
+            setimagenesBorradas(img => [...imagenesBorradas, file])
             let aux = imagenes.filter(f => f.file !== file)
             setimagenes(aux)
-            setcambioImagen(cambioImagen-1);
         }
     }
 
@@ -106,6 +111,10 @@ export default function Registrar() {
         })
     }
 
+    useEffect(() => {
+        console.log("img nuevas:", imagenesSubidas)
+    }, [imagenesSubidas])
+
     const guardarDatos = () => {
         let aux = [];
         categorias.map((categoria)=>{
@@ -113,40 +122,124 @@ export default function Registrar() {
                 categoria.servicios.map((servicio)=>{
                     if(servicio.seleccionado){
                         aux.push(servicio.id)
-                        if(!controlGuardar)
+                        if(!controlGuardar){
                             setcontrolGuardar(true)
+                        }
+                        console.log("control", controlGuardar)
                     }
                 })
             }
         })
-        enviarDatos(aux)
-    }
-    function eliminarImagenes(img){
-        let auth = 'Bearer '+state.jwt;
-        axios.delete(state.servidor+"/upload/files/"+img.id,
-        {
-            headers: {
-            'Authorization': auth
-        },})
-        .then(response => {
-            console.log("borrado", response)            
-        }).catch(error => {
-            alert("error al borrar")
-            console.log(error.response)
-        })
+
+        if(aux.length!==0){
+            setmensaje(false)
+        }else{
+            setmensaje(true)
+        }
+
+        setserviciosSeleccionados(aux)
     }
     
-    const enviarDatos = (id_servicios) =>{
-        if(controlGuardar || cambioImagen!==-1){
+    function subirImagenes(_id_){
+        let archivosNuevos = []
+        //archivosNuevos es el arreglo que contiene los archivos que han sido agregados y no los que ya han sido subidos al servidor
+        imagenes.map((imagen) => {
+            let iguales = imagenesSubidas.some(img => img === imagen)
+            if(!iguales){
+                archivosNuevos.push(imagen)
+            }
+        })
+        console.log("imagenes perfil:", imagenes)
+        console.log("nuevos:", archivosNuevos)
+
+        //archivosBorrados es el arreglo que contiene los archivos que han sido subidos al servidor pero que han sido eliminados en el frontend
+        let archivosBorrados = []
+        imagenesBorradas.map((imagen) => {
+            let iguales = imagenesSubidas.some(img => img === imagen)
+            if(iguales){
+                archivosBorrados.push(imagen)
+            }
+        })
+        console.log("borrados:", archivosBorrados)
+
+        //Si existen elementos dentro del arreglo imagenesBorradas, significa que se quieren borrar imágenes de la publicación
+        for(let indx = 0; indx < imagenesBorradas.length; indx++){
+            let id = Number(imagenesBorradas[indx].name)
+            
             let auth = 'Bearer '+state.jwt;
+            axios.delete(state.servidor+"/upload/files/"+id,
+            {
+                headers: {
+                'Authorization': auth
+            },})
+            .then(response => {
+                console.log("Borrando imagenes", response)            
+            }).catch(error => {
+                alert("Error al borrar las imagenes")
+                console.log(error.response)
+            })
+        }
+        
+        //Subiendo las imagenes seleccionadas
+        const formData = new FormData()
+        
+        //Se cargan en el fromData las nuevas imágenes cargadas a la publicación, si es que las hay, y los datos modificados
+        for(let i = 0; i<archivosNuevos.length; i++){
+            formData.append('files', archivosNuevos[i])
+        }
+        
+        if(archivosNuevos.length!==0){
+            formData.append('ref', 'user')
+            formData.append('refId', _id_)
+            formData.append('field', 'imagenes_proveedor')
+            formData.append('source', 'users-permissions')
+
+            let auth = 'Bearer '+state.jwt;
+
+            axios.post(
+                state.servidor+"/upload",
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': auth
+                    },
+                })
+            .then(response => {
+                console.log("Respuesta imagen: ",response.data)
+                let usr = state.datosSesion
+                usr.imagenes_proveedor = response.data
+
+                dispatch({type:"setDatos", value: usr})
+                dispatch({type:"setJwt", value: state.jwt})
+
+                localStorage.setItem('datosLocal', JSON.stringify({
+                    jwt: state.jwt,
+                    datosSesion: usr
+                }));
+            })
+            .catch(error => {
+                alert("Error al cargar las imágenes.")
+                console.log("Error: ", error.response)
+            })
+        }
+    }
+
+    useEffect(()=>{
+        if(serviciosSeleccionados.length!==0){
+            let auth = 'Bearer '+state.jwt;
+
             setcargando(true)
+            subirImagenes(state.datosSesion.id)
+
+            console.log("Se envian los datos")
             axios.put(
                 state.servidor+"/users/"+state.datosSesion.id
                 ,{
                     descripcion: datos.descripcion,
                     estado: datos.estado,
                     mostrar_telefono: datos.mostrar_telefono,
-                    servicios : id_servicios
+                    servicios : serviciosSeleccionados
                 },
                 {
                     headers: {
@@ -165,80 +258,10 @@ export default function Registrar() {
                     datosSesion: datos_ayuda
                 }));
 
-                alert("Sus datos se han modificado correctamente!")
-                if(imagenes.length!==0 && cambioImagen!==-1){
-                    //Borramos las imagenes existentes de la base de datos
-                    if(state.datosSesion.imagenes_proveedor.length!==0)
-                    state.datosSesion.imagenes_proveedor.map(img => {
-                        eliminarImagenes(img)
-                    })
-                    
-                    //Subiendo las imagenes seleccionadas
-                    const formData = new FormData()
-
-                    for(let i =0; i<imagenes.length; i++){
-                        formData.append('files', imagenes[i].file)
-                    }
-                    
-                    formData.append('ref', 'user')
-                    formData.append('refId', state.datosSesion.id)
-                    formData.append('field', 'imagenes_proveedor')
-                    formData.append('source', 'users-permissions')
-
-                    let auth = 'Bearer '+state.jwt;
-
-                    axios.post(
-                        state.servidor+"/upload",
-                        formData,
-                        {
-                            headers: {
-                                'Content-Type': 'multipart/form-data',
-                                'Authorization': auth
-                            },
-                        })
-                    .then(response => {
-                        console.log("Respuesta imagen: ",response.data)
-
-                        datos_ayuda.imagenes_proveedor = response.data
-                        
-                        dispatch({type:"setDatos", value: datos_ayuda})
-                        localStorage.setItem('datosLocal', JSON.stringify({
-                            jwt: state.jwt,
-                            datosSesion: datos_ayuda
-                        }));
-                    })
-                    .catch(error => {
-                        alert("Error al cargar las imágenes.")
-                        console.log("Error: ", error.response)
-                    })
-                }else{
-                    if(state.datosSesion.imagenes_proveedor.length!==0)
-                        state.datosSesion.imagenes_proveedor.map(img => {
-                            axios.delete(state.servidor+"/upload/files/"+img.id,
-                            {
-                                headers: {
-                                'Authorization': auth
-                            },})
-                            .then(response => {
-                                console.log("borrado", response) 
-
-                                datos_ayuda.imagenes_proveedor = []
-
-                                dispatch({type:"setDatos", value: datos_ayuda})
-                                localStorage.setItem('datosLocal', JSON.stringify({
-                                    jwt: state.jwt,
-                                    datosSesion: datos_ayuda
-                                }));
-                                
-                            }).catch(error => {
-                                alert("error al borrar")
-                                console.log(error.response)
-                            })
-                        })
-                }
-                
+                console.log("Sus datos se han modificado correctamente!")
+                setabrir(true)
                 setcargando(false)
-                history.push("/")
+                //history.push("/")
             })
             .catch(error => {
                 console.log(error.response)
@@ -246,8 +269,7 @@ export default function Registrar() {
                 setcargando(false)
             })
         }
-    }
-
+    },[serviciosSeleccionados])
     //-----------------------------------------------------------------------------------------------------------------------------------------------------
     
     return (
@@ -299,6 +321,8 @@ export default function Registrar() {
                         <Grid item xs={12} className={classes.inputAncho}>
                             <SubirImagenes setcargando={setcargando} cantidad={10} funcionSetImagen={funcionSetImagen} ids={datos.pasarImagenes}/>
                         </Grid>
+                        
+                        <AlertaMensaje mensaje="¡Tus datos se han guardado correctamente!" abrir={abrir} setabrir={setabrir}/>
 
                         <Grid item xs={12} >
                             <Typography variant="h6" component="h3" align="left" className={classes.alinearInputs}>
@@ -351,7 +375,14 @@ export default function Registrar() {
                             ))
                         }
                         
-                        
+                        <Hidden xlDown={!mensaje || cargando}>
+                            <Grid item xs={12} align="center">
+                                <Typography color="error">
+                                    Debe seleccionar al menos un servicio.
+                                </Typography>
+                            </Grid>
+                        </Hidden>
+
                         <div className={classes.inputAncho} hidden={!cargando}>
                             <BarraDeCarga/>
                         </div>
@@ -360,7 +391,7 @@ export default function Registrar() {
                             <Button onClick={guardarDatos} disabled={cargando} size="large" variant="contained" color="primary">Guardar</Button>
                         </Grid>
                         <Grid item xs={6} align="center">
-                            <Button size="large" variant="contained" color="secondary">Cancelar</Button>
+                            <Button onClick={()=>{history.push("/")}} size="large" variant="contained" color="secondary">Cancelar</Button>
                         </Grid>
                     </Grid>
                 </FormControl>

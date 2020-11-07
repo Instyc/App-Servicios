@@ -70,8 +70,11 @@ export default function MiPerfil() {
                 <ProveedorInfo esDePerfil={true} datosPerfil={datosPagina}/>
             </Grid>
             {
+                //Si no es el proveedor que se está viendo, tiene servicios para ofrecer y el proveedor no está bloqueado ni pausado, ofrecemos la posibilidad de contactarse
                 datosPagina.id!==state.datosSesion.id &&
                 datosPagina.servicios.length!==0 &&
+                !datosPagina.pausado &&
+                !datosPagina.bloqueado &&
                 <BotonContratar
                 fijo={true}
                 esDePerfil={true}

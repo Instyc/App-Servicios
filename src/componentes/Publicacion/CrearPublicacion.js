@@ -6,6 +6,7 @@ import {Typography, TextField, FormControl, Button, Paper, Grid, Select, MenuIte
 import SubirImagenes from '../SubirImagen.js';
 import {useParams} from 'react-router-dom'
 import Cargando from '@material-ui/core/LinearProgress';
+import AlertaMensaje from '../AlertaMensaje.js';
 
 import Estilos from '../Estilos.js';
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
@@ -21,6 +22,8 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
     const [servicios, setservicios] = useState([]);
     const [cargando, setcargando] = useState(false);
     const [imagenes, setimagenes] = useState([]);
+    const [abrir, setabrir] = useState(false);
+    const [mensaje, setmensaje] = useState("");
 
     const [imagenesSubidas, setimagenesSubidas] = useState([]);
     const [imagenesBorradas, setimagenesBorradas] = useState([]);
@@ -181,8 +184,31 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
             })
             .then(response => {
                 console.log("Respuesta subir solicitud: ",response.data)
+                let estaServicio = state.datosSesion.servicios.some(servicio=>(servicio.id===datosPagina.Servicio_id.id))
+
+                if (tipoPublicacion && !estaServicio){
+                    let servicios_id = state.datosSesion.servicios.map(servicio_=>(servicio_.id))
+                    servicios_id.push(datosPagina.Servicio_id.id)
+
+                    axios.put(
+                        state.servidor+"/users/"+state.datosSesion.id,{
+                            servicios: servicios_id
+                        },
+                        {headers: {'Authorization': auth},
+                    })
+                    .then(response => {
+                        console.log("Respuesta cambio: ",response.data)
+                        setcargando(false)
+                    })
+                    .catch(error => {
+                        console.log(error.response)
+                        alert("Ha ocurrido un error al guardar los datos")
+                        setcargando(false)
+                    })
+                }
                 setcargando(false)
-                history.push("/")
+                setmensaje("¡Publicación creada!")
+                setabrir(true)
             })
             .catch(error => {
                 console.log("Error, no se ha podido crear la solicitud.", error.response)
@@ -203,7 +229,8 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                 if (response.data.bloqueado)
                     modificarBloqueadoReporte()
                 setcargando(false)
-                history.push("/")
+                setmensaje("¡Publicación modificada!")
+                setabrir(true)
             })
             .catch(error => {
                 console.log("Error, no se ha podido modificar la solicitud.", error.response)
@@ -270,6 +297,10 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
             ...datosPagina,
             Servicio_id: servicioSeleccionado[0]   
         })
+    }
+
+    function cancelar(){
+        history.push("/")    
     }
 
     return (
@@ -379,8 +410,9 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                             <Button className={classes.botones} disabled={cargando} type="submit" size="large" variant="contained" color="primary">Guardar</Button>
                         </Grid>
                         <Grid item xs={6} align="center">
-                            <Button className={classes.botones} onClick={()=>history.push("/")} size="large" variant="contained" color="secondary">Cancelar</Button>
+                            <Button className={classes.botones} onClick={cancelar} size="large" variant="contained" color="secondary">Cancelar</Button>
                         </Grid>
+                        <AlertaMensaje mensaje={mensaje} abrir={abrir} setabrir={setabrir}/>
                     </Grid>
                 </FormControl>
             </form>

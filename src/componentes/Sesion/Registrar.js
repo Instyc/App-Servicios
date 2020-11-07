@@ -22,31 +22,12 @@ export default function Registrar({registrar}){
     const [tituloPagina, settituloPagina] = useState("")
     const [cargando, setcargando] = useState(false)
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
-    //   
-
+ 
     //Variables de los campos   
+    const [imagenes, setimagenes] = useState([])
     const [ImagenPerfil, setImagenPerfil] = useState([])
-    const [ImagenDNI, setImagenDNI] = useState([])
-
-    const funcionSetImagen = (file, cantidad, tipo) =>{
-        //Si es 0, entonces se agrega la imagen a su respectiva variable, si es 1 entonces se desea eliminar
-        if(tipo===0){
-            if(cantidad===2){
-                setImagenDNI([...ImagenDNI, file])
-            }else if(cantidad===1){
-                setImagenPerfil([...ImagenPerfil, file])
-            }
-        }else{
-            if(cantidad===2){
-                let aux = ImagenDNI.filter(f => f !== file)
-                setImagenDNI(aux)
-            }else if(cantidad===1){
-                let aux = ImagenDNI.filter(f => f !== file)
-                setImagenPerfil(aux)
-            }
-        }
-    }
-
+    const [imagenesBorradas, setimagenesBorradas] = useState([]);
+    const [imagenesSubidas, setimagenesSubidas] = useState([]);
     const [datos, setdatos] = useState({
         nombre:"",
         apellido:"",
@@ -57,9 +38,8 @@ export default function Registrar({registrar}){
         contrasena_rep:"",
         dni:"",
         descripcion:"",
-        
+        imagen_perfil: null
     });
-
     //Proveedor
     const [soyProveedor, setSoyProveedor] = useState(false);
 
@@ -76,8 +56,12 @@ export default function Registrar({registrar}){
                     contrasena_rep: "",
                     dni: state.datosSesion.dni,
                     descripcion: state.datosSesion.descripcion,
-                    tipo: state.datosSesion.tipo
+                    tipo: state.datosSesion.tipo,
+                    imagen_perfil: state.datosSesion.imagen_perfil
                 })
+                
+                if(state.datosSesion.imagen_perfil!==null)
+                    setimagenes([state.datosSesion.imagen_perfil.id])
             }
         }
     },[state.jwt, state.publico])
@@ -93,131 +77,106 @@ export default function Registrar({registrar}){
             [campo]: valor
         })
     }
-    
-    const [retorno, setretorno] = useState([]);
-    useEffect(()=>{
-        let objetoEnviar = {}
-        let j=0
-        
-        if(retorno.length!==0){            
-            if(ImagenPerfil.length!==0){
-                objetoEnviar["img_perfil"] = retorno.data[0].id
-                j=1;
-            }
-            if(ImagenDNI.length!==0){
-                let k = 1;
-                
-                for(let i=j; i<=ImagenDNI.length+j-1; i++){
-                    objetoEnviar["img_dni"+k] = retorno.data[i].id;
-                    k++;
-                }
-            }
 
+    const funcionSetImagen = (file, cantidad, tipo, subidas) =>{
+        setimagenesSubidas(subidas)
+        //Si es 0, entonces se agrega la imagen a su respectiva variable, si es 1 entonces se desea eliminar
+        if(tipo===0){
+            setImagenPerfil([...ImagenPerfil, file])
+        }else{
+            setimagenesBorradas(img => [...imagenesBorradas, file])
+            let aux = ImagenPerfil.filter(f => f !== file)
+            setImagenPerfil(aux)
+        }
+    }
+
+    function subirImagen(_id_){
+        let archivosNuevos = []
+        //archivosNuevos es el arreglo que contiene los archivos que han sido agregados y no los que ya han sido subidos al servidor
+        ImagenPerfil.map((imagen) => {
+            let iguales = imagenesSubidas.some(img => img === imagen)
+            if(!iguales){
+                archivosNuevos.push(imagen)
+            }
+        })
+        console.log("imagenes perfil:", ImagenPerfil)
+        console.log("nuevos:", archivosNuevos)
+
+        //archivosBorrados es el arreglo que contiene los archivos que han sido subidos al servidor pero que han sido eliminados en el frontend
+        let archivosBorrados = []
+        imagenesBorradas.map((imagen) => {
+            let iguales = imagenesSubidas.some(img => img === imagen)
+            if(iguales){
+                archivosBorrados.push(imagen)
+            }
+        })
+        console.log("borrados:", archivosBorrados)
+        //Si existen elementos dentro del arreglo imagenesBorradas, significa que se quieren borrar imágenes de la publicación
+        for(let indx = 0; indx < imagenesBorradas.length; indx++){
+            let id = Number(imagenesBorradas[indx].name)
+            
             let auth = 'Bearer '+state.jwt;
-            axios.put(
-                state.servidor+"/users/"+state.datosSesion.id
-                ,objetoEnviar,
-                {
-                    headers: {
-                        'Authorization': auth
-                    },
-                }
-            )
-            .then(response => {
-                setcargando(false)
-
-                console.log("Usuario: ", response.data)                
-                dispatch({type:"setDatos", value: response.data})
-
-                //history.push("/")
-            })
-            .catch(error => {
-                alert("Error, es posible que las imagenes no se hayan cargado correctamente, sin embargo su cuenta ha sido creada.")
-            })
-        }
-    },[retorno])
-
-    useEffect(()=>{
-        if(state.jwt!==""){
-            let mandar = [...ImagenPerfil, ...ImagenDNI] 
-
-            if((ImagenDNI.length+ImagenPerfil.length)!==0){
-                subirImagen(mandar)
-            }else{
-                //let auth = 'Bearer '+state.jwt;
-                
-                /*if(state.datosSesion.img_perfil!==null){
-                    axios.delete(state.servidor+"/upload/files/"+state.datosSesion.img_perfil,
-                    {
-                        headers: {
-                        'Authorization': auth
-                    },}).then(response => {
-                        console.log("borrado", response)
-                    }).catch(error => {
-                        alert("error al borrar")
-                    })*/
-                    /*
-                    axios
-                    .put(state.servidor+"/users/"+state.datosSesion.id, {
-                            img_perfil: null
-                        },
-                        {
-                            headers: {
-                                'Authorization': auth
-                            },
-                        }
-                    )
-                    .then(response => {
-                        //ª
-                        console.log('nulo papu', response)
-                        
-                        //dispatch({type:"setDatos", value: response.data.user})
-                    })
-                    .catch(error => {
-                        // Ocurrió un error
-                        alert("Ocurrio un error en imagen nula!")
-                    });
-                //}*/
-            }
-        }
-    },[state.jwt])
-    
-    function subirImagen(files){
-        const formData = new FormData()
-
-        for(let i =0; i<files.length; i++){
-            formData.append('files', files[i])
-        }
-        
-        //formData.append('ref', 'imagenes_solicitud')
-        //formData.append('refId', 1)
-        //formData.append('field', 'imagen')
-
-        //console.log(files)
-
-        let auth = 'Bearer '+state.jwt;
-
-        axios.post(
-            state.servidor+"/upload",
-            formData,
+            axios.delete(state.servidor+"/upload/files/"+id,
             {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': auth
-                },
-        })
-        .then(response => {
-            console.log("Respuesta imagen: ",response.data)
-            
-            setretorno(response)
-        })
-        .catch(error => {
-            alert("Error, no se han podido subir las imagenes, sin embargo su cuenta ha sido creada. ")
-        })
+                'Authorization': auth
+            },})
+            .then(response => {
+                console.log("Borrando imagenes", response)            
+            }).catch(error => {
+                alert("Error al borrar las imagenes")
+                console.log(error.response)
+            })
+        }
+        
+        //Subiendo las imagenes seleccionadas
+        const formData = new FormData()
+        
+        //Se cargan en el fromData las nuevas imágenes cargadas a la publicación, si es que las hay, y los datos modificados
+        for(let i = 0; i<archivosNuevos.length; i++){
+            formData.append('files', archivosNuevos[i])
+        }
+        
+        if(archivosNuevos.length!==0){
+            formData.append('ref', 'user')
+            formData.append('refId', _id_)
+            formData.append('field', 'imagen_perfil')
+            formData.append('source', 'users-permissions')
+
+            let auth = 'Bearer '+state.jwt;
+
+            axios.post(
+                state.servidor+"/upload",
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': auth
+                    },
+                })
+            .then(response => {
+                console.log("Respuesta imagen: ",response.data)
+                let usr = state.datosSesion
+                usr.imagen_perfil = response.data[0]
+
+                dispatch({type:"setDatos", value: usr})
+                dispatch({type:"setJwt", value: state.jwt})
+
+                localStorage.setItem('datosLocal', JSON.stringify({
+                    jwt: state.jwt,
+                    datosSesion: usr
+                }));
+            })
+            .catch(error => {
+                alert("Error al cargar las imágenes.")
+                console.log("Error: ", error.response)
+            })
+        }
     }
     
+    //Funcion para enviar los datos, ya sea de modificación de perfil como de creación de una cuenta nueva
     const enviarDatos = (e) =>{
-        e.preventDefault();
+        e.preventDefault();        
         if(datos.email.search('[.][a-z][a-z]')=== -1 || datos.email.search('[.].*[0-9].*')!== -1 ){
             setmensaje("El email se encuentra escrito incorrectamente");
         }else{
@@ -227,111 +186,120 @@ export default function Registrar({registrar}){
             }else if(datos.contrasena.length < 8){
                 setmensaje("La contraseña debe tener al menos 8 caracteres");
             }else{
-                setcargando(true)
-                axios
-                    .post(state.servidor+"/auth/local/register", {
-                        username: datos.usuario,
-                        email: datos.email,
-                        password: datos.contrasena,
-                        nombre: datos.nombre,
-                        apellido: datos.apellido,
-                        telefono: datos.telefono,
-                        dni: datos.dni,
-                        descripcion: datos.descripcion,
-                        tipo: soyProveedor?2:1,
-                        confirmed: false,
-                        estado: false,
-                        mostrar_telefono: false,
-                        identidad_verificada: false,
-                        espera_verificacion: false
-                    })
-                    .then(response => {
-                        // Se registró el usuario correctamente
-                        console.log('Se ha registrado correctamente el usuario')
-                        
-                        dispatch({type:"setDatos", value: response.data.user})
-                        dispatch({type:"setJwt", value: response.data.jwt})                        
-
-                        localStorage.setItem('datosLocal', JSON.stringify({
-                            jwt: response.data.jwt,
-                            datosSesion: response.data.user
-                        }));
-
-                        if((ImagenDNI.length+ImagenPerfil.length)===0){
-                            setcargando(false)
-                            history.push("/")
-                        }
-                    })
-                    .catch(error => {
-                        // Ocurrió un error
-                        let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
-                        if(err==="Auth.form.error.email.taken")
-                            setmensaje('El email ya está en uso.');
-                        else if(err==="Auth.form.error.username.taken")
-                            setmensaje('El usuario ya está en uso.');
-                        else
-                            setmensaje(err)
-
-                        setcargando(false)
-                });
+                //Si se entra a acá, significa que se quiere crear un nuevo usuario
+                enviarPost()
             }
         }else{
             if(datos.email.search('[.][a-z][a-z]')=== -1 || datos.email.search('[.].*[0-9].*')!== -1 ){
                 setmensaje("El email se encuentra escrito incorrectamente");
             }else{
-                //Modificar datos del usuario
-                let auth = 'Bearer '+state.jwt;
-                setcargando(true)
-                axios.put(
-                    state.servidor+"/users/"+state.datosSesion.id
-                    ,{
-                        username: datos.usuario,
-                        email: datos.email,
-                        nombre: datos.nombre,
-                        apellido: datos.apellido,
-                        telefono: datos.telefono,
-                        dni: datos.dni,
-                        descripcion: datos.descripcion,
-                        tipo: datos.tipo===2?2:soyProveedor?2:1
-                    },
-                    {
-                        headers: {
-                            'Authorization': auth
-                        },
-                    }
-                )
-                .then(response => {
-                    console.log("Respuesta cambio: ",response.data)
-                    dispatch({type:"setDatos", value: response.data})
-                    dispatch({type:"setJwt", value: state.jwt})
-
-                    localStorage.setItem('datosLocal', JSON.stringify({
-                        jwt: state.jwt,
-                        datosSesion: response.data
-                    }));
-
-                    alert("Sus datos se han modificado correctamente!")
-
-                    setcargando(false)
-                    history.push("/")
-                })
-                .catch(error => {
-                    let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
-                    console.log("error: ",error.response)
-                    if(err==="Auth.form.error.email.taken")
-                        setmensaje('El email ya está en uso.');
-                    else if(err==="Auth.form.error.username.taken")
-                        setmensaje('El usuario ya está en uso.');
-                    else{
-                        setmensaje(err)
-                    }
-
-                    setcargando(false)
-                })
+                //Si se entra a acá, significa que se quiere modificar el usuario                
+                enviarPut()
             }
-        }
+        }}
+    
     }
-}
+
+    function enviarPut(){
+        let auth = 'Bearer '+state.jwt;
+        setcargando(true)
+        axios.put(
+            state.servidor+"/users/"+state.datosSesion.id
+            ,{
+                username: datos.usuario,
+                email: datos.email,
+                nombre: datos.nombre,
+                apellido: datos.apellido,
+                telefono: datos.telefono,
+                dni: datos.dni,
+                descripcion: datos.descripcion,
+                tipo: datos.tipo===2?2:soyProveedor?2:1
+            },
+            {
+                headers: {
+                    'Authorization': auth
+                },
+            }
+        )
+        .then(response => {
+            console.log("Respuesta cambio: ",response.data)
+            dispatch({type:"setDatos", value: response.data})
+            dispatch({type:"setJwt", value: state.jwt})
+
+            subirImagen(state.datosSesion.id)
+
+            localStorage.setItem('datosLocal', JSON.stringify({
+                jwt: state.jwt,
+                datosSesion: response.data
+            }));
+
+            alert("Sus datos se han modificado correctamente!")
+
+            setcargando(false)
+            history.push("/")
+        })
+        .catch(error => {
+            let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
+            console.log("error: ",error.response)
+            if(err==="Auth.form.error.email.taken")
+                setmensaje('El email ya está en uso.');
+            else if(err==="Auth.form.error.username.taken")
+                setmensaje('El usuario ya está en uso.');
+            else{
+                setmensaje(err)
+            }
+            setcargando(false)
+        })
+    }
+
+    function enviarPost(){
+        setcargando(true)
+        axios
+        .post(state.servidor+"/auth/local/register", {
+            username: datos.usuario,
+            email: datos.email,
+            password: datos.contrasena,
+            nombre: datos.nombre,
+            apellido: datos.apellido,
+            telefono: datos.telefono,
+            dni: datos.dni,
+            descripcion: datos.descripcion,
+            tipo: soyProveedor?2:1,
+            confirmed: false,
+            estado: false,
+            mostrar_telefono: false,
+            identidad_verificada: false,
+            espera_verificacion: false,
+            bloqueado: false
+        })
+        .then(response => {
+            // Se registró el usuario correctamente
+            console.log('Se ha registrado correctamente el usuario',response.data)
+
+            subirImagen(response.data.user.id)
+            dispatch({type:"setDatos", value: response.data.user})
+            dispatch({type:"setJwt", value: response.data.jwt})                        
+
+            localStorage.setItem('datosLocal', JSON.stringify({
+                jwt: response.data.jwt,
+                datosSesion: response.data.user
+            }));
+            setcargando(false)
+            history.push("/")
+        })
+        .catch(error => {
+            // Ocurrió un error
+            let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
+            if(err==="Auth.form.error.email.taken")
+                setmensaje('El email ya está en uso.');
+            else if(err==="Auth.form.error.username.taken")
+                setmensaje('El usuario ya está en uso.');
+            else
+                setmensaje(err)
+
+            setcargando(false)
+        });
+    }
 
     /*Cuando se renderiza la pagina debemos saber si ha sido invocada para registrar un usuario o
     para modificar datos  */
@@ -381,7 +349,7 @@ export default function Registrar({registrar}){
                         </Grid>
 
                         <Grid item xs={12}>
-                            <SubirImagen cantidad={1} funcionSetImagen={funcionSetImagen} ids={[state.datosSesion.img_perfil]}/>
+                            <SubirImagen cantidad={1} setcargando={setcargando} funcionSetImagen={funcionSetImagen} ids={imagenes}/>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -457,42 +425,9 @@ export default function Registrar({registrar}){
                             </Grid>
                         </Hidden>
 
-                        
                         <Grid item xs={12}>
                             <Hidden xlDown={state.datosSesion.tipo===2}>
                                 <OkProveedor soyProveedor={soyProveedor} setSoyProveedor={setSoyProveedor}/>
-                            </Hidden>
-                            <Hidden xlDown={!registrar}>
-                                <div hidden={!soyProveedor}>
-                                    <Grid container spacing={1} direction="row" alignItems="center">
-                                        <Grid item xs={12} align="center">
-                                            <TextField
-                                            name="dni"
-                                            type="number"
-                                            value={datos.dni}
-                                            onChange={cambiarInput}
-                                            id="filled-basic"
-                                            label="DNI"
-                                            variant="filled"/>
-                                        </Grid>
-                                        
-                                        <Grid item xs={12}>
-                                            <SubirImagen cantidad={2} funcionSetImagen={funcionSetImagen} ids={[state.datosSesion.img_dni1,state.datosSesion.img_dni2]}/>
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <TextField
-                                            name="descripcion"
-                                            value={datos.descripcion}
-                                            onChange={cambiarInput}
-                                            className={classes.inputAncho}
-                                            id="filled-basic"
-                                            label="Descripción"
-                                            variant="filled"
-                                            multiline/>
-                                        </Grid>
-                                    </Grid>
-                                </div>
                             </Hidden>
                         </Grid>
                         

@@ -2,7 +2,7 @@ import React, {useEffect, useState, useContext} from 'react'
 import axios from 'axios'
 
 //Material UI
-import {CircularProgress, Tooltip, FormGroup, FormControlLabel, Checkbox, Modal, Backdrop, Fade, Typography, TextField, Button, Hidden} from '@material-ui/core/';
+import {LinearProgress, Tooltip, FormGroup, FormControlLabel, Checkbox, Modal, Backdrop, Fade, Typography, TextField, Button, Hidden} from '@material-ui/core/';
 import Reportar from '@material-ui/icons/PriorityHigh';
 import Estilos from '../Estilos.js';
 import AlertaMensaje from '../AlertaMensaje.js';
@@ -19,14 +19,27 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
   const [abrir, setabrir] = useState(false)
   const [cargando, setcargando] = useState(false)
   const [mensaje, setmensaje] = useState(false);
+  const [reporteAnterior, setreporteAnterior] = useState([]);
 
   const handleOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
+    setmotivosSeleccionados([])
     setOpen(false);
   };
+
+  function seleccionarMotivo(Motivo){
+    if(mensaje===true)
+      setmensaje(false)
+    let esta = motivosSeleccionados.some((motivo) => motivo.id===Motivo.id)
+    if(!esta){
+      setmotivosSeleccionados((arreglo)=>[...arreglo, {id:Motivo.id, nombre:Motivo.nombre}])
+    }else{
+      setmotivosSeleccionados(motivosSeleccionados.filter((motivo)=>motivo.id!==Motivo.id))
+    }
+  }
 
   useEffect(()=>{
     if(state.jwt!=="" || state.publico===true){
@@ -37,55 +50,106 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
       .catch(error => {
       alert("Un error ha ocurrido al cargar las motivos.")
         console.log(error.response)
-      })
+      })      
     }
   },[state.jwt, state.publico])
 
+  useEffect(() => {
+    console.log(solicitud)
+  }, [solicitud])
 
-  function seleccionarMotivo(idMotivo){
-    if(mensaje===true)
-      setmensaje(false)
-    let esta = motivosSeleccionados.some((motivo) => motivo===idMotivo)
-    if(!esta){
-      setmotivosSeleccionados((arreglo)=>[...arreglo, idMotivo])
+  function ComprobarReporte(reporte){
+    let auth = 'Bearer '+state.jwt;
+
+    if(motivosSeleccionados.length!==0){
+      if(reporte.length!==0){
+        let fecha = new Date()
+        let reporte_conjunto = reporte[0]
+
+        reporte_conjunto.descripcion+="\nNuevo reporte (Motivos:"+
+        motivosSeleccionados.map(motivo=>(" "+motivo.nombre))+") del día "
+        +fecha.getDate()+"/"+fecha.getMonth()+"/"+fecha.getFullYear()+":\n"+descripcion
+        
+        axios.put(state.servidor+"/api/reportes/"+reporte_conjunto.id,{
+          descripcion: reporte_conjunto.descripcion
+        },
+          {headers: {'Authorization': auth},
+        })
+        .then(response => {
+          console.log("Se modifica el reporte",response.data)
+          setmensaje(false)
+          handleClose()
+          setabrir(true)
+          setcargando(false)
+          setmotivosSeleccionados([])
+          setdescripcion("")
+        })
+        .catch(error => {
+          alert("Un error ha ocurrido al cargar las motivos.")
+          console.log(error.response)
+        })
+      }else{
+        axios.post(state.servidor+"/api/reportes",{
+          motivos: motivosSeleccionados.map(motivo_=>(motivo_.id)),
+          Solicitud_id: esDePerfil?null:solicitud.id,
+          Usuario_id: esDePerfil?solicitud.id:solicitud.Usuario_id.id,
+          accion: false,
+          estado: 0,
+          descripcion: descripcion
+        },{
+          headers: {'Authorization': auth},
+        })
+        .then(response => {
+          console.log(response.data)
+          setmensaje(false)
+          handleClose()
+          setabrir(true)
+          setcargando(false)
+          setmotivosSeleccionados([])
+          setdescripcion("")
+        })
+        .catch(error => {
+          alert("Un error ha ocurrido al cargar las motivos.")
+          console.log(error.response)
+        })
+      }
     }else{
-      setmotivosSeleccionados(motivosSeleccionados.filter((motivo)=>motivo!==idMotivo))
+      setcargando(false)
+      setmensaje(true)
     }
   }
 
   function EnviarReporte(){
     setcargando(true)
     let auth = 'Bearer '+state.jwt;
-
-    if(motivosSeleccionados.length!==0)
-      axios.post(state.servidor+"/api/reportes",{
-        motivos: motivosSeleccionados,
-        Solicitud_id: esDePerfil?null:solicitud.id,
-        Usuario_id: esDePerfil?solicitud.id:solicitud.Usuario_id.id,
-        accion: false,
-        estado: 0,
-        descripcion: descripcion
-      },{
-        headers: {
-            'Authorization': auth
-        },
+    console.log(solicitud)
+    if(!esDePerfil && solicitud.id!==null){
+      axios.get(state.servidor+"/api/reportes?Solicitud_id="+solicitud.id+"&estado=0"
+        ,{headers: {'Authorization': auth},
       })
       .then(response => {
         console.log(response.data)
-        setmensaje(false)
-        handleClose()
-        setabrir(true)
-        setcargando(false)
-        setmotivosSeleccionados([])
-        setdescripcion("")
+        ComprobarReporte(response.data)
       })
       .catch(error => {
-      alert("Un error ha ocurrido al cargar las motivos.")
+        alert("Un error ha ocurrido al cargar las motivos.")
         console.log(error.response)
       })
-    else
-      setcargando(false)
-      setmensaje(true)
+    }
+    
+    if(esDePerfil && solicitud.id!==null){
+      axios.get(state.servidor+"/api/reportes?Usuario_id="+solicitud.id+"&estado=0"
+        ,{headers: {'Authorization': auth},
+      })
+      .then(response => {
+        console.log(response.data)
+        ComprobarReporte(response.data)
+      })
+      .catch(error => {
+        alert("Un error ha ocurrido al cargar las motivos.")
+        console.log(error.response)
+      })
+    }
   }
 
 
@@ -123,7 +187,7 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
                   control={
                   <Checkbox
                     variant="error"
-                    onChange={()=>{seleccionarMotivo(motivo.id)}}
+                    onChange={()=>{seleccionarMotivo(motivo)}}
                   />
                   }
                   label={motivo.nombre}
@@ -139,7 +203,8 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
             </Hidden>
 
             <TextField className={classes.inputAncho} onChange={(e)=>{setdescripcion(e.target.value)}} value={descripcion} id="filled-basic" label="Informacion adicional" variant="filled" multiline/>
-            {cargando && <CircularProgress color="secondary"/>}
+            <br/>
+            {cargando && <LinearProgress color="secondary"/>}
             <Button disabled={cargando} className={classes.inputAncho} style={{marginTop:10}} size="large" variant="contained" color="primary" onClick={EnviarReporte}>Enviar</Button>
             
           </div>
