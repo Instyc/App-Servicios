@@ -11,6 +11,7 @@ import axios from 'axios';
 //Componentes creados
 import Estilos from '../Estilos.js';
 import SubirImagen from '../SubirImagen.js';
+import AlertaMensaje from '../AlertaMensaje.js';
 
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
@@ -20,6 +21,7 @@ export default function VerificarMiIdentidad(){
     let history = useHistory();
     //Variables de la página
     const [cargando, setcargando] = useState(false)
+    const [abrir, setabrir] = useState(false);
     //   
     
     //Variables de los campos   
@@ -157,7 +159,8 @@ export default function VerificarMiIdentidad(){
             console.log("Datos: ",response.data)
             
             setcargando(false)
-            history.push("/")
+            setabrir(true)
+            setTimeout(() => {  history.push("/"); }, 3000);
         })
         .catch(error => {
             console.log("Error, no se han podido enviar los datos.", error.response)
@@ -175,17 +178,24 @@ export default function VerificarMiIdentidad(){
                             </Typography>
                         </Grid>
 
-                        <Grid item xs={6}>
+                        <Grid item xs={12} align="center">
                             <TextField
                             className={classes.inputAncho}
                             type="number"
                             name="dni"
                             value={DNI}
+                            style={{width:"50%"}}
                             onChange={(e)=>{setDNI(e.target.value)}}
                             id="filled-basic"
                             label="Número de documento"
                             variant="filled"
                             required/>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Typography variant="subtitle1" component="h1" align="justify" className={classes.inputAncho}>
+                                Para que puedas verificar tu identidad, necesitamos que subas una foto del frente y otra del dorso de tu DNI. Procura que ambas imágenes se vean legibles y correspondan con los datos que proporcionaste en tu perfil.
+                            </Typography>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -195,6 +205,15 @@ export default function VerificarMiIdentidad(){
                         <Grid item xs={12} className={classes.inputAncho}>
                             {cargando && <Cargando/>}
                         </Grid>
+                        
+                        {
+                            (state.datosSesion.identidad_verificada || state.datosSesion.espera_verificacion) &&
+                            <Grid item xs={12}>
+                                <Typography variant="subtitle1" component="h1" align="justify" color="error" className={classes.inputAncho}>
+                                    {state.datosSesion.espera_verificacion?"Ya tienes una solicitud de verificación pendiente.":"¡Tu perfil ya está verificado!"}
+                                </Typography>
+                            </Grid>
+                        }
 
                         <Grid item xs={12}>
                             <Button
@@ -203,13 +222,14 @@ export default function VerificarMiIdentidad(){
                                 size="large"
                                 variant="contained"
                                 color="primary"
-                                disabled={cargando}
+                                disabled={cargando || state.datosSesion.identidad_verificada || state.datosSesion.espera_verificacion}
                             >
-                                Guardar cambios
+                                Enviar solicitud
                             </Button>
                         </Grid>
                     </Grid>
                 </form>
+                <AlertaMensaje mensaje={"¡Solicitud enviada con éxito! Pronto nos pondremos en contacto contigo."} abrir={abrir} setabrir={setabrir}/>
             </Paper>
         </div>
     );

@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import './App.css';
 //Enrutamiento
-import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
+import {BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
 
 //Material-UI
 import {CssBaseline, Container} from '@material-ui/core/';
@@ -37,64 +37,68 @@ import { ThemeProvider } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import Tema from './Tema'
 import TemaClaro from './TemaClaro'
+import TemaServia from './TemaServia'
 
 //"typography": {"fontFamily": "['Century Gothic','Roboto','Arial','sans-serif']"}
 
-const theme = createMuiTheme(TemaClaro);
+const theme = createMuiTheme(TemaServia);
 
 function App() { 
   const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
-
+  const [aux, setaux] = React.useState(false)
+  React.useEffect(()=>{
+    setaux(true)
+  },[])
   return (
     <div className="App" style={{height: "auto"}}>
       <ThemeProvider theme={theme}>
         <Router>
-        <ProveerEstadoAplicacion>
+        
           <Nav/>
           
           <React.Fragment>
               <CssBaseline/>
-              <Container style={{minHeight:"calc(100vh - 130px)"}}>
-                <Switch>
-                  
-                  <Route exact path="/"><Inicio tipo={true}/></Route>
-                  
-                  <Route path="/crear-publicacion"><CrearPublicacion modificar={false} tipoPublicacion={true}/></Route>
-                  <Route path="/solicitar-servicio"><CrearPublicacion modificar={false} tipoPublicacion={false}/></Route>
-                  <Route path="/modificar-publicacion/:id"><CrearPublicacion modificar={true} tipoPublicacion={true}/></Route>
-                  <Route path="/modificar-solicitud-servicio/:id"><CrearPublicacion modificar={true} tipoPublicacion={false}/></Route>
-                  
-                  <Route path="/publicaciones/:id"> <Categoria/></Route>
-                  
-                  <Route path="/registrar"><RegistrarSesion registrar={true}/></Route>
-                  <Route path="/modificar-usuario"><RegistrarSesion registrar={false}/></Route>
-                  <Route path="/publicacion/:id"><Publicacion/></Route>
-                  <Route path="/mis-publicaciones"><MisPublicaciones tipoPublicacion={true}/></Route>
-                  <Route path="/mis-servicios-solicitados"><MisPublicaciones tipoPublicacion={false}/></Route>
-                  <Route path="/modificar-proveedor"><ModificarPerfilProveedor/></Route>
-                  <Route path="/verificar-identidad"><VerificarIdentidad/></Route>
-                  <Route path="/gestionar-reclamos"><PestanaReportes/></Route>
-                  <Route path="/verificar-mi-identidad"><VerificarMiIdentidad/></Route>
+                <div style={{minHeight:"calc(100vh - 130px)"}} className="Fondo">
+                  <Switch>
+                    <Route exact path="/"><Inicio tipo={true}/></Route>
+                    
+                    <Route path="/crear-publicacion">{aux && state.datosSesion.tipo<2? <Redirect to="/" />:<CrearPublicacion modificar={false} tipoPublicacion={true}/>}</Route>
+                    <Route path="/solicitar-servicio">{aux && state.datosSesion.tipo===0? <Redirect to="/" />:<CrearPublicacion modificar={false} tipoPublicacion={false}/>}</Route>
+                    <Route path="/modificar-publicacion/:id">{aux && state.datosSesion.tipo<0? <Redirect to="/" />:<CrearPublicacion modificar={true} tipoPublicacion={true}/>}</Route>
+                    <Route path="/modificar-solicitud-servicio/:id">{aux && state.datosSesion.tipo===0? <Redirect to="/" />:<CrearPublicacion modificar={true} tipoPublicacion={false}/>}</Route>
+                    
+                    <Route path="/publicaciones/:id"><Categoria/></Route>
+                    
+                    <Route path="/registrar">{aux && state.datosSesion.tipo!==0? <Redirect to="/" />:<RegistrarSesion registrar={true}/>}</Route>
 
-                  <Route path="/perfil-proveedor/:id"><MiPerfil/></Route>
+                    <Route path="/modificar-usuario">{aux && state.datosSesion.tipo===0?<Redirect to="/"/>:<RegistrarSesion registrar={false}/>}</Route>
+                    
+                    <Route path="/publicacion/:id"><Publicacion/></Route>
+                    <Route path="/mis-publicaciones">{aux && state.datosSesion.tipo<2? <Redirect to="/" />:<MisPublicaciones tipoPublicacion={true}/>}</Route>
+                    <Route path="/mis-servicios-solicitados">{aux && state.datosSesion.tipo===0? <Redirect to="/" />:<MisPublicaciones tipoPublicacion={false}/>}</Route>
+                    <Route path="/modificar-proveedor">{aux && state.datosSesion.tipo<2? <Redirect to="/" />:<ModificarPerfilProveedor/>}</Route>
+                    <Route path="/verificar-mi-identidad">{aux && state.datosSesion.tipo<2?<Redirect to="/" />:<VerificarMiIdentidad/>}</Route>
+                    
+                    <Route path="/verificar-identidad">{aux && state.datosSesion.tipo!==3? <Redirect to="/" />:<VerificarIdentidad/>}</Route>
+                    <Route path="/gestionar-reclamos">{aux && state.datosSesion.tipo!==3? <Redirect to="/" />:<PestanaReportes/>}</Route>
 
-                  <Route path="/notificaciones"><Notificaciones/></Route>
+                    <Route path="/perfil-proveedor/:id"><MiPerfil/></Route>
 
-                  <Route path="/administrar-categorias">
-                    <ProveerEstadoCategoria>
-                      <AdministrarCategorias/>
-                    </ProveerEstadoCategoria>
-                  </Route>
-                  
-                  <Route path="/preguntas-frecuentes"><PreguntasFrecuentes/></Route>
-                  <Route path="/sobre-nosotros"><SobreNosotros/></Route>
+                    <Route path="/notificaciones">{aux && state.datosSesion.tipo===0? <Redirect to="/" />:<Notificaciones/>}</Route>
+                    <Route path="/mis-chats">{aux && state.datosSesion.tipo===0? <Redirect to="/" />:<Chat state={state}/>}</Route>
 
-                  <Route path="/mis-chats"><Chat state={state}/></Route>
+                    {/*<Route path="/administrar-categorias">
+                      <ProveerEstadoCategoria>
+                        <AdministrarCategorias/>
+                      </ProveerEstadoCategoria>
+                    </Route>*/}
+                    
+                    <Route path="/preguntas-frecuentes"><PreguntasFrecuentes/></Route>
+                    <Route path="/sobre-nosotros"><SobreNosotros/></Route>
                 </Switch>
-              </Container>
+              </div>
           </React.Fragment>
           <Footer/>
-          </ProveerEstadoAplicacion>
         </Router>
       </ThemeProvider>
     </div>

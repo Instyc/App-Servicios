@@ -11,6 +11,7 @@ import axios from 'axios';
 import Estilos from '../Estilos.js';
 import SubirImagen from '../SubirImagen.js';
 import InicioSesion from "../Sesion/InicioSesion.js";
+import AlertaMensaje from '../AlertaMensaje.js';
 
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
@@ -18,6 +19,7 @@ export default function Registrar({registrar}){
     const classes = Estilos()
     //Variables de la página
     const [mensaje, setmensaje] = useState("");
+    const [mensajeAlerta, setmensajeAlerta] = useState("");
     let history = useHistory();
     const [tituloPagina, settituloPagina] = useState("")
     const [cargando, setcargando] = useState(false)
@@ -28,6 +30,7 @@ export default function Registrar({registrar}){
     const [ImagenPerfil, setImagenPerfil] = useState([])
     const [imagenesBorradas, setimagenesBorradas] = useState([]);
     const [imagenesSubidas, setimagenesSubidas] = useState([]);
+    const [abrir, setabrir] = useState(false);
     const [datos, setdatos] = useState({
         nombre:"",
         apellido:"",
@@ -155,7 +158,6 @@ export default function Registrar({registrar}){
                     },
                 })
             .then(response => {
-                console.log("Respuesta imagen: ",response.data)
                 let usr = state.datosSesion
                 usr.imagen_perfil = response.data[0]
 
@@ -222,7 +224,6 @@ export default function Registrar({registrar}){
             }
         )
         .then(response => {
-            console.log("Respuesta cambio: ",response.data)
             dispatch({type:"setDatos", value: response.data})
             dispatch({type:"setJwt", value: state.jwt})
 
@@ -233,10 +234,10 @@ export default function Registrar({registrar}){
                 datosSesion: response.data
             }));
 
-            alert("Sus datos se han modificado correctamente!")
-
             setcargando(false)
-            history.push("/")
+            setmensajeAlerta("¡Cambios guardados!")
+            setabrir(true)
+            setTimeout(() => {  history.push("/"); }, 3000);
         })
         .catch(error => {
             let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
@@ -273,19 +274,20 @@ export default function Registrar({registrar}){
             bloqueado: false
         })
         .then(response => {
-            // Se registró el usuario correctamente
-            console.log('Se ha registrado correctamente el usuario',response.data)
-
+            
             subirImagen(response.data.user.id)
             dispatch({type:"setDatos", value: response.data.user})
             dispatch({type:"setJwt", value: response.data.jwt})                        
-
+            
             localStorage.setItem('datosLocal', JSON.stringify({
                 jwt: response.data.jwt,
                 datosSesion: response.data.user
             }));
+            
             setcargando(false)
-            history.push("/")
+            setmensajeAlerta("Usuario creado. ¡Bienvenido a Servia!")
+            setabrir(true)
+            setTimeout(() => {  history.push("/"); }, 2000);
         })
         .catch(error => {
             // Ocurrió un error
@@ -451,7 +453,7 @@ export default function Registrar({registrar}){
                         </Grid>
                     </Grid>
                 </form>
-                
+                <AlertaMensaje mensaje={mensajeAlerta} abrir={abrir} setabrir={setabrir}/>
             </Paper>
         </div>
     );

@@ -5,6 +5,7 @@ const estadoInicial = {
     jwt:"",
     publico: false,
     guardar: false,
+    imagen_predeterminada: "https://64.media.tumblr.com/b81cfdb0f7a54530fc1aa7c45ed45d0f/e04347f695cf72f4-21/s500x750/ba64d0d792639dd600c7ad4ddfddad2920b39323.jpg",
     datosSesion:{
         apellido: "",
         blocked: "",

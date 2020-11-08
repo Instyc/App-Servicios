@@ -12,7 +12,7 @@ export default function SobreNosotros() {
             ¿Quienes somos?
         </Typography>  
         <Typography variant="body1" align="left">
-            Somos un equipo integrado por estudiantes de ingeniería y técnicos que trabajamos disciplinada y meticulosamente por la eficiencia del proceso pos-cosecha de granos.
+            Somos...
         </Typography>
       </Paper>
     </div>

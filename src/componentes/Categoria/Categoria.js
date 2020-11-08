@@ -137,7 +137,7 @@ export default function Categoria() {
 
     return (
         <div className={classes.fondo}>
-            <Paper elevation={3} style={{width:950, padding: 15}}>
+            <Paper elevation={3} style={{width:950, padding: 15}} className="Fondo">
                 <Typography variant="h5" component="h2" align="center">{categoria.nombre}</Typography>
                 <Filtro
                     tipoPublicacion={tipoPublicacion}

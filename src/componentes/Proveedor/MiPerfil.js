@@ -2,7 +2,7 @@ import React, {useEffect, useState, useContext} from 'react';
 import {useParams} from 'react-router-dom'
 import axios from 'axios'
 
-import Grid from '@material-ui/core/Grid';
+import {Grid, Container} from '@material-ui/core/';
 import ProveedorInfo from '../Publicacion/ProveedorInfo.js';
 import PublicacionInfo from '../Publicacion/PublicacionInfo.js';
 import {BotonContratar} from '../ContactarProveedor.js'
@@ -18,6 +18,7 @@ export default function MiPerfil() {
         servicios: [],
         imagenes: [],
         bloqueado: false,
+        imagen_perfil: "",
         //Datos de publicación
         precio_estimado: "perfil",
         pausado: false,
@@ -50,7 +51,8 @@ export default function MiPerfil() {
                     imagenes: response.data.imagenes_proveedor,
                     bloqueado: response.data.bloqueado,
                     pausado:  response.data.estado,
-                    precio_estimado: "perfil"
+                    precio_estimado: "perfil",
+                    imagen_perfil: response.data.imagen_perfil===null?null:response.data.imagen_perfil.url
                 })
                 console.log(response.data)
             })
@@ -62,25 +64,27 @@ export default function MiPerfil() {
     },[state.jwt, state.publico])
 
     return (
-        <Grid container direction="row" justify="center" alignItems="stretch">
-            <Grid item md={8} xs={12} >
-                <PublicacionInfo esDePerfil={true} datosPagina={datosPagina}/>
-            </Grid> 
-            <Grid item md={4} xs={12} >
-                <ProveedorInfo esDePerfil={true} datosPerfil={datosPagina}/>
+        <Container>
+            <Grid container direction="row" justify="center" alignItems="stretch">
+                <Grid item md={8} xs={12} >
+                    <PublicacionInfo esDePerfil={true} datosPagina={datosPagina}/>
+                </Grid> 
+                <Grid item md={4} xs={12} >
+                    <ProveedorInfo esDePerfil={true} datosPerfil={datosPagina}/>
+                </Grid>
+                {
+                    //Si no es el proveedor que se está viendo, tiene servicios para ofrecer y el proveedor no está bloqueado ni pausado, ofrecemos la posibilidad de contactarse
+                    datosPagina.id!==state.datosSesion.id &&
+                    datosPagina.servicios.length!==0 &&
+                    !datosPagina.pausado &&
+                    !datosPagina.bloqueado &&
+                    <BotonContratar
+                    fijo={true}
+                    esDePerfil={true}
+                    datos={{idS: null, idP: datosPagina.id, nombre: datosPagina.titulo, servicios: datosPagina.servicios}}/>
+                }
             </Grid>
-            {
-                //Si no es el proveedor que se está viendo, tiene servicios para ofrecer y el proveedor no está bloqueado ni pausado, ofrecemos la posibilidad de contactarse
-                datosPagina.id!==state.datosSesion.id &&
-                datosPagina.servicios.length!==0 &&
-                !datosPagina.pausado &&
-                !datosPagina.bloqueado &&
-                <BotonContratar
-                fijo={true}
-                esDePerfil={true}
-                datos={{idS: null, idP: datosPagina.id, nombre: datosPagina.titulo, servicios: datosPagina.servicios}}/>
-            }
-        </Grid>
+        </Container>
     )
 }
 

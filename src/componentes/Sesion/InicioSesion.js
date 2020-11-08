@@ -16,6 +16,8 @@ export default function IniciarSesion({mensaje}) {
   const [open, setOpen] = useState(false);
   const [cargando, setcargando] = useState(false);
   const [alerta, setalerta] = useState("");
+  const [pwd_olvidada, setpwd_olvidada] = useState(false);
+
   const [datos, setdatos] = useState({
     email:"",
     contrasena:""
@@ -41,7 +43,8 @@ export default function IniciarSesion({mensaje}) {
   const iniciarSesion = () =>{
     setcargando(true)
 
-    axios
+    if(!pwd_olvidada){
+      axios
       .post(state.servidor+"/auth/local/", {
         identifier: datos.email,
         password: datos.contrasena
@@ -73,6 +76,24 @@ export default function IniciarSesion({mensaje}) {
 
         setcargando(false)
       });
+    }else{
+      console.log(datos)
+      axios
+      .post('http://localhost:1337/auth/forgot-password', {
+        email: datos.email,
+      },{
+        headers:{
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => {
+        console.log('Your user received an email', response.data);
+      })
+      .catch(error => {
+        // Handle error.
+        console.log('An error occurred:', error.response);
+      });
+    }
     
   }
 
@@ -97,7 +118,7 @@ export default function IniciarSesion({mensaje}) {
           <div className={classes.papelFondo}>
               <FormControl >
                 <Typography variant="h5" component="h1" align="center" className={classes.form}>
-                    Iniciar Sesión
+                  {pwd_olvidada?"Recuperar contraseña":"Iniciar Sesión"}
                 </Typography>
                 
                 <TextField
@@ -113,15 +134,18 @@ export default function IniciarSesion({mensaje}) {
                 
                 <Divider/>
                 
-                <TextField
-                  onChange={cambiarInput}
-                  name="contrasena"
-                  value={datos.contrasena}
-                  required
-                  type="password"
-                  label="Contraseña"
-                  variant="filled"
-                />
+                {
+                  !pwd_olvidada && <TextField
+                    onChange={cambiarInput}
+                    name="contrasena"
+                    value={datos.contrasena}
+                    required
+                    type="password"
+                    label="Contraseña"
+                    variant="filled"
+                    style={{marginTop:"15px"}}
+                  />
+                }
 
                 <Hidden xlDown={mensaje===""}>
                   <Typography color="error">
@@ -129,9 +153,17 @@ export default function IniciarSesion({mensaje}) {
                   </Typography>
                 </Hidden>
                 
-                <LinkMUI className={classes.margenArriba} href="#">
-                  Olvidé mi contraseña
-                </LinkMUI>
+                {
+                  !pwd_olvidada && <LinkMUI className={classes.margenArriba} href="#" onClick={()=>{setpwd_olvidada(true)}}>
+                    Olvidé mi contraseña
+                  </LinkMUI>
+                }
+
+                {
+                  pwd_olvidada && <LinkMUI className={classes.margenArriba} href="#" onClick={()=>{setpwd_olvidada(false)}}>
+                    Cancelar
+                  </LinkMUI>
+                }
                 
                 <div className={classes.inputAncho} hidden={!cargando}>
                   <LinearProgress />
@@ -142,15 +174,21 @@ export default function IniciarSesion({mensaje}) {
                   className={classes.margenArriba}
                   size="large"
                   variant="contained"
-                  color="primary">Iniciar Sesión
+                  color="primary">
+                    {
+                      !pwd_olvidada?"Iniciar Sesión":"Recuperar"
+                    }
                 </Button>
 
                 <Divider/>
-
-                <Typography onClick={handleClose} variant="body1" align="center">
-                  {`¿Sos nuevo acá? `}
-                  <Link to="/registrar">Crear cuenta</Link>
-                </Typography>
+                
+                {
+                  !pwd_olvidada && <Typography onClick={handleClose} variant="body1" align="center">
+                    {`¿Sos nuevo acá? `}
+                    <Link to="/registrar">Crear cuenta</Link>
+                  </Typography>
+                }
+                
             </FormControl>
           </div>
         </Fade>

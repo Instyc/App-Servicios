@@ -109,12 +109,10 @@ export function BotonContratar({fijo, esDePerfil, datos}) {
         console.log(error.response)
       })
     }else{
-      alert("Debes iniciar sesión para por contactar al proveedor.")
-
+      alert("Debes iniciar sesión para poder contactar al proveedor.")
+      setcargando(false)
     }
   }
-  
-
 
     return (
       <div>

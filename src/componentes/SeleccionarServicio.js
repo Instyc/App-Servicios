@@ -35,7 +35,7 @@ export default function SeleccionarServicio({servicio, agregarSeleccionado}) {
 
   return (
     <div className={classes.mostrarFlex}>
-      <Chip clickable variant="outlined" color="primary" label={servicio.nombre} icon={hecho_noHecho} onClick={handleClick}/>
+      <Chip clickable color="primary" label={servicio.nombre} icon={hecho_noHecho} onClick={handleClick}/>
     </div>
   );
 }

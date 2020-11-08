@@ -133,7 +133,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
             <Grid item xs={12} md={3} sm={12} align="center">
               <img 
                 className={classes.imagenPublicacion}
-                src={datosPagina.imagenes.length!==0?state.servidor+datosPagina.imagenes[0].url:"https://i.pinimg.com/564x/2f/2e/26/2f2e2667a7116678f0e59abce4911482.jpg"}
+                src={datosPagina.imagenes.length!==0?state.servidor+datosPagina.imagenes[0].url:state.imagen_predeterminada}
                 alt="1° imagen"
               />
             </Grid>
@@ -141,7 +141,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
               <Typography align="left" component="h5" variant="h5">
                 {`${datosPagina.Usuario_id.nombre} ${datosPagina.Usuario_id.apellido}`}
                 <Hidden xlDown={!datosPagina.Usuario_id.identidad_verificada}><Tooltip title="Usuario verificado">
-                  <IconButton style={{padding: 1}}><Verificado color="primary"/></IconButton>
+                  <IconButton style={{padding: 1}}><Verificado color="inherit"/></IconButton>
                 </Tooltip></Hidden>
               </Typography>
 
@@ -188,7 +188,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
           </Grid>
 
           <Grid item xs={8} sm={12} md={6} lg={3} align="center">
-            <Typography component="h6" variant="h6" color="secondary">
+            <Typography component="h6" variant="h6">
               {precioPresupuesto}: ${datosPagina.precio_estimado}
             </Typography>
           </Grid>  
@@ -218,7 +218,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
            
         <Grid item xs={6} lg={12} md={12} sm={6} align="center">
           <Link to={"/publicacion/"+datosPagina.id} style={{textDecoration:"none", padding: 0, color:"black"}}>
-            <Button variant="outlined" color="primary">Leer más</Button>
+            <Button variant="outlined" color="default">Leer más</Button>
           </Link>
         </Grid>
       </Grid>

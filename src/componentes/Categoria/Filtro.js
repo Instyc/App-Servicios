@@ -42,6 +42,7 @@ export default function Filtro({tipoPublicacion, settipoPublicacion, servicios, 
         <TextField
           className={classes.margenArriba}
           value={inputBusqueda}
+          color="secondary"
           onChange={(e)=>{setinputBusqueda(e.target.value)}}
           onKeyDown={(e)=>{if(e.key==='Enter'){buscarServicios()}}}
           label="Buscar por nombre" variant="outlined"
@@ -71,7 +72,7 @@ function SeleccionarServicio({servicio, agregarSeleccionado}) {
 
   return (
     <div className={classes.mostrarFlex}>
-      <Chip clickable variant="outlined" color="primary" label={servicio.nombre} icon={hecho_noHecho?<Done/>:<Clear/>} onClick={handleClick}/>
+      <Chip clickable color="primary" label={servicio.nombre} icon={hecho_noHecho?<Done/>:<Clear/>} onClick={handleClick}/>
     </div>
   );
 }

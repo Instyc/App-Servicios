@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react';
 import FilaPublicacion from '../Categoria/FilaPublicacion.js';
 import Estilos from '../Estilos.js';
-import { Typography, Paper } from '@material-ui/core';
+import { Typography, Paper, Container } from '@material-ui/core';
 import Alerta from '@material-ui/lab/Alert';
 import axios from 'axios'
 import Cargando from '@material-ui/core/LinearProgress';
@@ -65,8 +65,9 @@ export default function MisPublicaciones({tipoPublicacion}) {
   }
 
   return (
-    <div className={classes.fondo}>
-        <Paper elevation={3} style={{width:950, padding: 15}}>
+    
+    <Container className={classes.fondo}>
+        <Paper elevation={3} className="Fondo" style={{width:950, padding: 15}}>
             <Typography variant="h5" component="h2" align="center">{tituloPagina}</Typography>
             <br/>
             {
@@ -85,6 +86,6 @@ export default function MisPublicaciones({tipoPublicacion}) {
               ))
             }
         </Paper>
-    </div>
+    </Container>
   )
 }

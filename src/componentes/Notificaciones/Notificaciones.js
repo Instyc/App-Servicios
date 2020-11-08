@@ -1,8 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
 import axios from 'axios'
 //Material-UI
-import {IconButton, LinearProgress, Collapse, Hidden, ListItemText, ListItem, List, Paper, Grid, Typography, Button, TextField} from '@material-ui/core/';
-import {DeleteForever as Eliminar, FiberNew as Nuevo, Assignment as Reporte, EmojiPeople as Identidad, Star as Resena} from '@material-ui/icons/';
+import {IconButton, LinearProgress, Container, Paper, Grid, Typography} from '@material-ui/core/';
+import {DeleteForever as Eliminar, FiberNew as Nuevo, Assignment as Reporte, EmojiPeople as Identidad, Star as Resena, FormatItalic} from '@material-ui/icons/';
 import Alerta from '@material-ui/lab/Alert';
 import 'react-lightbox-component/build/css/index.css';
 import { format, register } from 'timeago.js';
@@ -100,8 +100,8 @@ export default function VerificarIdentidad() {
     }
 
     return (
-        <div className={classes.fondo}>
-            <Paper style={{padding:"15px"}} variant="outlined" square>
+        <Container className={classes.fondo}>
+            <Paper style={{padding:"15px", width:"100%"}} variant="outlined" square>
                 <Grid container direction="row" alignItems="center">
                     <Grid item xs={12}>
                         <Typography variant="h4" component="h4" align="center">
@@ -119,7 +119,7 @@ export default function VerificarIdentidad() {
                     }  
                     {
                         notificaciones.map((noti, i)=>(
-                            <Paper key={i} className={classes.filaPublicacion} style={{margin:"auto" ,width:"90%"}} variant="outlined" square>
+                            <Paper key={i} className={classes.filaPublicacion} style={{margin:"auto" ,width:"95%"}} variant="outlined" square>
                                 <Grid container item xs={12} alignItems="center">
                                     <Grid item xs={12} sm={2} md={1} lg={1} align="center">
                                         {
@@ -154,7 +154,7 @@ export default function VerificarIdentidad() {
                                     </Grid>
                                     <Grid item xs={2} sm={2} md={1} lg={1} align="center">
                                         {
-                                            <IconButton onClick={()=>{eliminarNotificacion(noti.id)}}><Eliminar color="secondary" /></IconButton>
+                                            <IconButton onClick={()=>{eliminarNotificacion(noti.id)}}><Eliminar color="error" /></IconButton>
                                         }
                                     </Grid>
                                 </Grid>
@@ -163,6 +163,6 @@ export default function VerificarIdentidad() {
                     }
                 </Grid>
             </Paper>
-        </div>
+        </Container>
     );
 }

@@ -10,6 +10,7 @@ import PublicacionInfo from './PublicacionInfo.js';
 import Opiniones from './Opiniones.js';
 import Estilos from '../Estilos.js';
 import {BotonContratar} from '../ContactarProveedor.js'
+import {Container} from '@material-ui/core/';
 
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
@@ -27,7 +28,8 @@ export default function Publicacion() {
         mostrar_telefono: false,
         pausado: false,
         bloqueado: false,
-        servicios: []
+        servicios: [],
+        imagen_perfil: ""
     })
     const [datosPagina, setdatosPagina] = useState({
         id: null,
@@ -89,6 +91,7 @@ export default function Publicacion() {
                     servicios: response.data.servicios,
                     bloqueado: response.data.bloqueado,
                     pausado: response.data.estado,
+                    imagen_perfil: response.data.imagen_perfil===null?null:response.data.imagen_perfil.url
                 })
             })
             .catch(error => {
@@ -98,7 +101,7 @@ export default function Publicacion() {
     }
 
     return (
-        <div>
+        <Container style={{width: "95%"}}>
             <Grid container direction="row" justify="center" alignItems="stretch">
                 <Grid item md={8} xs={12}>
                   <PublicacionInfo esDePerfil={false} datosPagina={datosPagina}/>
@@ -118,6 +121,6 @@ export default function Publicacion() {
                     <BotonContratar fijo={true} esDePerfil={false} datos={{idS: datosPagina.id, idP: datosPerfil.id, nombre: datosPerfil.titulo}} />
                 }
             </Grid>
-        </div>
+        </Container>
     )
 }

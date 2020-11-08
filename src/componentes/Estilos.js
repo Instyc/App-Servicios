@@ -105,7 +105,7 @@ const Estilos = makeStyles((theme) => ({
     },
     EstiloLink:{
         textDecoration:"none",
-        color: theme.palette.secondary.main
+        color: theme.palette.secondary.contrastText
     },
     EstiloVacio:{
         

@@ -34,13 +34,15 @@ export default function Inicio({tipo}) {
 
   return (
     <div className={classes.fondo} >
-      <Paper elevation={3} style={{width:950, padding: 15}}>      
-        <Typography component="h3" variant="h4" align="center">Servicios Saenz Peña</Typography>
+      <Paper elevation={3} className="Fondo" style={{width:"85%"}}>      
+        <Typography component="h3" variant="h3" align="center">Servia</Typography>
         <Typography component="h4" variant="h5" align="center">{tipo?"¡Encuentra tu servicio ideal!":"¡Contacta con personas que buscan tu ayuda!"}</Typography>
+        
+        
         {
           //Cuando cargando es true (seteado al momento de empezar a realizar la búsqueda de las categorías), nos muestra el componente de carga,
           //y desaparece cuando cambia a false (seteado al finalizar la búsqueda de los datos)
-          cargando && <Cargando/>
+          cargando && <Cargando style={{margin:"15px"}}/>
         }
         <hr/>
         <Grid container spacing={5} justify="space-around" alignItems="center">

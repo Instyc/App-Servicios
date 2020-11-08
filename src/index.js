@@ -1,14 +1,25 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+import { ObtenerEstadoAplicacion, ProveerEstadoAplicacion } from './Estados/AplicacionEstado'
+
+function Inicial() { 
+  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+  return (
+    <ProveerEstadoAplicacion>
+      <App/>
+    </ProveerEstadoAplicacion>
+  )
+}
 ReactDOM.render(
   /*<React.StrictMode>
     <App />
   </React.StrictMode>*/
-  <App/>,
+  <Inicial/>
+  ,
   document.getElementById('root')
 );
 

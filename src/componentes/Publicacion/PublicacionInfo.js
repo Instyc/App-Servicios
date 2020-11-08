@@ -72,10 +72,10 @@ export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) 
                 {DatosPagina.precio_estimado==="perfil"?"Este proveedor se encuentra bloqueado.":"Esta publicación se encuentra bloqueada."}
               </Alerta>)
             }
-            <Grid item lg={12} hidden={!esDePerfil} className={esDePerfil?classes.EstiloMovil:classes.EstiloVacio}>
+            <Grid item lg={12} hidden={!esDePerfil} align="center" className={esDePerfil?classes.EstiloMovil:classes.EstiloVacio}>
               <Avatar
-              alt="Remy Sharp"
-              src="https://i.pinimg.com/originals/69/1d/0c/691d0c155896f8ec64280648cac6fa22.jpg"
+              alt="Perfil"
+              src={DatosPagina.imagen_perfil!==null?state.servidor+DatosPagina.imagen_perfil:state.imagen_predeterminada}
               className={classes.imagenPublicacion} />
             </Grid>
 
@@ -121,12 +121,12 @@ export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) 
             }
             
             <Grid item xs={12}>
-                <Typography variant="body1" component="p" align="justify"> 
-                  {DatosPagina.descripcion}    
-                </Typography>
+              <Typography variant="body1" component="p" align="justify"> 
+                {DatosPagina.descripcion}    
+              </Typography>
             </Grid>
             <Grid item xs={12}>
-                <ImageGallery items={imagenes}/>
+              <ImageGallery items={imagenes.length===0?[{original: state.imagen_predeterminada,thumbnail: state.imagen_predeterminada}]:imagenes}/>
             </Grid>
         </Grid>
       </Paper>

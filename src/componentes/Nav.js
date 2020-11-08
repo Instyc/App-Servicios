@@ -3,7 +3,11 @@ import {BrowserRouter as Router, Switch, Route, Link, useHistory} from "react-ro
 import axios from 'axios'
 //Material-UI
 import {makeStyles, ListItemIcon, Grid, AppBar, Toolbar, IconButton, Typography, Badge, MenuItem, Menu, Button} from '@material-ui/core/';
-import {Chat, AccountCircle, Menu as MenuIcon, Notifications as NotificationsIcon, PriorityHigh as PriorityHighIcon} from '@material-ui/icons'
+import {Person as Perfil, Create as ModificarPerfil, HowToReg as VerificarIdentidadIcono, FeaturedPlayList as Explorar, Chat, AccountCircle, Menu as MenuIcon, Notifications as NotificationsIcon, PriorityHigh as PriorityHighIcon} from '@material-ui/icons'
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import PersonIcon from '@material-ui/icons/Person';
 
 //Importamos componentes (Logica)
 import Inicio from "./Inicio/Inicio.js";
@@ -173,9 +177,9 @@ export default function PrimarySearchAppBar() {
               {
               flexGrow: 1,
               textDecoration:"none",
-              color: "white",
-              
-              fontSize: 20,
+              color: "black",
+              fontFamily: "Homework",
+              fontSize: 50,
               }}>
               Servia
             </Link>
@@ -254,7 +258,7 @@ export default function PrimarySearchAppBar() {
                 onClick={desplegarPerfil}
               >
               <AccountCircle />
-            </IconButton>
+              </IconButton>
             <Menu
               id="simple-menu"
               anchorEl={despPerf}
@@ -263,16 +267,20 @@ export default function PrimarySearchAppBar() {
               onClose={plegarPerfil}
             >              
               <MenuItem onClick={plegarPerfil}>
-                <ListItemIcon>
-                  <PriorityHighIcon fontSize="small" />
-                </ListItemIcon>
-                <Link to="/modificar-usuario" className={classes.EstiloLink}><Typography variant="inherit">Modificar mi perfil</Typography></Link>
+                <Link to="/modificar-usuario" className={classes.EstiloLink}>
+                  <ListItemIcon>
+                    <AccountBoxIcon fontSize="small" />
+                    <ModificarPerfil fontSize="small" />
+                  </ListItemIcon>
+                  <Typography variant="inherit">Modificar mi perfil</Typography>
+                </Link>
               </MenuItem>
               
               <div hidden={tipoUsuario!==2}>
                 <MenuItem onClick={plegarPerfil}>
                   <ListItemIcon>
-                    <PriorityHighIcon fontSize="small" />
+                    <AssignmentIndIcon fontSize="small" />
+                    <ModificarPerfil fontSize="small" />
                   </ListItemIcon>
                   <Link to="/modificar-proveedor" className={classes.EstiloLink}><Typography variant="inherit">Modificar mi perfil de proveedor</Typography></Link>
                 </MenuItem>
@@ -281,13 +289,13 @@ export default function PrimarySearchAppBar() {
               <div hidden={tipoUsuario!==2}>
                 <MenuItem onClick={plegarPerfil}>
                   <ListItemIcon>
-                    <PriorityHighIcon fontSize="small" />
+                    <Perfil fontSize="small" />
                   </ListItemIcon>
                   <Link to={"/perfil-proveedor/"+state.datosSesion.id} className={classes.EstiloLink}><Typography variant="inherit">Ver mi perfil de proveedor</Typography></Link>
                 </MenuItem>
               </div>
 
-              <div hidden={tipoUsuario!==2 || state.datosSesion.espera_verificacion===true || state.datosSesion.identidad_verificada === true}>
+              <div hidden={tipoUsuario!==2 || state.datosSesion.identidad_verificada === true}>
                 <MenuItem onClick={plegarPerfil}>
                   <ListItemIcon>
                     <PriorityHighIcon fontSize="small" /> 
@@ -298,15 +306,16 @@ export default function PrimarySearchAppBar() {
 
               <MenuItem onClick={cerrarSesion}>
                 <ListItemIcon>
-                  <PriorityHighIcon fontSize="small" />
+                  <ExitToAppIcon fontSize="small" />
                 </ListItemIcon>
                 <Typography variant="inherit">Cerrar sesión</Typography>
               </MenuItem>
             </Menu>
           </div>
           
+          {/*Hamburguesa */}
           <div className={tipoUsuario===0?classes.EstiloMovil:classes.EstiloVacio}>
-            <IconButton className={classes.hambur} onClick={desplegarMenu}>
+            <IconButton className={classes.hambur} onClick={desplegarMenu} color="inherit" edge="end" aria-label="menu hamburguesa">
               <MenuIcon/>
             </IconButton>
             <Menu
@@ -322,7 +331,12 @@ export default function PrimarySearchAppBar() {
               </Link>
               
               <Link to="/" className={classes.EstiloMovil} className={classes.EstiloLink}>
-                <MenuItem onClick={plegarMenu}>Explorar servicios</MenuItem>
+                <MenuItem onClick={plegarMenu}>
+                  <ListItemIcon>
+                    <Explorar fontSize="small" />
+                  </ListItemIcon>
+                  <Typography variant="inherit">Explorar servicios</Typography>
+                </MenuItem>
               </Link>
 
               {/*Usuario*/}

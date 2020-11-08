@@ -3,14 +3,12 @@ import {Hidden, Paper, Grid, Typography, Avatar, Divider, Button, ListSubheader,
 import axios from 'axios'
 import { Link  } from 'react-router-dom';
 
-import PhoneIcon from '@material-ui/icons/Phone';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Verificado from '@material-ui/icons/CheckCircleOutline';
+import {Phone as PhoneIcon, FileCopy as Copiar, ExpandLess, ExpandMore, CheckCircleOutline as Verificado} from '@material-ui/icons/';
 import Alerta from '@material-ui/lab/Alert';
 
 import Estilos from '../Estilos.js';
 import Estrellas from '../Estrellas.js';
+import AlertaMensaje from '../AlertaMensaje.js';
 
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
@@ -18,6 +16,7 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
   const classes = Estilos();
   const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
   const [categorias, setcategorias] = useState([])
+  const [copiado, setcopiado] = useState(false)
 
   const [DatosPerfil, setDatosPerfil] = useState({
     id: null,
@@ -28,7 +27,8 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
     mostrar_telefono: false,
     servicios: [],
     pausado: false,
-    bloqueado: false
+    bloqueado: false,
+
   })
 
   useEffect(()=>{
@@ -37,6 +37,7 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
       setDatosPerfil(datosPerfil)
       buscarCategorias(datosPerfil)
     }
+    console.log("Datos: ", datosPerfil)
   },[datosPerfil])
 
   function buscarCategorias(perfil){
@@ -59,15 +60,30 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
     }) 
   }
 
+  function copiarAlPortapapeles(telefono) {
+    // Crea un campo de texto "oculto"
+    var aux = document.createElement("input");
+    // Asigna el contenido del elemento especificado al valor del campo
+    aux.setAttribute("value", telefono);
+    // Añade el campo a la página
+    document.body.appendChild(aux);
+    // Selecciona el contenido del campo
+    aux.select();
+    // Copia el texto seleccionado
+    document.execCommand("copy");
+    // Elimina el campo de la página
+    document.body.removeChild(aux);
+    setcopiado(true)
+  }
+
   return (
     <div className={classes.proveedorSticky}>
       <Paper elevation={5}>
         <Grid className={classes.padding} container direction="row" justify="space-between" alignItems="center">
             <Grid item xs={12} className={esDePerfil?classes.EstiloPC:classes.EstiloVacio}>
               <Avatar
-              alt="Remy Sharp"
-              //src={state.servidor+DatosPerfil.img_perfil.url}
-              src="https://i.pinimg.com/originals/69/1d/0c/691d0c155896f8ec64280648cac6fa22.jpg"
+              alt="Perfil"
+              src={DatosPerfil.imagen_perfil!==null?state.servidor+DatosPerfil.imagen_perfil:state.imagen_predeterminada}
               className={classes.imagenPublicacion}/>
             </Grid>
 
@@ -125,11 +141,20 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
                 </List>         
            </Grid>
            <Hidden xlDown={!DatosPerfil.mostrar_telefono}>
-            <Grid item xs={12}>
-                <Button startIcon={<PhoneIcon/>}>
+            {
+              DatosPerfil.telefono.length!==0 &&
+              <Grid item xs={12}>
+                <a className={classes.EstiloLink} href={"tel:"+DatosPerfil.telefono}>
+                  <Button startIcon={<PhoneIcon/>}>
                     {DatosPerfil.telefono}
-                </Button>
-            </Grid>
+                  </Button>
+                </a>
+                <Tooltip title="Copiar">
+                  <IconButton onClick={()=>copiarAlPortapapeles(DatosPerfil.telefono)}><Copiar/></IconButton>
+                </Tooltip>
+              </Grid>
+            }
+            <AlertaMensaje mensaje={"Copiado al portapapeles"} abrir={copiado} setabrir={setcopiado}/>
            </Hidden>
         </Grid>
       </Paper>
