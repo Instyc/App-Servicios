@@ -101,7 +101,7 @@ export default function VerificarIdentidad() {
 
     return (
         <Container className={classes.fondo}>
-            <Paper style={{padding:"15px", width:"100%"}} variant="outlined" square>
+            <Paper style={{padding:"15px", width:"100%"}} className="Fondo" variant="outlined" square>
                 <Grid container direction="row" alignItems="center">
                     <Grid item xs={12}>
                         <Typography variant="h4" component="h4" align="center">

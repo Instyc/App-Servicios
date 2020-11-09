@@ -66,7 +66,7 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
         let fecha = new Date()
         let reporte_conjunto = reporte[0]
 
-        reporte_conjunto.descripcion+="\nNuevo reporte (Motivos:"+
+        reporte_conjunto.descripcion+="##Nuevo reporte (Motivos:"+
         motivosSeleccionados.map(motivo=>(" "+motivo.nombre))+") del día "
         +fecha.getDate()+"/"+fecha.getMonth()+"/"+fecha.getFullYear()+":\n"+descripcion
         
@@ -95,7 +95,7 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
           Usuario_id: esDePerfil?solicitud.id:solicitud.Usuario_id.id,
           accion: false,
           estado: 0,
-          descripcion: descripcion
+          descripcion: descripcion.length!==0?descripcion:"El usuario no ha proporcionado información adicional."
         },{
           headers: {'Authorization': auth},
         })

@@ -12,21 +12,23 @@ import CategoriaSeleccion from './CategoriaSeleccion.js';
 import { ObtenerEstadoAplicacion } from '../Estados/AplicacionEstado'
 
 export function BotonContratar({fijo, esDePerfil, datos}) {
-    const classes = Estilos();
-    const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
-    const [open, setOpen] = React.useState(false);
-    const [cargando, setcargando] = React.useState(false);
-    const [mensaje, setmensaje] = React.useState("");
-    const [abrir, setabrir] = React.useState(false);
-    const [categoria, setcategoria] = useState({});
-    const [arregloCategorias, setarregloCategorias] = useState([]);
+  const classes = Estilos();
+  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+  const [open, setOpen] = React.useState(false);
+  const [cargando, setcargando] = React.useState(false);
+  const [mensaje, setmensaje] = React.useState("");
+  const [abrir, setabrir] = React.useState(false);
+  const [categoria, setcategoria] = useState({});
+  const [arregloCategorias, setarregloCategorias] = useState([]);
 
-    const handleOpen = () => {
-      setOpen(true);
-    };
-    const handleClose = () => {
-      setOpen(false);
-    };
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  useEffect(()=>{console.log(datos)},[datos])
 
   useEffect(()=>{
     if (esDePerfil){
@@ -55,8 +57,8 @@ export function BotonContratar({fijo, esDePerfil, datos}) {
         setarregloCategorias(response.data)
       })
       .catch(error => {
-          alert("Un error ha ocurrido al cargar los chats.")
-          console.log(error.response)
+        alert("Un error ha ocurrido al cargar los chats.")
+        console.log(error.response)
       }) 
     }
     }
@@ -138,16 +140,16 @@ export function BotonContratar({fijo, esDePerfil, datos}) {
             timeout: 500,
           }}
         >
-          <Fade in={open}>
+          <Fade in={open} style={{padding:"15px"}}>
             <div className={classes.papelFondo}>
-              <div style={{maxWidth:750}}>
+              <div style={{maxWidth:750}} className="Fondo">
               <Grid  container direction="row" justify="center"  spacing={2}>
                   <Grid item xs={12}>
                       <div align="center">
                           <Avatar
-                          alt="Nombre proveedor"
-                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR7Mt8wp9lo-dd73xpvjzPMcspQ8uwAThLitQ&usqp=CAU"
-                          className={classes.imagenPublicacion}/>
+                            alt="Perfil"
+                            src={datos.imagen_perfil!==null?datos.imagen_perfil:state.imagen_predeterminada}
+                            className={classes.imagenPublicacion}/>
                       </div>
                   </Grid>
                   <Grid item xs={12}>

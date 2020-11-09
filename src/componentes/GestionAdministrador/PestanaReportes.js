@@ -3,7 +3,7 @@ import axios from 'axios'
 
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import {AppBar, Backdrop, CircularProgress, Box, Tab, Tabs} from '@material-ui/core';
+import {Container, AppBar, Backdrop, CircularProgress, Box, Tab, Tabs} from '@material-ui/core';
 
 import GestionarReportes from './GestionarReportes.js'
 
@@ -105,8 +105,8 @@ export default function PestanaReportes() {
   }
 
   return (
-    <div className={classes.root} style={{margin:"10px 0px", padding:"20px"}}>
-      <>
+    <div className={classes.root} style={{padding:"20px"}} className="fondo">
+      <Container>
         <AppBar position="static" color="default">
           <Tabs
             value={value}
@@ -136,7 +136,7 @@ export default function PestanaReportes() {
         <TabPanel value={value} index={2}>
           <GestionarReportes estadoReporte={2} cargando={cargando} modificarReporte={()=>{}} reportes={reportes.filter((reporte)=>(reporte.estado>=2))}/>
         </TabPanel>
-      </>
+      </Container>
     </div>
   );
 }

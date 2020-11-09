@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 //Material UI 
-import {Link as LinkMUI,  LinearProgress, Modal, Backdrop, Fade, Typography, TextField, FormControl, Hidden, Button, Divider, } from '@material-ui/core';
+import {Grid, Link as LinkMUI,  LinearProgress, Modal, Backdrop, Fade, Typography, TextField, FormControl, Hidden, Button, Divider, } from '@material-ui/core';
 
 //Librerias
 import {Link} from "react-router-dom";
@@ -116,80 +116,95 @@ export default function IniciarSesion({mensaje}) {
       >
         <Fade in={open}>
           <div className={classes.papelFondo}>
-              <FormControl >
-                <Typography variant="h5" component="h1" align="center" className={classes.form}>
-                  {pwd_olvidada?"Recuperar contraseña":"Iniciar Sesión"}
-                </Typography>
-                
-                <TextField
-                  onChange={cambiarInput}
-                  name="email"
-                  value={datos.email}
-                  className={classes.margenArriba}
-                  id="filled-basic"
-                  label="Usuario/Correo electrónico"
-                  variant="filled"
-                  required
-                />
-                
-                <Divider/>
-                
-                {
-                  !pwd_olvidada && <TextField
-                    onChange={cambiarInput}
-                    name="contrasena"
-                    value={datos.contrasena}
-                    required
-                    type="password"
-                    label="Contraseña"
-                    variant="filled"
-                    style={{marginTop:"15px"}}
-                  />
-                }
+            <div className="Fondo"  style={{maxWidth:350}}>
+                <Grid  container direction="row" justify="center"  spacing={2}>
+                  <Grid item xs={12}>
+                    <Typography variant="h5" component="h1" align="center" className={classes.form}>
+                      {pwd_olvidada?"Recuperar contraseña":"Iniciar Sesión"}
+                    </Typography>
+                  </Grid>
 
-                <Hidden xlDown={mensaje===""}>
-                  <Typography color="error">
-                      {alerta}
-                  </Typography>
-                </Hidden>
-                
-                {
-                  !pwd_olvidada && <LinkMUI className={classes.margenArriba} href="#" onClick={()=>{setpwd_olvidada(true)}}>
-                    Olvidé mi contraseña
-                  </LinkMUI>
-                }
-
-                {
-                  pwd_olvidada && <LinkMUI className={classes.margenArriba} href="#" onClick={()=>{setpwd_olvidada(false)}}>
-                    Cancelar
-                  </LinkMUI>
-                }
-                
-                <div className={classes.inputAncho} hidden={!cargando}>
-                  <LinearProgress />
-                </div>
-
-                <Button
-                  onClick={iniciarSesion}
-                  className={classes.margenArriba}
-                  size="large"
-                  variant="contained"
-                  color="primary">
+                  <Grid item xs={12}>
+                    <TextField
+                      onChange={cambiarInput}
+                      name="email"
+                      value={datos.email}
+                      className={classes.inputAncho}
+                      id="filled-basic"
+                      label="Usuario/Correo electrónico"
+                      variant="filled"
+                      required
+                    />
+                  </Grid>
+                  <Divider/>
+                  
+                  <Grid item xs={12}>
                     {
-                      !pwd_olvidada?"Iniciar Sesión":"Recuperar"
+                      !pwd_olvidada && <TextField
+                        onChange={cambiarInput}
+                        name="contrasena"
+                        value={datos.contrasena}
+                        required
+                        type="password"
+                        label="Contraseña"
+                        variant="filled"
+                        style={{marginTop:"15px"}}
+                        className={classes.inputAncho}
+                      />
                     }
-                </Button>
+                  </Grid>
 
-                <Divider/>
-                
-                {
-                  !pwd_olvidada && <Typography onClick={handleClose} variant="body1" align="center">
-                    {`¿Sos nuevo acá? `}
-                    <Link to="/registrar">Crear cuenta</Link>
-                  </Typography>
-                }
-                
-            </FormControl>
+
+                  <Hidden xlDown={mensaje===""}>
+                    <Typography color="error">
+                        {alerta}
+                    </Typography>
+                  </Hidden>
+                  
+                  <Grid item xs={12}>
+                    {
+                      !pwd_olvidada && <LinkMUI color="secondary" className={classes.margenArriba} href="#" onClick={()=>{setpwd_olvidada(true)}}>
+                        Olvidé mi contraseña
+                      </LinkMUI>
+                    }
+                  </Grid>
+                  
+                  <Grid item xs={12}>
+                    {
+                      pwd_olvidada && <LinkMUI className={classes.margenArriba} href="#" onClick={()=>{setpwd_olvidada(false)}}>
+                        Cancelar
+                      </LinkMUI>
+                    }
+                  </Grid>
+
+                  <div className={classes.inputAncho} hidden={!cargando}>
+                    <LinearProgress />
+                  </div>
+
+                  <Grid item xs={12}>
+                    <Button
+                      onClick={iniciarSesion}
+                      size="large"
+                      variant="contained"
+                      color="primary">
+                        {
+                          !pwd_olvidada?"Iniciar Sesión":"Recuperar"
+                        }
+                    </Button>
+                  </Grid>
+
+                  <Divider/>
+                  
+                  <Grid item xs={12}>
+                    {
+                      !pwd_olvidada && <Typography onClick={handleClose} variant="body1" align="center">
+                        {`¿Sos nuevo acá? `}
+                        <Link to="/registrar">Crear cuenta</Link>
+                      </Typography>
+                    }
+                  </Grid>
+                </Grid>
+            </div>
           </div>
         </Fade>
       </Modal>

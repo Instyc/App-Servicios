@@ -29,6 +29,7 @@ export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) 
     pausado: false,
     bloqueado: false,
     Usuario_id: null,
+    imagen_perfil: ""
   });
 
   useEffect(()=>{
@@ -53,7 +54,8 @@ export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) 
         pausado: datosPagina.pausado,
         imagenes: datosPagina.imagenes,
         bloqueado: datosPagina.bloqueado,
-        Usuario_id: datosPagina.Usuario_id
+        Usuario_id: datosPagina.Usuario_id,
+        imagen_perfil: datosPagina.imagen_perfil
       })
     }
 },[datosPagina, state.jwt, state.publico])
@@ -75,7 +77,7 @@ export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) 
             <Grid item lg={12} hidden={!esDePerfil} align="center" className={esDePerfil?classes.EstiloMovil:classes.EstiloVacio}>
               <Avatar
               alt="Perfil"
-              src={DatosPagina.imagen_perfil!==null?state.servidor+DatosPagina.imagen_perfil:state.imagen_predeterminada}
+              src={DatosPagina.imagen_perfil!==""?state.servidor+DatosPagina.imagen_perfil:state.imagen_predeterminada}
               className={classes.imagenPublicacion} />
             </Grid>
 

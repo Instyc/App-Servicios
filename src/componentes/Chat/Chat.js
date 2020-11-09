@@ -4,20 +4,13 @@ import axios from 'axios'
 import './EstiloChat.css'
 import {
     ChatItem,
-    MessageBox,
     ChatList,
-    SystemMessage,
     MessageList,
     Input,
     Button,
-    Avatar,
-    Navbar,
     SideBar,
-    Dropdown,
-    Popup,
-    MeetingList,
 } from './ComponentesChat'; 
-import {IconButton, Button as Boton, Tooltip} from '@material-ui/core/';
+import {IconButton, Button as Boton} from '@material-ui/core/';
 import {KeyboardReturn as Atras, StarRate} from '@material-ui/icons/';
 import AlertaSi_No from '../AlertaSi_No.js';
 import AlertaMensaje from '../AlertaMensaje.js';
@@ -52,14 +45,15 @@ export function Chat(){
                 headers: {'Authorization': auth},
               })
             .then(response => {
-                console.log(response.data)
                 //Obtenemos todos los chats del sistema y filtramos segun el id de receptor o emisor
                 let chats_ = response.data.filter(chat => (chat.receptor.id === state.datosSesion.id || chat.emisor.id === state.datosSesion.id))
                 
                 setchats(chats_.map((chat)=>{
                     let emisor = `${chat.emisor.nombre} ${chat.emisor.apellido}`
                     let receptor = `${chat.receptor.nombre} ${chat.receptor.apellido}`
-
+                    let img_emisor = chat.emisor.imagen_perfil===null?state.imagen_predeterminada:state.servidor+chat.emisor.imagen_perfil.url
+                    let img_receptor = chat.receptor.imagen_perfil===null?state.imagen_predeterminada:state.servidor+chat.receptor.imagen_perfil.url
+                    
                     //Establecemos el objeto de mensaje (de la interfaz), con los mensajes del respectivo chat
                     let msjs = chat.mensajes.map((mensaje)=>({
                         position: mensaje.enviado_por?'right':'left',
@@ -81,15 +75,21 @@ export function Chat(){
                         onReplyMessageClick: () => {
                             console.log('onReplyMessageClick');
                         },
-                        avatar: you,
+                        avatar: mensaje.enviado_por?img_emisor:img_receptor,
                     }
                     ))
-                                        
+                    let img_categoria = null
+                    let img_solicitud = null
+                    if (chat.solicitud===null){
+                        img_categoria = chat.categoria.imagen===null?state.imagen_predeterminada:state.servidor+chat.categoria.imagen.url
+                    }else{
+                        img_solicitud = chat.solicitud.imagenes.length===0?state.imagen_predeterminada:state.servidor+chat.solicitud.imagenes[0].url
+                    }
                     setcargando(false)
                     return {
                         chat:{
                             id: chat.id,
-                            avatar: you,
+                            avatar: chat.solicitud===null?img_categoria:img_solicitud,
                             avatarFlexible: true,
                             statusColor: 'lightgreen',
                             statusColorType: 'encircle',
@@ -157,6 +157,8 @@ export function Chat(){
         .then(response => {
             let emisor = `${response.data.emisor.nombre} ${response.data.emisor.apellido}`
             let receptor = `${response.data.receptor.nombre} ${response.data.receptor.apellido}`
+            let img_emisor = response.data.emisor.imagen_perfil===null?state.imagen_predeterminada:state.servidor+response.data.emisor.imagen_perfil.url
+            let img_receptor = response.data.receptor.imagen_perfil===null?state.imagen_predeterminada:state.servidor+response.data.receptor.imagen_perfil.url
             
             //Establecemos el objeto de mensaje (de la interfaz), con los mensajes del respectivo chat
             let msjs = response.data.mensajes.map((mensaje, i)=>({
@@ -179,11 +181,12 @@ export function Chat(){
                 onReplyMessageClick: () => {
                     console.log('onReplyMessageClick');
                 },
-                avatar: you,
+                avatar: mensaje.enviado_por?img_emisor:img_receptor,
             }
             ))
             setmensajes(msjs)
             setdeshabilitado(response.data.peticion)
+            console.log("Mensaje:",msjs)
         })
         .catch(error => {
             alert("Un error ha ocurrido al cargar los mensajes.")
@@ -196,6 +199,8 @@ export function Chat(){
         if(chatSeleccionado!==null){
             let emisor = `${chatSeleccionado.emisor.nombre} ${chatSeleccionado.emisor.apellido}`
             let receptor = `${chatSeleccionado.receptor.nombre} ${chatSeleccionado.receptor.apellido}`
+            let img_emisor = chatSeleccionado.emisor.imagen_perfil===null?state.imagen_predeterminada:state.servidor+chatSeleccionado.emisor.imagen_perfil.url
+            let img_receptor = chatSeleccionado.receptor.imagen_perfil===null?state.imagen_predeterminada:state.servidor+chatSeleccionado.receptor.imagen_perfil.url
 
             //Se actualiza el arreglo de mensajes
             setmensajes([...mensajes, {
@@ -218,14 +223,14 @@ export function Chat(){
                 onReplyMessageClick: () => {
                     console.log('onReplyMessageClick');
                 },
-                avatar: you,
+                avatar: state.datosSesion.id===chatSeleccionado.emisor.id?img_emisor:img_receptor,
             }])
-            
+            console.log("Mensajes", mensajes)
             //Se envía un nuevo mensaje al emisor o receptor
             axios.post(state.servidor+"/api/mensajes/",{
                 chat: chatSeleccionado.id,
                 enviado_por: state.datosSesion.id===chatSeleccionado.emisor.id,
-                contenido: contenido
+                contenido: contenido,
             },{
                 headers: {'Authorization': auth},
             })
@@ -345,7 +350,7 @@ export function Chat(){
                 {
                     chatSeleccionado!==null &&
                         <ChatItem
-                            avatar={you}
+                            avatar={chatSeleccionado.avatar}
                             alt={'Reactjs'}
                             title={chatSeleccionado.title}
                             subtitle={chatSeleccionado.emisor.id===state.datosSesion.id?

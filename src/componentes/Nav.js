@@ -2,7 +2,7 @@ import React, {useState, useContext, useEffect} from 'react';
 import {BrowserRouter as Router, Switch, Route, Link, useHistory} from "react-router-dom";
 import axios from 'axios'
 //Material-UI
-import {makeStyles, ListItemIcon, Grid, AppBar, Toolbar, IconButton, Typography, Badge, MenuItem, Menu, Button} from '@material-ui/core/';
+import {Avatar, makeStyles, ListItemIcon, Grid, AppBar, Toolbar, IconButton, Typography, Badge, MenuItem, Menu, Button} from '@material-ui/core/';
 import {Person as Perfil, Create as ModificarPerfil, HowToReg as VerificarIdentidadIcono, FeaturedPlayList as Explorar, Chat, AccountCircle, Menu as MenuIcon, Notifications as NotificationsIcon, PriorityHigh as PriorityHighIcon} from '@material-ui/icons'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
@@ -34,7 +34,6 @@ export default function PrimarySearchAppBar() {
   React.useEffect(()=>{
     let sesion = localStorage.getItem('datosLocal') || null;
     let sesionObjeto = JSON.parse(sesion)
-    
     if(sesionObjeto!==null){
       dispatch({type:"setDatos", value: sesionObjeto.datosSesion})
       dispatch({type:"setJwt", value: sesionObjeto.jwt})
@@ -172,16 +171,22 @@ export default function PrimarySearchAppBar() {
     <div style={{ flexGrow: 1 }}>
       <AppBar position="relative" style={{padding: "0% 7% 0% 7%"}}>
         <Toolbar>          
-          <Typography style={{ flexGrow: 1 }} component="h2" variant="h5">
+          
+          {/*Icono y título*/}
+          <Typography style={{flexGrow:1, width:"200px"}} component="h2" variant="h5">
             <Link to="/" style={
               {
-              flexGrow: 1,
-              textDecoration:"none",
-              color: "black",
-              fontFamily: "Homework",
-              fontSize: 50,
-              }}>
-              Servia
+                flexGrow: 1,
+                textDecoration:"none",
+                color:"#393939",
+                fontFamily: "Homework",
+                fontSize: 50,
+                width:"200px"
+            }}>
+              <div style={{display:"flex", width:"200px", alignItems:"center"}}>
+                <Avatar style={{width:"50px", height:"50px"}} src="/Icono1.png" variant="square" fontSize="inherit"/>
+                Servia
+              </div>
             </Link>
           </Typography>
           
@@ -269,8 +274,7 @@ export default function PrimarySearchAppBar() {
               <MenuItem onClick={plegarPerfil}>
                 <Link to="/modificar-usuario" className={classes.EstiloLink}>
                   <ListItemIcon>
-                    <AccountBoxIcon fontSize="small" />
-                    <ModificarPerfil fontSize="small" />
+                    <Avatar style={{color:"gray", width:"20px", height:"20px"}} src="/usuario_editar.png" variant="square" fontSize="small"/>
                   </ListItemIcon>
                   <Typography variant="inherit">Modificar mi perfil</Typography>
                 </Link>
@@ -279,7 +283,6 @@ export default function PrimarySearchAppBar() {
               <div hidden={tipoUsuario!==2}>
                 <MenuItem onClick={plegarPerfil}>
                   <ListItemIcon>
-                    <AssignmentIndIcon fontSize="small" />
                     <ModificarPerfil fontSize="small" />
                   </ListItemIcon>
                   <Link to="/modificar-proveedor" className={classes.EstiloLink}><Typography variant="inherit">Modificar mi perfil de proveedor</Typography></Link>
@@ -332,9 +335,6 @@ export default function PrimarySearchAppBar() {
               
               <Link to="/" className={classes.EstiloMovil} className={classes.EstiloLink}>
                 <MenuItem onClick={plegarMenu}>
-                  <ListItemIcon>
-                    <Explorar fontSize="small" />
-                  </ListItemIcon>
                   <Typography variant="inherit">Explorar servicios</Typography>
                 </MenuItem>
               </Link>
@@ -363,7 +363,7 @@ export default function PrimarySearchAppBar() {
               <div hidden={tipoUsuario!==3}>
                 <Link to="/gestionar-reclamos" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Gestionar reportes</MenuItem></Link>
                 <Link to="/verificar-identidad" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Verificar identidades </MenuItem></Link>
-                <Link to="/administrar-categorias" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Administrar categorías </MenuItem></Link>
+                {/*<Link to="/administrar-categorias" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Administrar categorías </MenuItem></Link>*/}
               </div>
             </Menu>
           </div>

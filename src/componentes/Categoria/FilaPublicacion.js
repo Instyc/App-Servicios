@@ -35,11 +35,14 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
     imagenes: [],
     servicio: "",
     estrellas:0,
-    Usuario_id: {id: null, nombre:"", apellido: ""},
+    Usuario_id: {id: null, nombre:"", apellido: "", imagen_perfil:null},
     Servicio_id: {nombre:""},
     pausado: false
   });
   
+  useEffect(() => {
+    console.log(datosPagina)
+  }, [datosPagina])
 
   useEffect(()=>{
     //Dependiendo de si se quiere crear una publicación o solicitar un servicio, se muestra la pantalla correspodiente
@@ -55,6 +58,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
       setdatosPagina(datos)
       let x = datos.Usuario_id.id===state.datosSesion.id
       setnoMostrar(!x)
+      //console.log(datos.Usuario_id.imagen_perfil.url)
     }
   },[datos])
 
@@ -212,7 +216,11 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
               <BotonContratar
               fijo={false}
               esDePerfil={false}
-              datos={{idS: datosPagina.id, idP: datosPagina.Usuario_id.id, nombre: `${datosPagina.Usuario_id.nombre} ${datosPagina.Usuario_id.apellido}`}}/>
+              datos=
+              {{idS: datosPagina.id,
+              idP: datosPagina.Usuario_id.id,
+              nombre: `${datosPagina.Usuario_id.nombre} ${datosPagina.Usuario_id.apellido}`,
+              imagen_perfil: datosPagina.Usuario_id.imagen_perfil===null?null:state.servidor+datosPagina.Usuario_id.imagen_perfil.url}}/>
             </Grid>
           }
            

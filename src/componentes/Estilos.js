@@ -36,6 +36,7 @@ const Estilos = makeStyles((theme) => ({
     filaPublicacion:{
         padding: 10,
         marginTop: 10,
+        background: "rgba(214, 215, 204, 100)"
     },
     imagenPublicacion:{
         borderRadius: "6px",
@@ -59,7 +60,7 @@ const Estilos = makeStyles((theme) => ({
         border: '1px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
-        backgroundColor: theme.palette.secondary.dark
+        backgroundColor: "#d7d6d9"//theme.palette.secondary.dark
     },
     pantallaMedia:{
         maxWidth: 800, 

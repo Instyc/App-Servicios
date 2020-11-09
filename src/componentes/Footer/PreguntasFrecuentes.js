@@ -53,8 +53,8 @@ export default function PreguntasFrecuentes() {
         <br/>
         <>
           {
-            informacion.map((fila)=>(
-              <Accordion>
+            informacion.map((fila, i)=>(
+              <Accordion key={i}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
                   <Typography  component="h6" variant="h6">{fila.pregunta}</Typography>
                 </AccordionSummary>

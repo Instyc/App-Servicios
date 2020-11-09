@@ -42,11 +42,11 @@ export default function VerificarIdentidad() {
     const [cargando, setcargando] = useState(false);
     return (
     <div className={classes.fondo}>
-        <Paper elevation={5}  style={{margin:"10px 0px", padding:"20px", width:"90%"}}>
+        <Paper elevation={5}  style={{margin:"10px 0px", padding:"20px", width:"90%"}} className="Fondo">
             <Grid container justify="center" spacing={2}>
                 <Grid item xs={12}>
                     <Typography variant="h4" component="h1" align="center">
-                        Verificar identidad
+                        Verificar identidades
                     </Typography>
                 </Grid>
                 <Grid item xs={12}>

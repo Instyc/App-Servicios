@@ -29,7 +29,7 @@ export default function GestionarReportes({estadoReporte, reportes, modificarRep
     },[])
   
   return (
-    <div className={classes.fondo} >
+    <div className={classes.fondo} className="Fondo">
       <Paper elevation={5}>
         <Grid className={classes.filaPublicacion}  container justify="center">
             <Grid item xs={12}>
@@ -78,8 +78,8 @@ function Reporte({datos, modificarReporte}) {
             break;
     }
     return (
-        <Paper className={classes.filaPublicacion} style={{background: color}} variant="outlined" square>
-            <Grid container direction="row" justify="center">
+        <Paper className={classes.filaPublicacion} className="Fondo" variant="outlined" square>
+            <Grid container direction="row" justify="center" style={{padding:"15px"}}>
                 <Grid item xs={12} lg={9} md={9} sm={12}>
                     <Button disabled>
                         <Typography color="secondary" variant="h5" component="h2" align="left" >
@@ -276,9 +276,14 @@ function DesplegarInformacion({datos, modificarReporte}) {
                 <List component="div" disablePadding>
                     <hr/>
                     <Grid item xs={12}>
-                        <Typography variant="body1" component="span" align="justify"> 
-                            {datos.descripcion.length!==0?datos.descripcion:"El usuario no ha proporcionado información adicional."}
-                        </Typography> 
+                        {
+                            datos.descripcion.split("##").map((mensaje, i)=>(
+                                <Typography key={i} align="justify"> 
+                                    {mensaje}
+                                </Typography>
+                            ))
+                        }
+                        
                     </Grid>
                     <hr/>
                     

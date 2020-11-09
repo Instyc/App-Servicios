@@ -12,7 +12,7 @@ export default function Filtro({tipoPublicacion, settipoPublicacion, servicios, 
     settipoPublicacion(!tipo)
   },[tipo])
   return (
-    <Card className={classes.margenArriba} variant="outlined">
+    <Card className={classes.margenArriba} variant="outlined" className={classes.filaPublicacion}>
       <CardContent>
         <Typography variant="h5" component="h2">
           Seleccione los filtros deseados
