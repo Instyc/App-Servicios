@@ -28,8 +28,6 @@ export function BotonContratar({fijo, esDePerfil, datos}) {
     setOpen(false);
   };
 
-  useEffect(()=>{console.log(datos)},[datos])
-
   useEffect(()=>{
     if (esDePerfil){
       let cat = {}

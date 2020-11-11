@@ -2,7 +2,7 @@ import React, { useReducer, useEffect, createContext} from "react";
 //window.location.origin
 //import Icono from '/Icono3.png'
 const estadoInicial = {
-    servidor:"http://localhost:1337",
+    servidor: window.location.origin,
     jwt:"",
     publico: false,
     guardar: false,

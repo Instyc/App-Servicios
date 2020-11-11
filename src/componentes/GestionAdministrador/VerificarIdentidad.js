@@ -218,7 +218,7 @@ function DesplegarInformacion({usuario, actualizarUsuario}) {
                             <Button
                             disabled={cargando}
                             onClick={()=>{descripcion===""?setmensaje("Debe escribir un mensaje para rechazar la solicitud."):enviarDatos(false)}}
-                            color="primary"
+                            color="error"
                             startIcon={<Rechazar/>}>
                                 Rechazar Solicitud
                             </Button>

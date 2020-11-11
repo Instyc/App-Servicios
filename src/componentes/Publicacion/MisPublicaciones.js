@@ -24,10 +24,12 @@ export default function MisPublicaciones({tipoPublicacion}) {
     }else{
       setTituloPagina("Mis servicios solicitados");
     }
-    if(state.jwt!=="" || state.publico===true){
+    if(state.jwt!==""){
+      console.log(tipoPublicacion)
+      setresenas_servicio(null)
       buscarSolicitudes()
     }
-  },[state.jwt, state.publico, tipoPublicacion])
+  },[state.jwt, tipoPublicacion])
 
   function buscarSolicitudes(){
     axios.get(state.servidor+"/api/solicitud?Usuario_id="+state.datosSesion.id+"&tipo="+tipoPublicacion)
@@ -67,7 +69,7 @@ export default function MisPublicaciones({tipoPublicacion}) {
   return (
     
     <Container className={classes.fondo}>
-        <Paper elevation={3} className="Fondo" style={{width:950, padding: 15}}>
+        <Paper elevation={3} style={{width:950, padding: 15}} className="Fondo">
             <Typography variant="h5" component="h2" align="center">{tituloPagina}</Typography>
             <br/>
             {

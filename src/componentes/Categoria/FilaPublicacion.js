@@ -1,7 +1,7 @@
 import React,{useState, useEffect, useContext} from 'react';
 import axios from 'axios'
 //Material-UI
-import {Card, Hidden, Typography, Chip, Button, Grid, Tooltip, IconButton} from '@material-ui/core/';
+import {Card, Hidden, Typography, Chip, Button, Grid, Tooltip, IconButton, Container } from '@material-ui/core/';
 import Editar from '@material-ui/icons/Edit';
 import Pausa from '@material-ui/icons/Pause';
 import Despausar from '@material-ui/icons/PlayArrow';
@@ -39,10 +39,6 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
     Servicio_id: {nombre:""},
     pausado: false
   });
-  
-  useEffect(() => {
-    console.log(datosPagina)
-  }, [datosPagina])
 
   useEffect(()=>{
     //Dependiendo de si se quiere crear una publicación o solicitar un servicio, se muestra la pantalla correspodiente
@@ -158,10 +154,10 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
                   </Tooltip>
                   </Link>
                   <Tooltip title="Pausar publicación">
-                    <IconButton onClick={()=>{setpreguntarPausa(true)}}>{datosPagina.pausado?<Despausar color="primary" />:<Pausa color="primary" />}</IconButton>
+                    <IconButton onClick={()=>{setpreguntarPausa(true)}}>{datosPagina.pausado?<Despausar color="secondary" />:<Pausa color="primary" />}</IconButton>
                   </Tooltip>
                   <Tooltip title="Eliminar publicación">
-                    <IconButton onClick={()=>{setpreguntarEliminar(true)}}><Eliminar color="secondary" /></IconButton>
+                    <IconButton onClick={()=>{setpreguntarEliminar(true)}}><Eliminar color="error" /></IconButton>
                   </Tooltip>
                   {
                     preguntarPausa &&
@@ -183,7 +179,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
                   }
                 </Hidden>  
               </Typography>
-              <div style={{overflow: "auto", textOverflow: "ellipsis", textJustify:"auto"}}> 
+              <div style={{overflow: "auto", textOverflow: "ellipsis", textJustify:"auto", align:"left", WebkitLineClamp:"3", height:"3"}}> 
                 <Typography>
                   {datosPagina.descripcion}
                 </Typography>

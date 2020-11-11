@@ -303,9 +303,9 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
         history.push("/")    
     }
 
-    return (
-    <div className={classes.fondo} >
-        <Paper elevation={3} className="Fondo">
+    return ( 
+    <div className={classes.fondo}>
+        <Paper elevation={3} style={{padding: "10px"}} className="Fondo">
             <form onSubmit={guardarDatos}>
                 <FormControl className={classes.padding2} color="primary" fullWidth>
                     <Grid className={classes.pantallaMedia} container direction="row" justify="center" alignItems="center" spacing={1}>
