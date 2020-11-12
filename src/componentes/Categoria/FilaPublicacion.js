@@ -148,7 +148,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
               <Typography align="left" component="h5" variant="h5">
                   {datosPagina.titulo}
                 <Hidden xlDown={noMostrar}>  
-                  <Link to={tipoPublicacion?"/modificar-publicacion/"+datosPagina.id:"/modificar-solicitud-servicio/"+datosPagina.id}>
+                  <Link to={tipoPublicacion?state.ruta+"/modificar-publicacion/"+datosPagina.id:state.ruta+"/modificar-solicitud-servicio/"+datosPagina.id}>
                   <Tooltip title="Editar publicación">
                     <IconButton ><Editar color="primary" /></IconButton>
                   </Tooltip>
@@ -221,7 +221,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
           }
            
         <Grid item xs={6} lg={12} md={12} sm={6} align="center">
-          <Link to={"/publicacion/"+datosPagina.id} style={{textDecoration:"none", padding: 0, color:"black"}}>
+          <Link to={state.ruta+"/publicacion/"+datosPagina.id} style={{textDecoration:"none", padding: 0, color:"black"}}>
             <Button variant="outlined" color="default">Leer más</Button>
           </Link>
         </Grid>

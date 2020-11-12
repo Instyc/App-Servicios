@@ -14,6 +14,7 @@ import { EmojiSymbolsRounded } from '@material-ui/icons';
 
 export default function NotificacionesNav({plegarNoti, notificaciones}) {
     const classes = Estilos();
+    const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
 
     return (
         <div style={{padding:"0px 15px 0px 15px"}}>
@@ -25,7 +26,7 @@ export default function NotificacionesNav({plegarNoti, notificaciones}) {
                         <MenuItem onClick={plegarNoti} >
                             <Grid container spacing={1} justify="center">
                                 <Grid item xs={12}>
-                                    <Link to="/notificaciones" className={classes.EstiloLink}>
+                                    <Link to={state.ruta+"/notificaciones"} className={classes.EstiloLink}>
                                         <Typography>                            
                                             {noti.tipo===0 && (noti.solicitud!==null?
                                             'Tienes nueva información con respecto a un reporte hecho a tu publicación "'+noti.solicitud.titulo+'"':
@@ -44,7 +45,7 @@ export default function NotificacionesNav({plegarNoti, notificaciones}) {
                 ))
             }
             <MenuItem onClick={plegarNoti}>
-                    <Link to="/notificaciones" className={classes.EstiloLink}>
+                    <Link to={state.ruta+"/notificaciones"} className={classes.EstiloLink}>
                         <Typography color="secondary">                            
                             Ver todas las notificaciones
                         </Typography>

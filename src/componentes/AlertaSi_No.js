@@ -28,10 +28,10 @@ export default function Alerta({titulo, funcionAceptar, mensaje}) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={()=>{handleClose(false)}} color="primary">
+          <Button onClick={()=>{handleClose(false)}} variant="contained" color="error">
             Cancelar
           </Button>
-          <Button onClick={()=>{handleClose(true)}} color="primary" autoFocus>
+          <Button onClick={()=>{handleClose(true)}} variant="contained" color="primary" autoFocus>
             Aceptar
           </Button>
           {cargando && <Cargando/>}

@@ -60,32 +60,32 @@ function App() {
               <CssBaseline/>
                 <div style={{minHeight:"calc(100vh - 130px)"}} className="Fondo">
                   <Switch>
-                    <Route exact path="/"><Inicio tipo={true}/></Route>
+                    <Route exact path={state.ruta+"/"}><Inicio tipo={true}/></Route>
                     
-                    <Route path="/crear-publicacion">{aux && state.datosSesion.tipo<2? <Redirect to="/" />:<CrearPublicacion modificar={false} tipoPublicacion={true}/>}</Route>
-                    <Route path="/solicitar-servicio">{aux && state.datosSesion.tipo===0? <Redirect to="/" />:<CrearPublicacion modificar={false} tipoPublicacion={false}/>}</Route>
-                    <Route path="/modificar-publicacion/:id">{aux && state.datosSesion.tipo<0? <Redirect to="/" />:<CrearPublicacion modificar={true} tipoPublicacion={true}/>}</Route>
-                    <Route path="/modificar-solicitud-servicio/:id">{aux && state.datosSesion.tipo===0? <Redirect to="/" />:<CrearPublicacion modificar={true} tipoPublicacion={false}/>}</Route>
+                    <Route path={state.ruta+"/crear-publicacion"}>{aux && state.datosSesion.tipo<2? <Redirect to="/" />:<CrearPublicacion modificar={false} tipoPublicacion={true}/>}</Route>
+                    <Route path={state.ruta+"/solicitar-servicio"}>{aux && state.datosSesion.tipo===0? <Redirect to="/" />:<CrearPublicacion modificar={false} tipoPublicacion={false}/>}</Route>
+                    <Route path={state.ruta+"/modificar-publicacion/:id"}>{aux && state.datosSesion.tipo<0? <Redirect to="/" />:<CrearPublicacion modificar={true} tipoPublicacion={true}/>}</Route>
+                    <Route path={state.ruta+"/modificar-solicitud-servicio/:id"}>{aux && state.datosSesion.tipo===0? <Redirect to="/" />:<CrearPublicacion modificar={true} tipoPublicacion={false}/>}</Route>
                     
-                    <Route path="/publicaciones/:id"><Categoria/></Route>
+                    <Route path={state.ruta+"/publicaciones/:id"}><Categoria/></Route>
                     
-                    <Route path="/registrar">{aux && state.datosSesion.tipo!==0? <Redirect to="/" />:<RegistrarSesion registrar={true}/>}</Route>
+                    <Route path={state.ruta+"/registrar"}>{aux && state.datosSesion.tipo!==0? <Redirect to="/" />:<RegistrarSesion registrar={true}/>}</Route>
 
-                    <Route path="/modificar-usuario">{aux && state.datosSesion.tipo===0?<Redirect to="/"/>:<RegistrarSesion registrar={false}/>}</Route>
+                    <Route path={state.ruta+"/modificar-usuario"}>{aux && state.datosSesion.tipo===0?<Redirect to="/"/>:<RegistrarSesion registrar={false}/>}</Route>
                     
-                    <Route path="/publicacion/:id"><Publicacion/></Route>
-                    <Route path="/mis-publicaciones">{aux && state.datosSesion.tipo<2? <Redirect to="/" />:<MisPublicaciones tipoPublicacion={true}/>}</Route>
-                    <Route path="/mis-servicios-solicitados">{aux && state.datosSesion.tipo===0? <Redirect to="/" />:<MisPublicaciones tipoPublicacion={false}/>}</Route>
-                    <Route path="/modificar-proveedor">{aux && state.datosSesion.tipo<2? <Redirect to="/" />:<ModificarPerfilProveedor/>}</Route>
-                    <Route path="/verificar-mi-identidad">{aux && state.datosSesion.tipo<2?<Redirect to="/" />:<VerificarMiIdentidad/>}</Route>
+                    <Route path={state.ruta+"/publicacion/:id"}><Publicacion/></Route>
+                    <Route path={state.ruta+"/mis-publicaciones"}>{aux && state.datosSesion.tipo<2? <Redirect to="/" />:<MisPublicaciones tipoPublicacion={true}/>}</Route>
+                    <Route path={state.ruta+"/mis-servicios-solicitados"}>{aux && state.datosSesion.tipo===0? <Redirect to="/" />:<MisPublicaciones tipoPublicacion={false}/>}</Route>
+                    <Route path={state.ruta+"/modificar-proveedor"}>{aux && state.datosSesion.tipo<2? <Redirect to="/" />:<ModificarPerfilProveedor/>}</Route>
+                    <Route path={state.ruta+"/verificar-mi-identidad"}>{aux && state.datosSesion.tipo<2?<Redirect to="/" />:<VerificarMiIdentidad/>}</Route>
                     
-                    <Route path="/verificar-identidad">{aux && state.datosSesion.tipo!==3? <Redirect to="/" />:<VerificarIdentidad/>}</Route>
-                    <Route path="/gestionar-reclamos">{aux && state.datosSesion.tipo!==3? <Redirect to="/" />:<PestanaReportes/>}</Route>
+                    <Route path={state.ruta+"/verificar-identidad"}>{aux && state.datosSesion.tipo!==3? <Redirect to="/" />:<VerificarIdentidad/>}</Route>
+                    <Route path={state.ruta+"/gestionar-reclamos"}>{aux && state.datosSesion.tipo!==3? <Redirect to="/" />:<PestanaReportes/>}</Route>
 
-                    <Route path="/perfil-proveedor/:id"><MiPerfil/></Route>
+                    <Route path={state.ruta+"/perfil-proveedor/:id"}><MiPerfil/></Route>
 
-                    <Route path="/notificaciones">{aux && state.datosSesion.tipo===0? <Redirect to="/" />:<Notificaciones/>}</Route>
-                    <Route path="/mis-chats">{aux && state.datosSesion.tipo===0? <Redirect to="/" />:<Chat state={state}/>}</Route>
+                    <Route path={state.ruta+"/notificaciones"}>{aux && state.datosSesion.tipo===0? <Redirect to="/" />:<Notificaciones/>}</Route>
+                    <Route path={state.ruta+"/mis-chats"}>{aux && state.datosSesion.tipo===0? <Redirect to="/" />:<Chat state={state}/>}</Route>
 
                     {/*<Route path="/administrar-categorias">
                       <ProveerEstadoCategoria>
@@ -93,8 +93,8 @@ function App() {
                       </ProveerEstadoCategoria>
                     </Route>*/}
                     
-                    <Route path="/preguntas-frecuentes"><PreguntasFrecuentes/></Route>
-                    <Route path="/sobre-nosotros"><SobreNosotros/></Route>
+                    <Route path={state.ruta+"/preguntas-frecuentes"}><PreguntasFrecuentes/></Route>
+                    <Route path={state.ruta+"/sobre-nosotros"}><SobreNosotros/></Route>
                 </Switch>
               </div>
           </React.Fragment>

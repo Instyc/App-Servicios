@@ -79,7 +79,7 @@ export default function IniciarSesion({mensaje}) {
     }else{
       console.log(datos)
       axios
-      .post('http://localhost:1337/auth/forgot-password', {
+      .post(state.servidor+'/auth/forgot-password', {
         email: datos.email,
       },{
         headers:{
@@ -131,7 +131,7 @@ export default function IniciarSesion({mensaje}) {
                       value={datos.email}
                       className={classes.inputAncho}
                       id="filled-basic"
-                      label="Usuario/Correo electrónico"
+                      label="Correo electrónico"
                       variant="filled"
                       required
                     />
@@ -198,7 +198,7 @@ export default function IniciarSesion({mensaje}) {
                   <Grid item xs={12}>
                     {
                       !pwd_olvidada && <Typography onClick={handleClose} variant="body1" align="center">
-                        {`¿Sos nuevo acá? `}
+                        {`¿Eres nuevo en el sitio? `}
                         <Link to="/registrar">Crear cuenta</Link>
                       </Typography>
                     }

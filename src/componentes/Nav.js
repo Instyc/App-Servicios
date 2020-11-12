@@ -145,7 +145,7 @@ export default function PrimarySearchAppBar() {
     dispatch({type:"setJwt", value: ""});
     dispatch({type:"setPublico", value: true});
     localStorage.setItem('datosLocal', JSON.stringify(null));
-    history.push("/")
+    history.push(state.ruta+"/")
   };
 
   const desplegarPerfil = (event) => {
@@ -174,7 +174,7 @@ export default function PrimarySearchAppBar() {
           
           {/*Icono y título*/}
           <Typography style={{flexGrow:1, width:"200px"}} component="h2" variant="h5">
-            <Link to="/" style={
+            <Link to={state.ruta+"/"} style={
               {
                 flexGrow: 1,
                 textDecoration:"none",
@@ -184,7 +184,7 @@ export default function PrimarySearchAppBar() {
                 width:"200px"
             }}>
               <div style={{display:"flex", width:"200px", alignItems:"center"}}>
-                <Avatar style={{width:"50px", height:"50px"}} src="/Icono1.png" variant="square" fontSize="inherit"/>
+                <Avatar style={{width:"50px", height:"50px"}} src={state.ruta+"/Icono1.png"} variant="square" fontSize="inherit"/>
                 Servia
               </div>
             </Link>
@@ -193,25 +193,25 @@ export default function PrimarySearchAppBar() {
           <div>
             <Grid container justify="center" alignContent="center">
               <Grid item>
-                <Link to="/" className={classes.botonesNav}>
+                <Link to={state.ruta+"/"} className={classes.botonesNav}>
                   <Button style={{padding:"20px"}}>Explorar servicios</Button>
                 </Link>
 
-                {/*<Link to="/proveedores" className={classes.botonesNav}><Button style={{padding:"20px"}}>Proveedores</Button></Link>*/}
+                {/*<Link to={state.ruta+"/proveedores"} className={classes.botonesNav}><Button style={{padding:"20px"}}>Proveedores</Button></Link>*/}
 
-                <Link to="/solicitar-servicio" hidden={tipoUsuario!==1} className={tipoUsuario===1?classes.botonesNav:classes.EstiloVacio}>
+                <Link to={state.ruta+"/solicitar-servicio"} hidden={tipoUsuario!==1} className={tipoUsuario===1?classes.botonesNav:classes.EstiloVacio}>
                   <Button style={{padding:"20px"}}>Solicitar servicio</Button>
                 </Link>
 
-                <Link to="/mis-servicios-solicitados" hidden={tipoUsuario!==1} className={tipoUsuario===1?classes.botonesNav:classes.EstiloVacio}>
+                <Link to={state.ruta+"/mis-servicios-solicitados"} hidden={tipoUsuario!==1} className={tipoUsuario===1?classes.botonesNav:classes.EstiloVacio}>
                   <Button style={{padding:"20px"}}>Mis servicios solicitados</Button>
                 </Link>
 
-                <Link to="/mis-publicaciones" hidden={tipoUsuario!==2} className={tipoUsuario===2?classes.botonesNav:classes.EstiloVacio}>
+                <Link to={state.ruta+"/mis-publicaciones"} hidden={tipoUsuario!==2} className={tipoUsuario===2?classes.botonesNav:classes.EstiloVacio}>
                   <Button style={{padding:"20px"}}>Mis publicaciones</Button>
                 </Link>
                 
-                <Link to="/crear-publicacion" hidden={tipoUsuario!==2} className={tipoUsuario===2?classes.botonesNav:classes.EstiloVacio}>
+                <Link to={state.ruta+"/crear-publicacion"} hidden={tipoUsuario!==2} className={tipoUsuario===2?classes.botonesNav:classes.EstiloVacio}>
                   <Button style={{padding:"20px"}}>Crear publicación</Button>
                 </Link>
               </Grid>
@@ -221,7 +221,7 @@ export default function PrimarySearchAppBar() {
                     <InicioSesion mensaje="Iniciar sesión"/>
                   </Button>
                   
-                  <Link to="/registrar" className={classes.EstiloPC} style={{textDecoration:"none",color: "black"}}>
+                  <Link to={state.ruta+"/registrar"} className={classes.EstiloPC} style={{textDecoration:"none",color: "black"}}>
                     <Button variant="contained" color="secondary" style={{padding:8}}>
                       Registrar cuenta
                     </Button>
@@ -245,7 +245,7 @@ export default function PrimarySearchAppBar() {
               </Menu>
 
               {/*Componente chats*/}
-                <Link to="/mis-chats" style={{color:"black"}}>
+                <Link to={state.ruta+"/mis-chats"} style={{color:"black"}}>
                   <IconButton color="inherit">
                       <Badge badgeContent={mensajesnoleidos} color="secondary">
                         <Chat />
@@ -272,9 +272,9 @@ export default function PrimarySearchAppBar() {
               onClose={plegarPerfil}
             >              
               <MenuItem onClick={plegarPerfil}>
-                <Link to="/modificar-usuario" className={classes.EstiloLink}>
+                <Link to={state.ruta+"/modificar-usuario"} className={classes.EstiloLink}>
                   <ListItemIcon>
-                    <Avatar style={{color:"gray", width:"20px", height:"20px"}} src="/usuario_editar.png" variant="square" fontSize="small"/>
+                    <Avatar style={{color:"gray", width:"20px", height:"20px"}} src={state.ruta+"/usuario_editar.png"} variant="square" fontSize="small"/>
                   </ListItemIcon>
                   <Typography variant="inherit">Modificar mi perfil</Typography>
                 </Link>
@@ -285,7 +285,7 @@ export default function PrimarySearchAppBar() {
                   <ListItemIcon>
                     <ModificarPerfil fontSize="small" />
                   </ListItemIcon>
-                  <Link to="/modificar-proveedor" className={classes.EstiloLink}><Typography variant="inherit">Modificar mi perfil de proveedor</Typography></Link>
+                  <Link to={state.ruta+"/modificar-proveedor"} className={classes.EstiloLink}><Typography variant="inherit">Modificar mi perfil de proveedor</Typography></Link>
                 </MenuItem>
               </div>
 
@@ -294,7 +294,7 @@ export default function PrimarySearchAppBar() {
                   <ListItemIcon>
                     <Perfil fontSize="small" />
                   </ListItemIcon>
-                  <Link to={"/perfil-proveedor/"+state.datosSesion.id} className={classes.EstiloLink}><Typography variant="inherit">Ver mi perfil de proveedor</Typography></Link>
+                  <Link to={state.ruta+"/perfil-proveedor/"+state.datosSesion.id} className={classes.EstiloLink}><Typography variant="inherit">Ver mi perfil de proveedor</Typography></Link>
                 </MenuItem>
               </div>
 
@@ -303,7 +303,7 @@ export default function PrimarySearchAppBar() {
                   <ListItemIcon>
                     <PriorityHighIcon fontSize="small" /> 
                   </ListItemIcon>
-                  <Link to={"/verificar-mi-identidad/"} className={classes.EstiloLink}><Typography variant="inherit">Verificar mi identidad</Typography></Link>
+                  <Link to={state.ruta+"/verificar-mi-identidad/"} className={classes.EstiloLink}><Typography variant="inherit">Verificar mi identidad</Typography></Link>
                 </MenuItem>
               </div>
 
@@ -328,12 +328,12 @@ export default function PrimarySearchAppBar() {
               open={Boolean(despMenu)}
               onClose={plegarMenu}
             >
-              <Link to="/registrar" hidden={tipoUsuario!==0} className={classes.EstiloLink}>
+              <Link to={state.ruta+"/registrar"} hidden={tipoUsuario!==0} className={classes.EstiloLink}>
                 <MenuItem onClick={plegarMenu}>Crear una nueva cuenta</MenuItem>
                 <hr/>
               </Link>
               
-              <Link to="/" className={classes.EstiloMovil} className={classes.EstiloLink}>
+              <Link to={state.ruta+"/"} className={classes.EstiloMovil} className={classes.EstiloLink}>
                 <MenuItem onClick={plegarMenu}>
                   <Typography variant="inherit">Explorar servicios</Typography>
                 </MenuItem>
@@ -341,29 +341,29 @@ export default function PrimarySearchAppBar() {
 
               {/*Usuario*/}
               <div hidden={tipoUsuario<1 || tipoUsuario>2}>
-                <Link to="/solicitar-servicio" className={tipoUsuario===1?classes.EstiloMovil:classes.EstiloVacio} className={classes.EstiloLink}>
+                <Link to={state.ruta+"/solicitar-servicio"} className={tipoUsuario===1?classes.EstiloMovil:classes.EstiloVacio} className={classes.EstiloLink}>
                   <MenuItem onClick={plegarMenu}>Solicitar servicio</MenuItem>
                 </Link>
-                <Link to="/mis-servicios-solicitados" className={tipoUsuario===1?classes.EstiloMovil:classes.EstiloVacio} className={classes.EstiloLink}>
+                <Link to={state.ruta+"/mis-servicios-solicitados"} className={tipoUsuario===1?classes.EstiloMovil:classes.EstiloVacio} className={classes.EstiloLink}>
                   <MenuItem onClick={plegarMenu}>Mis servicios solicitados</MenuItem>
                 </Link>
               </div>
 
               {/*Proveedor*/}
               <div hidden={tipoUsuario!==2}>
-                <Link to="/crear-publicacion" className={classes.EstiloMovil} className={classes.EstiloLink}>
+                <Link to={state.ruta+"/crear-publicacion"} className={classes.EstiloMovil} className={classes.EstiloLink}>
                   <MenuItem onClick={plegarMenu}>Crear publicación</MenuItem>
                 </Link>
-                <Link to="/mis-publicaciones" className={classes.EstiloMovil} className={classes.EstiloLink}>
+                <Link to={state.ruta+"/mis-publicaciones"} className={classes.EstiloMovil} className={classes.EstiloLink}>
                   <MenuItem onClick={plegarMenu}>Mis publicaciones</MenuItem>
                 </Link>
               </div>
 
               {/*Administrador*/}
               <div hidden={tipoUsuario!==3}>
-                <Link to="/gestionar-reclamos" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Gestionar reportes</MenuItem></Link>
-                <Link to="/verificar-identidad" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Verificar identidades </MenuItem></Link>
-                {/*<Link to="/administrar-categorias" className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Administrar categorías </MenuItem></Link>*/}
+                <Link to={state.ruta+"/gestionar-reclamos"} className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Gestionar reportes</MenuItem></Link>
+                <Link to={state.ruta+"/verificar-identidad"} className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Verificar identidades </MenuItem></Link>
+                {/*<Link to={state.ruta+"/administrar-categorias"} className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Administrar categorías </MenuItem></Link>*/}
               </div>
             </Menu>
           </div>

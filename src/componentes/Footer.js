@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState, useContext} from 'react';
 import {Link} from 'react-router-dom';
 import {Instagram, Facebook} from '@material-ui/icons/';
 
@@ -6,10 +6,12 @@ import {Instagram, Facebook} from '@material-ui/icons/';
 import {Typography, Grid, AppBar, Toolbar} from '@material-ui/core/';
 
 import Estilos from './Estilos.js';
+import { ObtenerEstadoAplicacion } from '../Estados/AplicacionEstado'
 
 export default function Footer() {
     const classes = Estilos();
     const [contactanos, setcontactanos] = useState(false);
+    const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
 
     return (
         <div >
@@ -18,7 +20,7 @@ export default function Footer() {
                     <Grid container direction="row" alignItems="center" justify="center">
                         <Grid item xs={12} sm={4} align="center">
                             {/*<Link className={classes.EstiloLink} to="/sobre-nosotros">Sobre nosotros</Link><br/>*/}
-                            <Link className={classes.EstiloLink} to="/preguntas-frecuentes">Preguntas frecuentes</Link>
+                            <Link className={classes.EstiloLink} to={state.ruta+"/preguntas-frecuentes"}>Preguntas frecuentes</Link>
                         </Grid>
                         <Grid item xs={12} sm={4} align="center">
                             {/*<Link className={classes.EstiloLink} to="/terminos-de-uso">Términos de uso</Link><br/>*/}

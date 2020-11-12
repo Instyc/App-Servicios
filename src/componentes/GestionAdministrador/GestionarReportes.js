@@ -59,6 +59,7 @@ export default function GestionarReportes({estadoReporte, reportes, modificarRep
 
 function Reporte({datos, modificarReporte}) {
     const classes = Estilos();
+    const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
     let color;
     switch (datos.estado) {
         case -1:
@@ -89,7 +90,7 @@ function Reporte({datos, modificarReporte}) {
 
                     {
                         datos.Solicitud_id!==null &&
-                        <Link to={"/publicacion/"+datos.Solicitud_id.id} className={classes.EstiloLink}>
+                        <Link to={state.ruta+"/publicacion/"+datos.Solicitud_id.id} className={classes.EstiloLink}>
                             <Tooltip title="Vista previa">
                                 <Button><Ojo color="primary" /></Button>
                             </Tooltip>
@@ -100,7 +101,7 @@ function Reporte({datos, modificarReporte}) {
                         <Flechita/>
                     </Button>
                   
-                    <Link to={"/perfil-proveedor/"+datos.Usuario_id.id} className={classes.EstiloLink}>
+                    <Link to={state.ruta+"/perfil-proveedor/"+datos.Usuario_id.id} className={classes.EstiloLink}>
                         <Button className={classes.button}>
                             <Typography variant="h6" component="h5" align="left">
                                 {`${datos.Usuario_id.nombre} ${datos.Usuario_id.apellido}`}

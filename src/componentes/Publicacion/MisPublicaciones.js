@@ -67,27 +67,28 @@ export default function MisPublicaciones({tipoPublicacion}) {
   }
 
   return (
-    
-    <Container className={classes.fondo}>
-        <Paper elevation={3} style={{width:950, padding: 15}} className="Fondo">
-            <Typography variant="h5" component="h2" align="center">{tituloPagina}</Typography>
-            <br/>
-            {
-              //Cuando cargando es true (seteado al momento de empezar a realizar la búsqueda de las publicaciones), nos muestra el componente de carga,
-              //y desaparece cuando cambia a false (seteado al finalizar la búsqueda de los datos)
-              cargando && <Cargando/>
-            }
-            {
-              !cargando && solicitudes.length===0 && (<Alerta variant="outlined" severity="info">
-                No tienes {tipoPublicacion?"publicaciones ":"solicitudes "}de servicios
-              </Alerta>)
-            }
-            {
-              solicitudes.map((solicitud, i)=>(
-                <FilaPublicacion resenas={resenas_servicio===null?null:resenas_servicio[solicitud.Servicio_id.nombre]} buscarSolicitudes={buscarSolicitudes} key={i} datos={solicitud} tipoPublicacion={tipoPublicacion} contactar={true}/>
-              ))
-            }
-        </Paper>
-    </Container>
+    <div className={classes.fondo} align="center">
+      <Container> 
+          <Paper elevation={3} style={{maxWidth:950, padding: 15}} className="Fondo">
+              <Typography variant="h5" component="h2" align="center">{tituloPagina}</Typography>
+              <br/>
+              {
+                //Cuando cargando es true (seteado al momento de empezar a realizar la búsqueda de las publicaciones), nos muestra el componente de carga,
+                //y desaparece cuando cambia a false (seteado al finalizar la búsqueda de los datos)
+                cargando && <Cargando/>
+              }
+              {
+                !cargando && solicitudes.length===0 && (<Alerta variant="outlined" severity="info">
+                  No tienes {tipoPublicacion?"publicaciones ":"solicitudes "}de servicios
+                </Alerta>)
+              }
+              {
+                solicitudes.map((solicitud, i)=>(
+                  <FilaPublicacion resenas={resenas_servicio===null?null:resenas_servicio[solicitud.Servicio_id.nombre]} buscarSolicitudes={buscarSolicitudes} key={i} datos={solicitud} tipoPublicacion={tipoPublicacion} contactar={true}/>
+                ))
+              }
+          </Paper>
+      </Container>
+    </div> 
   )
 }

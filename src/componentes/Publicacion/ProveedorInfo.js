@@ -48,16 +48,18 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
       ids_consultas+="id_in="+id+"&"
     })
 
-    axios.get(
-      state.servidor+"/api/categorias?"+ids_consultas
-    )
-    .then(response => {
-      setcategorias(response.data)
-    })
-    .catch(error => {
-      alert("Un error ha ocurrido al cargar las categorías.")
-      console.log(error.response)
-    }) 
+    if (ids_consultas!==""){
+      axios.get(
+        state.servidor+"/api/categorias?"+ids_consultas
+      )
+      .then(response => {
+        setcategorias(response.data)
+      })
+      .catch(error => {
+        alert("Un error ha ocurrido al cargar las categorías.")
+        console.log(error.response)
+      }) 
+    }
   }
 
   function copiarAlPortapapeles(telefono) {
@@ -89,7 +91,7 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
 
             <Grid item xs={12} hidden={esDePerfil}>
               <Typography variant="h5" component="h3" align="center">
-                <Link to={"/perfil-proveedor/"+DatosPerfil.id} className={classes.EstiloLink}>
+                <Link to={state.ruta+"/perfil-proveedor/"+DatosPerfil.id} className={classes.EstiloLink}>
                   {DatosPerfil.titulo}
                   <Hidden xlDown={!DatosPerfil.identidad_verificada}>
                     <Tooltip title="Usuario verificado">
@@ -134,7 +136,7 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
                     <Divider/>
                     {
                       categorias.map((categoria, i)=>(
-                        <Categorias key={i} categoria={categoria} /> 
+                        <Categorias key={i} categoria={categoria} DatosPerfil={DatosPerfil} /> 
                       ))
                     }
                     <Divider/>
@@ -154,16 +156,16 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
                 </Tooltip>
               </Grid>
             }
-            <AlertaMensaje mensaje={"Copiado al portapapeles"} abrir={copiado} setabrir={setcopiado}/>
            </Hidden>
         </Grid>
       </Paper>
+      <AlertaMensaje mensaje={"Copiado al portapapeles"} abrir={copiado} setabrir={setcopiado}/>
 
     </div>
   );
 }
 
-function Categorias({categoria}) {
+function Categorias({categoria, DatosPerfil}) {
     const classes = Estilos();
     const [open, setOpen] = useState(true);
 
@@ -174,18 +176,22 @@ function Categorias({categoria}) {
         <div>
             <ListItem button onClick={handleClick}>
                 <ListItemText primary={categoria.nombre}/>
-                  <Estrellas clickeable={false} valor={3.3}/>
                 {open ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                     <Divider/>
                       {
-                        categoria.servicios.map((servicio, i) => (
-                          <Typography key={i} variant="h6" component="h5" align="left">
-                            {servicio.nombre}
-                          </Typography>
-                        ))
+                        DatosPerfil.servicios.map((servicio, i) => {
+                          if(servicio.categoria===categoria.id){
+                            return (
+                              <Typography key={i} variant="h6" component="h5" align="left">
+                                {servicio.nombre}
+                              </Typography>
+                            )
+                          }
+                        }
+                        )
                       }
                     <Divider/>
                 </List>

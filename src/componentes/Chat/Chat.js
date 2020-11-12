@@ -10,7 +10,8 @@ import {
     Button,
     SideBar,
 } from './ComponentesChat'; 
-import {IconButton, Button as Boton} from '@material-ui/core/';
+import {IconButton, Button as Boton, LinearProgress as Cargando} from '@material-ui/core/';
+import Alerta from '@material-ui/lab/Alert';
 import {KeyboardReturn as Atras, StarRate} from '@material-ui/icons/';
 import AlertaSi_No from '../AlertaSi_No.js';
 import AlertaMensaje from '../AlertaMensaje.js';
@@ -85,7 +86,7 @@ export function Chat(){
                     }else{
                         img_solicitud = chat.solicitud.imagenes.length===0?state.imagen_predeterminada:state.servidor+chat.solicitud.imagenes[0].url
                     }
-                    setcargando(false)
+                    
                     return {
                         chat:{
                             id: chat.id,
@@ -109,6 +110,7 @@ export function Chat(){
                         }
                     }
                 }))
+                setcargando(false)
             })
             .catch(error => {
                 alert("Un error ha ocurrido al cargar los chats.")
@@ -347,6 +349,14 @@ export function Chat(){
                 <Atras/>
             </IconButton>
             <div className={atras?classes.EstiloPC:classes.EstiloVacio} className='right-panel'>
+                {
+                    cargando && <Cargando/>
+                }
+                {
+                    !cargando && chats.length===0 && (<Alerta className={classes.inputAncho} style={{marginBottom:"10px"}} variant="outlined" severity="info">
+                        No tienes ningún chat aún.
+                    </Alerta>)                    
+                }
                 {
                     chatSeleccionado!==null &&
                         <ChatItem

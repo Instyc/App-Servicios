@@ -50,7 +50,7 @@ export default function Inicio({tipo}) {
             categorias.map((cat, i) => (
               <Grid item sm={4} md={3} lg={2} key={i} align="center">
                 {
-                  <Link to={tipo?"/publicaciones/"+cat.id:"/servicios-solicitados/"+cat.id} className={classes.EstiloLink}>
+                  <Link to={state.ruta+"/publicaciones/"+cat.id} className={classes.EstiloLink}>
                     <Typography align="center">{cat.nombre}</Typography>
                     <IconButton>
                       <Avatar style={{width:"100px", height:"100px"}} src={state.servidor+cat.imagen.formats.thumbnail.url} color="secondary" fontSize="inherit"/>

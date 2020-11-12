@@ -78,9 +78,10 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                             }
                         })
                 }else{
-                    history.push("/")
+                    history.push(state.ruta+"/")
                 }
                 setcargando(false)
+                
             })
             .catch(error => {
                 alert("Un error ha ocurrido al cargar la solicitud.")
@@ -197,7 +198,6 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                         {headers: {'Authorization': auth},
                     })
                     .then(response => {
-                        console.log("Respuesta cambio: ",response.data)
                         setcargando(false)
                     })
                     .catch(error => {
@@ -209,6 +209,8 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                 setcargando(false)
                 setmensaje("¡Publicación creada!")
                 setabrir(true)
+                setTimeout(() => {  history.push(state.ruta+"/"); }, 3000);
+
             })
             .catch(error => {
                 console.log("Error, no se ha podido crear la solicitud.", error.response)
@@ -231,6 +233,8 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                 setcargando(false)
                 setmensaje("¡Publicación modificada!")
                 setabrir(true)
+                setTimeout(() => {  history.push(state.ruta+"/"); }, 3000);
+
             })
             .catch(error => {
                 console.log("Error, no se ha podido modificar la solicitud.", error.response)
@@ -300,7 +304,7 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
     }
 
     function cancelar(){
-        history.push("/")    
+        history.push(state.ruta+"/")    
     }
 
     return ( 

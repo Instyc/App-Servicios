@@ -19,7 +19,6 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
   const [abrir, setabrir] = useState(false)
   const [cargando, setcargando] = useState(false)
   const [mensaje, setmensaje] = useState(false);
-  const [reporteAnterior, setreporteAnterior] = useState([]);
 
   const handleOpen = () => {
     setOpen(true);

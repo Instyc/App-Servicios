@@ -93,8 +93,10 @@ export default function Registrar({registrar}){
         }
     }
 
-    function subirImagen(_id_){
+    function subirImagen(datos){
         let archivosNuevos = []
+        let auth = 'Bearer '+datos.jwt;
+
         //archivosNuevos es el arreglo que contiene los archivos que han sido agregados y no los que ya han sido subidos al servidor
         ImagenPerfil.map((imagen) => {
             let iguales = imagenesSubidas.some(img => img === imagen)
@@ -102,8 +104,6 @@ export default function Registrar({registrar}){
                 archivosNuevos.push(imagen)
             }
         })
-        console.log("imagenes perfil:", ImagenPerfil)
-        console.log("nuevos:", archivosNuevos)
 
         //archivosBorrados es el arreglo que contiene los archivos que han sido subidos al servidor pero que han sido eliminados en el frontend
         let archivosBorrados = []
@@ -113,12 +113,10 @@ export default function Registrar({registrar}){
                 archivosBorrados.push(imagen)
             }
         })
-        console.log("borrados:", archivosBorrados)
         //Si existen elementos dentro del arreglo imagenesBorradas, significa que se quieren borrar imágenes de la publicación
         for(let indx = 0; indx < imagenesBorradas.length; indx++){
             let id = Number(imagenesBorradas[indx].name)
             
-            let auth = 'Bearer '+state.jwt;
             axios.delete(state.servidor+"/upload/files/"+id,
             {
                 headers: {
@@ -142,11 +140,9 @@ export default function Registrar({registrar}){
         
         if(archivosNuevos.length!==0){
             formData.append('ref', 'user')
-            formData.append('refId', _id_)
+            formData.append('refId', datos.usuario.id)
             formData.append('field', 'imagen_perfil')
             formData.append('source', 'users-permissions')
-
-            let auth = 'Bearer '+state.jwt;
 
             axios.post(
                 state.servidor+"/upload",
@@ -158,19 +154,18 @@ export default function Registrar({registrar}){
                     },
                 })
             .then(response => {
-                let usr = state.datosSesion
+                let usr = datos.usuario
                 usr.imagen_perfil = response.data[0]
 
                 dispatch({type:"setDatos", value: usr})
-                dispatch({type:"setJwt", value: state.jwt})
+                dispatch({type:"setJwt", value: datos.jwt})
 
                 localStorage.setItem('datosLocal', JSON.stringify({
-                    jwt: state.jwt,
+                    jwt: datos.jwt,
                     datosSesion: usr
                 }));
             })
             .catch(error => {
-                alert("Error al cargar las imágenes.")
                 console.log("Error: ", error.response)
             })
         }
@@ -227,7 +222,7 @@ export default function Registrar({registrar}){
             dispatch({type:"setDatos", value: response.data})
             dispatch({type:"setJwt", value: state.jwt})
 
-            subirImagen(state.datosSesion.id)
+            subirImagen({usuario: response.data, jwt: state.jwt})
 
             localStorage.setItem('datosLocal', JSON.stringify({
                 jwt: state.jwt,
@@ -237,7 +232,7 @@ export default function Registrar({registrar}){
             setcargando(false)
             setmensajeAlerta("¡Cambios guardados!")
             setabrir(true)
-            setTimeout(() => {  history.push("/"); }, 3000);
+            setTimeout(() => {  history.push(state.ruta+"/"); }, 3000);
         })
         .catch(error => {
             let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
@@ -275,7 +270,6 @@ export default function Registrar({registrar}){
         })
         .then(response => {
             
-            subirImagen(response.data.user.id)
             dispatch({type:"setDatos", value: response.data.user})
             dispatch({type:"setJwt", value: response.data.jwt})                        
             
@@ -283,11 +277,13 @@ export default function Registrar({registrar}){
                 jwt: response.data.jwt,
                 datosSesion: response.data.user
             }));
+
+            subirImagen({usuario: response.data.user, jwt: response.data.jwt})
             
             setcargando(false)
             setmensajeAlerta("Usuario creado. ¡Bienvenido a Servia!")
             setabrir(true)
-            setTimeout(() => {  history.push("/"); }, 6000);
+            setTimeout(() => {  history.push(state.ruta+"/"); }, 6000);
         })
         .catch(error => {
             // Ocurrió un error
@@ -331,7 +327,6 @@ export default function Registrar({registrar}){
                             name="nombre"
                             value={datos.nombre}
                             onChange={cambiarInput}
-                            id="filled-basic"
                             label="Nombre"
                             variant="filled"
                             required/>
@@ -344,7 +339,6 @@ export default function Registrar({registrar}){
                             name="apellido"
                             value={datos.apellido}
                             onChange={cambiarInput}
-                            id="filled-basic"
                             label="Apellido"
                             variant="filled"
                             required/>
@@ -360,7 +354,6 @@ export default function Registrar({registrar}){
                             name="email"
                             value={datos.email}
                             onChange={cambiarInput}
-                            id="filled-basic"
                             label="Correo electrónico"
                             variant="filled"
                             type="email"
@@ -373,7 +366,6 @@ export default function Registrar({registrar}){
                             name="usuario"
                             value={datos.usuario}
                             onChange={cambiarInput}
-                            id="filled-basic"
                             label="Usuario"
                             variant="filled"
                             required />
@@ -386,7 +378,6 @@ export default function Registrar({registrar}){
                             name="telefono"
                             value={datos.telefono}
                             onChange={cambiarInput}
-                            id="filled-basic"
                             label="Telefono"
                             variant="filled"/>
                         </Grid>
@@ -449,7 +440,7 @@ export default function Registrar({registrar}){
                         </Grid>
                         
                         <Grid item xs={12} hidden={!registrar}>
-                            <InicioSesion mensaje={"¿Ya tenés una cuenta?"}/>
+                            <InicioSesion mensaje={"¿Ya tienes una cuenta?"}/>
                         </Grid>
                     </Grid>
                 </form>

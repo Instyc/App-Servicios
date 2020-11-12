@@ -391,7 +391,7 @@ export default function Registrar() {
                             <Button onClick={guardarDatos} disabled={cargando} size="large" variant="contained" color="primary">Guardar</Button>
                         </Grid>
                         <Grid item xs={6} align="center">
-                            <Button onClick={()=>{history.push("/")}} size="large" variant="contained" color="secondary">Cancelar</Button>
+                            <Button onClick={()=>{history.push(state.ruta+"/")}} size="large" variant="contained" color="secondary">Cancelar</Button>
                         </Grid>
                     </Grid>
                 </FormControl>

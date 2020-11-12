@@ -160,7 +160,7 @@ export default function VerificarMiIdentidad(){
             
             setcargando(false)
             setabrir(true)
-            setTimeout(() => {  history.push("/"); }, 3000);
+            setTimeout(() => {  history.push(state.ruta+"/"); }, 3000);
         })
         .catch(error => {
             console.log("Error, no se han podido enviar los datos.", error.response)

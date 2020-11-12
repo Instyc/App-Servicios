@@ -2,11 +2,12 @@ import React, { useReducer, useEffect, createContext} from "react";
 //window.location.origin
 //import Icono from '/Icono3.png'
 const estadoInicial = {
-    servidor: window.location.origin,
+    servidor: "https://prueba-3.herokuapp.com",
+    ruta: "/App-Servicios",
     jwt:"",
     publico: false,
     guardar: false,
-    imagen_predeterminada: "/IconoV3.png",
+    imagen_predeterminada: "/App-Servicios/IconoV3.png",
     datosSesion:{
         apellido: "",
         blocked: "",
