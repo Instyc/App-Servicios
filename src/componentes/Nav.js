@@ -361,7 +361,7 @@ export default function PrimarySearchAppBar() {
 
               {/*Administrador*/}
               <div hidden={tipoUsuario!==3}>
-                <Link to={state.ruta+"/gestionar-reclamos"} className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Gestionar reportes</MenuItem></Link>
+                <Link to={state.ruta+"/gestionar-reportes"} className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Gestionar reportes</MenuItem></Link>
                 <Link to={state.ruta+"/verificar-identidad"} className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Verificar identidades </MenuItem></Link>
                 {/*<Link to={state.ruta+"/administrar-categorias"} className={classes.EstiloLink}><MenuItem onClick={plegarMenu}>Administrar categorías </MenuItem></Link>*/}
               </div>

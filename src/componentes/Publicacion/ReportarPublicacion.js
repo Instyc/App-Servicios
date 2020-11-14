@@ -67,7 +67,7 @@ export default function ReportarPublicacion({esDePerfil, solicitud, abrirAlerta}
 
         reporte_conjunto.descripcion+="##Nuevo reporte (Motivos:"+
         motivosSeleccionados.map(motivo=>(" "+motivo.nombre))+") del día "
-        +fecha.getDate()+"/"+fecha.getMonth()+"/"+fecha.getFullYear()+":\n"+descripcion
+        +fecha.getDate()+"/"+(fecha.getMonth()+1)+"/"+fecha.getFullYear()+":\n"+descripcion
         
         axios.put(state.servidor+"/api/reportes/"+reporte_conjunto.id,{
           descripcion: reporte_conjunto.descripcion

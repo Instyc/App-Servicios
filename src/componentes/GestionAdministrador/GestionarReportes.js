@@ -296,18 +296,20 @@ function DesplegarInformacion({datos, modificarReporte}) {
                                     value="true"
                                     checked={accion}
                                     control={<Radio />}
-                                    label={datos.estado===-1?"Continuar con la publicación pausada":"Pausar publicación"} />
+                                    label={datos.estado===-1?(datos.Solicitud_id!==null?"Continuar con la publicación bloqueada":"Continuar con el perfil bloqueado"):
+                                    (datos.Solicitud_id!==null?"Bloquear publicación":"Bloquear perfil")}/>
                                     <FormControlLabel
                                     value="false"
                                     checked={!accion}
                                     control={<Radio />}
-                                    label={datos.estado===-1?"Despausar publicación":"No hacer nada"} />
+                                    label={datos.estado===-1?(datos.Solicitud_id!==null?"Desbloquear publicación":"Desbloquear perfil"):("No hacer nada")} />
                                 </RadioGroup>
                         </FormControl>
                     }
                     {
                         datos.estado>0 && <Typography variant="h6" component="h5" align="left">
-                            {datos.accion?"La publicación fue pausada":"No se pausó la publicación"}
+                            {datos.accion?(datos.Solicitud_id!==null?"La publicación fue bloqueada":"El perfil fue bloqueado"):
+                            (datos.Solicitud_id!==null?"No se bloqueó la publicación":"No se bloqueó el perfil")}
                         </Typography>
                     }
                     {
@@ -346,11 +348,14 @@ const ParteNuevos = ({enviarDatos, cargando, esRespuesta}) =>{
 
             <div align="center">
                 <Button disabled={cargando} startIcon={<Aceptar/>} onClick={()=>{enviarDatos(descripcion, true)}}>
-                    {esRespuesta?"Confirmar acción":"Aceptar reclamo"}
+                    {esRespuesta?"Confirmar acción":"Aceptar reporte"}
                 </Button>
-                <Button disabled={cargando} color="secondary" startIcon={<Rechazar/>} onClick={()=>{enviarDatos(descripcion, false)}}>
-                    Descartar reclamo
-                </Button>
+                {
+                    datos.estado!==-1 &&
+                    <Button disabled={cargando} color="secondary" startIcon={<Rechazar/>} onClick={()=>{enviarDatos(descripcion, false)}}>
+                        Descartar reporte
+                    </Button>
+                }
             </div>
         </div>
     )

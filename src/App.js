@@ -80,7 +80,7 @@ function App() {
                     <Route path={state.ruta+"/verificar-mi-identidad"}>{aux && state.datosSesion.tipo<2?<Redirect to="/" />:<VerificarMiIdentidad/>}</Route>
                     
                     <Route path={state.ruta+"/verificar-identidad"}>{aux && state.datosSesion.tipo!==3? <Redirect to="/" />:<VerificarIdentidad/>}</Route>
-                    <Route path={state.ruta+"/gestionar-reclamos"}>{aux && state.datosSesion.tipo!==3? <Redirect to="/" />:<PestanaReportes/>}</Route>
+                    <Route path={state.ruta+"/gestionar-reportes"}>{aux && state.datosSesion.tipo!==3? <Redirect to="/" />:<PestanaReportes/>}</Route>
 
                     <Route path={state.ruta+"/perfil-proveedor/:id"}><MiPerfil/></Route>
 

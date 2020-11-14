@@ -61,8 +61,6 @@ export default function IniciarSesion({mensaje}) {
             datosSesion: response.data.user
           }));
 
-          console.log(response.data.user)
-
           setcargando(false)
           setOpen(false)
       })

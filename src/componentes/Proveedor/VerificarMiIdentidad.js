@@ -156,7 +156,6 @@ export default function VerificarMiIdentidad(){
                 jwt: state.jwt,
                 datosSesion: response.data
             }));
-            console.log("Datos: ",response.data)
             
             setcargando(false)
             setabrir(true)
