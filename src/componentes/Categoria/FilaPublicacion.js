@@ -128,7 +128,26 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
         pausado: Pausa
       }))
     }
-    setpreguntarPausa(false)
+    setpreguntarPausa(false) 
+  }
+
+  //Si la publicación lleva mas de 10 dias sin modificarse, se considera como vencida (esto para evitar que ciertas
+  //publicaciones se muestren para siempre, en el caso de que el usuario deje de visitar a Servia)
+  function publicacionVencida(){
+    let hoy = Date.now()
+    let modificado = new Date(datosPagina.updated_at)
+    //Calculamos la cantidad de dias que lleva la publicación sin editarse
+    let dias = parseInt((hoy-modificado)/1000/60/60/24)
+
+    //Segun el tipo de publicación el tiempo de vencimiento es mayor o menor. Si es una solicitud 15 dias, sino 30
+    let diasTipo = datosPagina.tipo?30:15
+    if(dias > diasTipo){
+      return (<Alerta className={classes.inputAncho} style={{marginBottom:"10px"}} variant="outlined" severity="info">
+        Esta publicación se encuentra vencida, por lo tanto no aparecerá en las búsquedas. Para que vuelva a aparecer su creador debe editarla.
+        Tenga en cuenta que las solicitudes se vencen al cabo de 15 días y las publicaciones de proveedores a los 30 días.
+        --Si usted quiere contactar a este proveedor/cliente, tenga en cuenta que es posible que no le responda o no le responda a  tiempo, ya que puede estar inactivo en Servia.--
+      </Alerta>)
+    }
   }
 
   return (
@@ -144,6 +163,11 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
               Esta publicación se encuentra bloqueada, contacte a un administrador.
             </Alerta>)
           }
+          {
+            publicacionVencida()
+          }
+
+
           <Grid container spacing={1} justify="center" alignItems="center">
             <Grid item xs={12} md={3} sm={12} align="center">
               <img 

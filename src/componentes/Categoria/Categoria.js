@@ -52,13 +52,24 @@ export default function Categoria() {
     function buscarSolicitudes(){
         axios.get(state.servidor+"/api/solicitud?Categoria_id="+id+"&pausado=false&bloqueado=false&tipo="+tipoPublicacion)
         .then(response => {
+            let hoy = Date.now()
+            let filtro = response.data.map((solicitud)=>{
+                let modificado = new Date(solicitud.updated_at)
+                let dias = parseInt((hoy-modificado)/1000/60/60/24)
+               
+                let diasTipo = tipoPublicacion?30:15
+                if(dias <= diasTipo){
+                    return solicitud
+                }
+            })
+
             //Filtramos las publicaciones donde sus proveedores no estén pausados
             setcargando(false)
             if (tipoPublicacion){
-                let filtro = response.data.filter((solicitud)=>(solicitud.Usuario_id.estado === false && solicitud.Usuario_id.bloqueado===false))
+                filtro = filtro.filter((solicitud)=>(solicitud.Usuario_id.estado === false && solicitud.Usuario_id.bloqueado===false))
                 setsolicitudes(filtro)
             }else{
-                setsolicitudes(response.data)
+                setsolicitudes(filtro)
             }
         })
         .catch(error => {
@@ -104,12 +115,20 @@ export default function Categoria() {
         //Buscamos las solicitudes según los parametros que seleccionamos
         axios.get(state.servidor+"/api/solicitud?"+IDS+"pausado=false&bloqueado=false&tipo="+tipoPublicacion+"&titulo_contains="+inputBusqueda)
         .then(response => {
+            let hoy = Date.now()
+            let filtro = response.data.map((solicitud)=>{
+                let modificado = new Date(solicitud.updated_at)
+                let dias = parseInt((hoy-modificado)/1000/60/60/24)
+                if(dias <= 15){
+                    return solicitud
+                }
+            })
             if (tipoPublicacion){
                 //Descartamos las solicitudes que tienen usuarios pausados y bloqueados
-                let filtro = response.data.filter((solicitud)=>(solicitud.Usuario_id.estado === false && solicitud.Usuario_id.bloqueado===false))
+                filtro = filtro.filter((solicitud)=>(solicitud.Usuario_id.estado === false && solicitud.Usuario_id.bloqueado===false))
                 setsolicitudes(filtro)
             }else{
-                setsolicitudes(response.data)
+                setsolicitudes(filtro)
             }
           setcargando(false)
         })
@@ -151,6 +170,7 @@ export default function Categoria() {
         }
     },[servicios])
 
+    
     return (
         <div className={classes.fondo}>
             <Paper elevation={3} style={{width:950, padding: 15}} className="Fondo">
@@ -171,16 +191,17 @@ export default function Categoria() {
                     Lo sentimos, por el momento no hay {tipoPublicacion?"publicaciones ":"solicitudes "} de servicios que coincidan con los filtros de búsqueda.
                     </Alerta>)
                 }
-                {
-                    solicitudes.map((solicitud, i)=>(
-                        <FilaPublicacion
-                        key={i}
-                        resenas={solicitud.tipo?(resenas_servicio===null?null:resenas_servicio[solicitud.Servicio_id.nombre]):null}
-                        buscarSolicitudes={buscarSolicitudes}
-                        datos={solicitud}
-                        tipoPublicacion={tipoPublicacion}
-                        contactar={true}/>
-                    ))
+                { 
+                    solicitudes.map((solicitud, i)=>{            
+                        return (<FilaPublicacion
+                            key={i}
+                            resenas={solicitud.tipo?(resenas_servicio===null?null:resenas_servicio[solicitud.Servicio_id.nombre]):null}
+                            buscarSolicitudes={buscarSolicitudes}
+                            datos={solicitud}
+                            tipoPublicacion={tipoPublicacion}
+                            contactar={true}/>
+                        )
+                    })
                 }
             </Paper>
         </div>

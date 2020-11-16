@@ -70,6 +70,7 @@ export default function Publicacion() {
             Usuario_id: data.Usuario_id,
             bloqueado: data.bloqueado,
             servicio_id: data.tipo?data.Servicio_id.id:null,
+            updated_at: data.updated_at,
         })
 
         let auth = state.jwt!==""?'Bearer '+state.jwt:"";
@@ -91,7 +92,7 @@ export default function Publicacion() {
                     servicios: response.data.servicios,
                     bloqueado: response.data.bloqueado,
                     pausado: response.data.estado,
-                    imagen_perfil: response.data.imagen_perfil===null?null:response.data.imagen_perfil.url
+                    imagen_perfil: response.data.imagen_perfil===null?null:response.data.imagen_perfil.url,
                 })
             })
             .catch(error => {
