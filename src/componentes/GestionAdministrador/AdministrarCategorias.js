@@ -4,9 +4,9 @@ import axios from 'axios'
 import {TableRow, TableContainer, TableCell, TableBody, Box, Table, Collapse, Paper, Grid, Typography, TextField, Tooltip, IconButton, Hidden } from '@material-ui/core';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-
 import {AddCircle as Agregar, Edit as Editar, DeleteForever as Eliminar, Save as Guardar, ClearTwoTone as Cancelar} from '@material-ui/icons';
 
+//Componentes (Lógica)
 import Estilos from '../Estilos.js';
 import AlertaSi_No from '../AlertaSi_No.js';
 import PropTypes from 'prop-types';
@@ -20,9 +20,7 @@ export default function AdministrarCategorias() {
   const { stateCategoria, dispatchCategoria } = useContext(ObtenerEstado);
 
   const [categorias, setcategorias] = useState([])
-  useEffect(()=>{
-    console.log()
-  },[stateCategoria])
+
 
   useEffect(()=>{
     //setcargando(true)
@@ -30,7 +28,6 @@ export default function AdministrarCategorias() {
         axios.get(state.servidor+"/api/categorias/")
         .then(response => {
             setcategorias(response.data)
-            console.log(response.data)
         })
         .catch(error => {
           alert("Un error ha ocurrido al cargar las categorías.")
@@ -40,15 +37,7 @@ export default function AdministrarCategorias() {
   },[state.jwt])
 
   const [editarControl, seteditarControl] = useState(false);
-
-  useEffect(()=>{
-    console.log(stateCategoria.estadoEditado);
-  },[])
   
-  /*const agregarCategoria = () =>{
-    setfilas(["",...filas])
-    dispatchCategoria({type:'setVerdad'});
-  }*/
   
   return (
     <div className={classes.fondo}>

@@ -1,14 +1,18 @@
 import React, {useEffect, useState, useContext} from 'react';
 import {useParams} from 'react-router-dom'
 import axios from 'axios'
-
+//Material-UI
 import {Grid, Container} from '@material-ui/core/';
+
 import ProveedorInfo from '../Publicacion/ProveedorInfo.js';
 import PublicacionInfo from '../Publicacion/PublicacionInfo.js';
 import {BotonContratar} from '../ContactarProveedor.js'
-
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado' 
+
+//Componente que muestra los datos del perfil de un proveedor
 export default function MiPerfil() {
+    const { state } = useContext(ObtenerEstadoAplicacion);
+    let { id } = useParams();
     const [datosPagina, setdatosPagina] = useState({
         descripcion:"",
         titulo:"",
@@ -27,12 +31,11 @@ export default function MiPerfil() {
         servicio:"",
         estrella: 0,
     })
-    const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
-    let { id } = useParams();
     
     useEffect(()=>{
         if (state.jwt!=="" || state.publico===true){
             let auth = state.jwt!==""?'Bearer '+state.jwt:"";
+            //Traemos los datos del usuario en cuestión
             axios.get(
             state.servidor+"/users/"+id,{
                 headers: {
@@ -40,6 +43,7 @@ export default function MiPerfil() {
                 },
             })
             .then(response => {
+                //Seteamos los datos que nos interesan
                 setdatosPagina({
                     id: response.data.id,
                     descripcion: response.data.descripcion,
@@ -54,10 +58,9 @@ export default function MiPerfil() {
                     precio_estimado: "perfil",
                     imagen_perfil: response.data.imagen_perfil===null?null:response.data.imagen_perfil.url
                 })
-                console.log(response.data)
             })
             .catch(error => {
-                alert("Un error ha ocurrido al buscar el usuario.")
+                console.log("Un error ha ocurrido al buscar el usuario.")
                 console.log(error.response)
             }) 
         }
@@ -87,4 +90,3 @@ export default function MiPerfil() {
         </Container>
     )
 }
-

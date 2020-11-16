@@ -8,11 +8,11 @@ import {Typography, Grid, AppBar, Toolbar} from '@material-ui/core/';
 import Estilos from './Estilos.js';
 import { ObtenerEstadoAplicacion } from '../Estados/AplicacionEstado'
 
+//Componente que se muestra en la sección más baja de todas las vistas, es decir, el footer
 export default function Footer() {
     const classes = Estilos();
     const [contactanos, setcontactanos] = useState(false);
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
-
     return (
         <div >
            <AppBar position="relative" bottom="0px" style={{zIndex: 0}}>   

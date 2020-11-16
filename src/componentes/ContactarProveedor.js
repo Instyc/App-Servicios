@@ -7,20 +7,21 @@ import {Mail} from '@material-ui/icons';
 ///Componentes
 import AlertaMensaje from './AlertaMensaje.js';
 import Estilos from './Estilos.js';
-import CategoriaSeleccion from './CategoriaSeleccion.js';
 
 import { ObtenerEstadoAplicacion } from '../Estados/AplicacionEstado'
 
+//Subcomponente que se muestra en aquellas vistas en donde requerimos que se pueda contactar con un proveedor
 export function BotonContratar({fijo, esDePerfil, datos}) {
   const classes = Estilos();
-  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
-  const [open, setOpen] = React.useState(false);
-  const [cargando, setcargando] = React.useState(false);
-  const [mensaje, setmensaje] = React.useState("");
-  const [abrir, setabrir] = React.useState(false);
+  const { state } = useContext(ObtenerEstadoAplicacion);
+  const [open, setOpen] = useState(false);
+  const [cargando, setcargando] = useState(false);
+  const [mensaje, setmensaje] = useState("");
+  const [abrir, setabrir] = useState(false);
   const [categoria, setcategoria] = useState({});
   const [arregloCategorias, setarregloCategorias] = useState([]);
 
+  //Si se abre o se cierra la ventan emergente...
   const handleOpen = () => {
     setOpen(true);
   };
@@ -28,63 +29,64 @@ export function BotonContratar({fijo, esDePerfil, datos}) {
     setOpen(false);
   };
 
+  //Ejecutado para traer las categorías que el proveedor tiene asociado, utilizado cuando se lo contacta a través de su perfil
   useEffect(()=>{
     if (esDePerfil){
       let cat = {}
       let arrCat = []
-    datos.servicios.map((servicio)=>{
-      if(!cat.hasOwnProperty(servicio.categoria)){
-        cat[servicio.categoria] = servicio.categoria
-        arrCat.push(servicio.categoria)
-      }
-    })
-
-    let IDS = ""
-    arrCat.map((id)=>{
-      if(id!==null){
-          IDS+="id_in="+id+"&"
-      }
-    })
-        
-    let auth = 'Bearer '+state.jwt;
-    if(arrCat.length!==0){
-      axios.get(state.servidor+"/api/categorias?"+IDS,{
-        headers: {'Authorization': auth},
+      datos.servicios.map((servicio)=>{
+        if(!cat.hasOwnProperty(servicio.categoria)){
+          cat[servicio.categoria] = servicio.categoria
+          arrCat.push(servicio.categoria)
+        }
       })
-      .then(response => {
-        setarregloCategorias(response.data)
+      let IDS = ""
+      arrCat.map((id)=>{
+        if(id!==null){
+            IDS+="id_in="+id+"&"
+        }
       })
-      .catch(error => {
-        alert("Un error ha ocurrido al cargar los chats.")
-        console.log(error.response)
-      }) 
+      let auth = 'Bearer '+state.jwt;
+      if(arrCat.length!==0){
+        axios.get(state.servidor+"/api/categorias?"+IDS,{
+          headers: {'Authorization': auth},
+        })
+        .then(response => {
+          setarregloCategorias(response.data)
+        })
+        .catch(error => {
+          console.log("Un error ha ocurrido al cargar los chats.")
+          console.log(error.response)
+        }) 
+      }
     }
-    }
-},[datos])
+  },[datos])
 
-
+  //Función que se ejecuta cuando se presiona en "Contactar proveedor"
   function enviarContacto(e){
     setcargando(true)
     let auth = 'Bearer '+state.jwt;
     e.preventDefault()
 
+    //Si el usuario está logueado...
     if(state.jwt!==""){
+      //Seteamos la categoría seleccionada
       let cat_selecc = arregloCategorias.filter(cat_ => cat_.nombre === categoria)
-
+      //Creamos el chat
       axios.post(state.servidor+"/api/chats/",{
         noleido_emisor: 0,
         noleido_receptor: 1,
         emisor: state.datosSesion.id,
         receptor: datos.idP,
         solicitud: datos.idS,
+        //Si el contacto es a través del perfil, seteamos la categoría seleccionada, sino, seteamos en nulo
         categoria: esDePerfil?cat_selecc[0].id:null,
         peticion: false
       },{
         headers: {'Authorization': auth},
       })
       .then(response => {
-        console.log(response.data)
-
+        //Creamos el mensaje y lo asociamos al chat
         axios.post(state.servidor+"/api/mensajes/",{
           contenido: mensaje,
           enviado_por: true,
@@ -93,19 +95,17 @@ export function BotonContratar({fijo, esDePerfil, datos}) {
           headers: {'Authorization': auth},
         })
         .then(response => {
-          console.log(response.data)
           setabrir(true)
           setOpen(false)
           setcargando(false)
         })
         .catch(error => {
-          alert("Un error ha ocurrido al cargar los chats.")
+          console.log("Un error ha ocurrido al cargar los chats.")
           console.log(error.response)
         })
-        
       })
       .catch(error => {
-        alert("Un error ha ocurrido al cargar los chats.")
+        console.log("Un error ha ocurrido al cargar los chats.")
         console.log(error.response)
       })
     }else{
@@ -161,28 +161,25 @@ export function BotonContratar({fijo, esDePerfil, datos}) {
                       {
                         esDePerfil &&
                         <Grid item xs={12}>
-                          
-                            <InputLabel id="categoria" variant="filled">Categoría</InputLabel>
-                            <Select
-                                value={categoria}
-                                name="categoria"
-                                onChange={(e)=>{setcategoria(e.target.value)}}
-                                id="categoria"
-                                labelId="categoria"
-                                variant="filled"
-                                label="Categoría"
-                                className={classes.inputAncho}
-                                required>
-                                {
-                                  arregloCategorias.map((categoria, i)=>(
-                                    <MenuItem key={i} value={categoria.nombre}>{categoria.nombre}</MenuItem>
-                                  ))
-                                }
-                            </Select>
-                        
+                          <InputLabel id="categoria" variant="filled">Categoría</InputLabel>
+                          <Select
+                              value={categoria}
+                              name="categoria"
+                              onChange={(e)=>{setcategoria(e.target.value)}}
+                              id="categoria"
+                              labelId="categoria"
+                              variant="filled"
+                              label="Categoría"
+                              className={classes.inputAncho}
+                              required>
+                              {
+                                arregloCategorias.map((categoria, i)=>(
+                                  <MenuItem key={i} value={categoria.nombre}>{categoria.nombre}</MenuItem>
+                                ))
+                              }
+                          </Select>
                         </Grid>
                       }
-                    
                       <br/>
                       <Grid item xs={12}>  
                         <TextField

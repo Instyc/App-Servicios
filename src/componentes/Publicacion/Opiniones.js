@@ -11,37 +11,36 @@ import Estilos from '../Estilos.js';
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 import { format, register } from 'timeago.js';
 
+//Subcomponente que muestra las reseñas que tiene una determinada publicación en función del servicio que ofrece
 export default function Opiniones({datos}) {
     const classes = Estilos();
-    const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+    const { state } = useContext(ObtenerEstadoAplicacion);
     const [opiniones, setopiniones] = useState([])
     const [promedioEstrellas, setpromedioEstrellas] = useState(0)
 
+    //Traemos las reseñas que coincidan con el id del proveedor y el servicio que ofrece en la publicación
     useEffect(()=>{
         if (state.jwt!=="" || state.publico){  
             if(datos.Usuario_id!==null){
                 axios.get(state.servidor+"/api/resenas?proveedor="+datos.Usuario_id.id+"&servicios="+datos.servicio_id)
                 .then(response => {
-                    console.log(response.data)
                     setopiniones(response.data)
                     let total = 0;
                     response.data.map(opi => {
                         total+= opi.recomendacion
                     })
+                    //Calculamos el promedio de la puntuación de las reseñas
                     setpromedioEstrellas(total/(response.data.length))
                 })
                 .catch(error => {
-                    alert("Un error ha ocurrido al buscar la solicitud.")
+                    console.log("Un error ha ocurrido al buscar la solicitud.")
                     console.log(error.response)
                 })
             }
         }
     },[state.jwt, state.publico, datos])
-    //
+    //Seteamos cómo se mostrará el "hace cuanto tiempo" se hizo la reseña
     const localeFunc = (number, index, totalSec) => {
-        // number: the timeago / timein number;
-        // index: the index of array below;
-        // totalSec: total seconds between date to be formatted and today's date;
         return [
         ['justo ahora', 'justo ahora'],
         ['hace %s segundos', 'en %s segundos'],
@@ -74,7 +73,7 @@ export default function Opiniones({datos}) {
                     <Typography variant="h5" component="h2" align="center" align="left">
                         {
                             opiniones.length!==0 &&
-                            <><Estrellas clickeable={false} valor={promedioEstrellas}/> {`${promedioEstrellas} en base a ${opiniones.length} reseñas hechas por otros usuarios.`}</>
+                            <><Estrellas clickeable={false} valor={promedioEstrellas}/> {`Puntuación promedio de ${promedioEstrellas} en base a ${opiniones.length} reseñas hechas por otros usuarios.`}</>
                         }
                     </Typography>
                 </Grid>
@@ -96,6 +95,7 @@ export default function Opiniones({datos}) {
     );
 }
 
+//Subcomponente que muestra cada reseña
 function Resena({opinion}) {
     const classes = Estilos();
     return (

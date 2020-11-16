@@ -4,40 +4,46 @@ import Dropzone from 'react-dropzone-uploader'
 import axios from 'axios'
 import { ObtenerEstadoAplicacion } from '../Estados/AplicacionEstado'
 
+//Componente utilizado para la carga de imágenes en el sitio
 const SingleFileAutoSubmit = ({cantidad, funcionSetImagen, ids, setcargando}) => {
-    const toast = (innerHTML) => {
+  //Constante del componente 
+  const toast = (innerHTML) => {
       const el = document.getElementById('toast')
       el.innerHTML = innerHTML
       el.className = 'show'
       setTimeout(() => { el.className = el.className.replace('show', '') }, 3000)
     }
-    const [archivos, setarchivos] = useState([])
-    const [archivosSubidos, setarchivosSubidos] = useState([])
-
-    const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
-    useEffect(()=>{
-      console.log(ids)
-      if(state.datosSesion.id!==null && ids.some(id=>(id!==null))){
-        let IDS = ""
-        ids.map((id)=>{
-          if(id!==null){
-            IDS+="id_in="+id+"&"
-          }
+  
+  //Variables del componente
+  const [archivos, setarchivos] = useState([])
+  const [archivosSubidos, setarchivosSubidos] = useState([])
+  const { state } = useContext(ObtenerEstadoAplicacion);
+  
+  //Cada vez que se agreguen nuevas imágenes o se carguen las imágenes guardadas, se ejecuta este método
+  useEffect(()=>{
+    //Si hay algún id distinto de nulo
+    if(state.datosSesion.id!==null && ids.some(id=>(id!==null))){
+      let IDS = ""
+      //Concatenamos todos los ids para poder realizar la consulta
+      ids.map((id)=>{
+        if(id!==null){
+          IDS+="id_in="+id+"&"
+        }
+      })
+      axios.get(state.servidor+"/upload/files?"+IDS)
+      .then(response => {
+        response.data.map((dat) => {
+          //Creamos los archivos de imágenes
+          hacerArchivo(dat)
         })
-        axios.get(state.servidor+"/upload/files?"+IDS)
-        .then(response => {
-          response.data.map((dat) => {
-            hacerArchivo(dat)
-          })
-        })  
-        .catch(error => {
-            //let err = JSON.parse(error.response.request.response).message[0].messages[0].id;
-            console.log("Error: ", error.response)
-        })
-      }
-    },[ids])
+      })  
+      .catch(error => {
+          console.log("Error: ", error.response)
+      })
+    }
+  },[ids])
     
-    //Se crea el archivo
+    //Método que sirve para transformar las imágenes que maneja el backend a imágenes que utiliza el componente
     function hacerArchivo(imagen) {
       let imagenUrl = state.servidor+imagen.url
       let file
@@ -50,21 +56,17 @@ const SingleFileAutoSubmit = ({cantidad, funcionSetImagen, ids, setcargando}) =>
       })
     }
 
+    //Seteamos las imágenes
     const getUploadParams = ({ file, meta }) => {
       funcionSetImagen(file, cantidad, 0, archivosSubidos)
-
-      //console.log(file)
-
       return { url: 'https://httpbin.org/post'}
     }
-  
+    
+    //Se ejecuta cada vez que cambia el estado del componente
     const handleChangeStatus = ({ meta, file }, status) => {
+      //Si se remueve una imagen, se la quita del arreglo de imágenes a subir o se la agrega al arreglo de imágenes a borrar, según se necesite
       if (status === 'removed') {
         funcionSetImagen(file, cantidad, 1, archivosSubidos);
-        
-        //let indice = archivosSubidos.indexOf(file)
-        //console.log(indice)
-
       }
       if (status === 'uploading'){
         setcargando(true)
@@ -72,13 +74,7 @@ const SingleFileAutoSubmit = ({cantidad, funcionSetImagen, ids, setcargando}) =>
       if (status === 'done'){
         setcargando(false)
       }
-
-
-        /*toast(`${meta.name} uploaded!`)
-        remove()*/
-      }/* else if (status === 'aborted') {
-        toast(`${meta.name}, upload failed...`)
-      }*/
+    }
   
     return (
       <React.Fragment>
@@ -93,7 +89,6 @@ const SingleFileAutoSubmit = ({cantidad, funcionSetImagen, ids, setcargando}) =>
           accept="image/*"
           inputWithFilesContent={'Subir otra imagen'}
           inputContent={()=>(cantidad===1?`Selecciona ${cantidad} imagen`:`Selecciona hasta ${cantidad} imágenes`)}
-          //submitButtonContent=null to remove el botón submit
           styles={{
             dropzone: { width: "100%", height: "100%", overflow:"auto"},
             dropzoneActive: { borderColor: 'green' },

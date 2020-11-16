@@ -5,16 +5,26 @@ import {LinearProgress, Collapse, Hidden, ListItemText, ListItem, List, Paper, G
 import {Clear as Rechazar, Check as Aceptar, ExpandLess, ExpandMore} from '@material-ui/icons/';
 import Alerta from '@material-ui/lab/Alert';
 
+//Componentes
 import Imagenes from 'react-lightbox-component';
 import 'react-lightbox-component/build/css/index.css';
 
 //Estilos
 import Estilos from '../Estilos.js'
+//Variables globales de la aplicación
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
+//Este componente lista todas las solicitudes de verificación de identidad (estas las generan los proveedores
+//cuando quieren validar su identidad en el sistema), el administrador va a ver el N° de DNI y las imagenes
+//de éste y va a determinar si el usuario es quien dice ser 
 export default function VerificarIdentidad() {
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+    const classes = Estilos();
+    //Variables del componente
     const [usuariosVerificar, setusuariosVerificar] = useState([])
+    const [cargando, setcargando] = useState(false);
+
+    //Buscamos todos los usuarios que estan deseando verificar su identidad
     useEffect(()=>{
         setcargando(true)
         let auth = 'Bearer '+state.jwt
@@ -23,23 +33,21 @@ export default function VerificarIdentidad() {
                 headers: {'Authorization': auth},
             })
             .then(response => {
-                console.log(response.data)
                 setusuariosVerificar(response.data)
                 setcargando(false)
             })
             .catch(error => {
-                alert("Un error ha ocurrido al buscar los usuarios a verificar.")
+                console.log("Un error ha ocurrido al buscar los usuarios a verificar.")
                 console.log(error.response)
             }) 
         }
     },[state.jwt])
 
+    //Si el administrador realiza una acción ante una solicitud, entonces esta debe ser sacada de la lista de 
+    //solicitudes, el siguiente método hace eso.
     function actualizarUsuario(usuario_id){
         setusuariosVerificar(usuariosVerificar.filter(user => user.id!==usuario_id))
     }
-
-    const classes = Estilos();
-    const [cargando, setcargando] = useState(false);
     return (
     <div className={classes.fondo}>
         <Paper elevation={5}  style={{margin:"10px 0px", padding:"20px", width:"90%"}} className="Fondo">
@@ -73,6 +81,7 @@ export default function VerificarIdentidad() {
   );
 }
 
+//Este componente hace referencia a una solicitud, como las solicitudes pueden ser muchas, se separa en un componente aparte
 function Solicitud({usuario, actualizarUsuario}) {
     const classes = Estilos()
     return (
@@ -98,20 +107,27 @@ function Solicitud({usuario, actualizarUsuario}) {
     );
 }
 
-
+//Cada fila de solicitud, muestra una información reducida para no tener que colapsar la vista con información
+//para ver toda la información es necesario desplegarla, el siguiente componente permite eso.
 function DesplegarInformacion({usuario, actualizarUsuario}) {
     const classes = Estilos();
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+    //Variables del componente
     const [open, setOpen] = useState(false);
     const [imagenes, setimagenes] = useState([]);
     const [cargando, setcargando] = useState(false);
     const [descripcion, setdescripcion] = useState("");
     const [mensaje, setmensaje] = useState("");
     
+    //Función que se ejecuta cada vez que se acciona el desplegar información (mostrando u ocultando la información)
     const handleClick = () => {
         setOpen(!open);
     };
     
+    //Cuando el administrador decide realizar una acción ante la solicitud, el siguiente método es accionado,
+    //el cual genera una notificación al usuario que deseaba verificarse, esta notificación le informa si fue 
+    //aceptado o rechazado, tambien se actualiza su estado para que, en el caso de que fuera rechazado pueda
+    //volver a enviar la solicitud.
     function enviarDatos(aceptado){
         setcargando(true)
         let auth = 'Bearer '+state.jwt;
@@ -127,7 +143,6 @@ function DesplegarInformacion({usuario, actualizarUsuario}) {
             },
             {headers: {'Authorization': auth},})
         .then(response => {
-            console.log("Se ha podido crear la notificacion: ",response.data)
 
             //Actualizamos los datos al usuario que solicitó la verificación de su identidad.
             axios.put(
@@ -136,22 +151,23 @@ function DesplegarInformacion({usuario, actualizarUsuario}) {
                     identidad_verificada: aceptado
                 },{headers: {'Authorization': auth},})
             .then(response => {
-                console.log("Se ha podido actualizar al usuario",response.data)
                 actualizarUsuario(response.data.id)
                 setcargando(false)
             })
             .catch(error => {
                 console.log("Error, no se ha podido actualizar al usuario.", error.response)
-                alert("Error, no se ha podido actualizar al usuario.")
+                console.log("Error, no se ha podido actualizar al usuario.")
             })
         })
         .catch(error => {
             console.log("Error, no se ha podido crear la notificacion.", error.response)
-            alert("Error, no se ha podido crear la notificacion.")
+            console.log("Error, no se ha podido crear la notificacion.")
         })
         
     }
 
+    //Este metodo sirve para setear un objeto de imagenes para que el componente para mostrar imagenes pueda mostrarlas
+    //correctamente
     useEffect(()=>{
         if(usuario.imagenes_dni){
             let img = usuario.imagenes_dni.map((imagen)=>(

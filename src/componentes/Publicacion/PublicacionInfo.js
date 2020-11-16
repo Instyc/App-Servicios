@@ -1,22 +1,20 @@
 import React, {useState, useEffect, useContext} from 'react';
 //Material-UI
-import {Hidden, Paper, Grid, Typography, Breadcrumbs, Link, Avatar, Tooltip, IconButton} from '@material-ui/core/';
+import {Hidden, Paper, Grid, Typography, Breadcrumbs, Avatar, Tooltip, IconButton} from '@material-ui/core/';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import Verificado from '@material-ui/icons/CheckCircleOutline';
 import ImageGallery from 'react-image-gallery';
-import Estrellas from '../Estrellas.js';
 import ReportarPublicacion from './ReportarPublicacion.js'
 import Estilos from '../Estilos.js';
 import Alerta from '@material-ui/lab/Alert';
 
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
+//Subcomponente que contiene la información de la publicación o parte de la información el perfil de un proveedor
 export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) {
   const classes = Estilos();
-  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
-  
+  const { state } = useContext(ObtenerEstadoAplicacion);
   const [imagenes, setimagenes] = useState([])
-
   const [DatosPagina, setDatosPagina] = useState({
     id: null,
     titulo:"",
@@ -32,39 +30,42 @@ export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) 
     imagen_perfil: ""
   });
 
+  //Seteamos los datos de la publicación o perfil en el componente
   useEffect(()=>{
-  if (state.jwt!=="" || state.publico===true)
-    if(datosPagina!==null){
-      let img = datosPagina.imagenes.map((imagen)=>{
-        return ({
-          original: state.servidor+imagen.url,
-          thumbnail: state.servidor+imagen.url
+    if (state.jwt!=="" || state.publico===true){
+      if(datosPagina!==null){
+        let img = datosPagina.imagenes.map((imagen)=>{
+          return ({
+            original: state.servidor+imagen.url,
+            thumbnail: state.servidor+imagen.url
+          })
         })
-      })
-      setimagenes(img)
-      setDatosPagina({
-        id: datosPagina.id,
-        titulo: datosPagina.titulo,
-        categoria: datosPagina.categoria,
-        servicio: datosPagina.servicio,
-        estrella: 0,
-        descripcion: datosPagina.descripcion,
-        precio_estimado: datosPagina.precio_estimado,
-        tipo: datosPagina.tipo,
-        pausado: datosPagina.pausado,
-        imagenes: datosPagina.imagenes,
-        bloqueado: datosPagina.bloqueado,
-        Usuario_id: datosPagina.Usuario_id,
-        imagen_perfil: datosPagina.imagen_perfil
-      })
+        setimagenes(img)
+        setDatosPagina({
+          id: datosPagina.id,
+          titulo: datosPagina.titulo,
+          categoria: datosPagina.categoria,
+          servicio: datosPagina.servicio,
+          estrella: 0,
+          descripcion: datosPagina.descripcion,
+          precio_estimado: datosPagina.precio_estimado,
+          tipo: datosPagina.tipo,
+          pausado: datosPagina.pausado,
+          imagenes: datosPagina.imagenes,
+          bloqueado: datosPagina.bloqueado,
+          Usuario_id: datosPagina.Usuario_id,
+          imagen_perfil: datosPagina.imagen_perfil
+        })
+      }
     }
-},[datosPagina, state.jwt, state.publico])
+  },[datosPagina, state.jwt, state.publico])
 
   return (
     <div className={classes.mostrarFlex}>
       <Paper elevation={5} >
         <Grid className={classes.padding} container direction="row" justify="space-between" alignItems="center">
             {
+              //En el caso de que el componente fuese utilizado para mostrar datos de un perfil, en DatosPagina.precio_estimado estará la cadena "perfil"
               DatosPagina.pausado && (<Alerta className={classes.inputAncho} style={{marginBottom:"10px"}} variant="outlined" severity="warning">
                 {DatosPagina.precio_estimado==="perfil"?"Este proveedor ha pausado sus servicios.":"Esta publicación se encuentra pausada."}
               </Alerta>)
@@ -99,7 +100,8 @@ export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) 
                   </div>
             </Grid>
             
-            {state.publico===false && !esDePerfil && !DatosPagina.bloqueado &&
+            {//Si se está logueado y no se está bloqueado, se permite reportar
+              state.publico===false && !esDePerfil && !DatosPagina.bloqueado &&
               <Grid item lg={1} md={1} sm={1}>
                 <ReportarPublicacion esDePerfil={esDePerfil} solicitud={DatosPagina}/>
               </Grid>
@@ -116,7 +118,8 @@ export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) 
               </Typography>
             </Grid>
 
-            {state.publico===false && esDePerfil && !DatosPagina.bloqueado &&
+            {//Si se está logueado y no se está bloqueado, se permite reportar
+              state.publico===false && esDePerfil && !DatosPagina.bloqueado &&
               <Grid item lg={1} md={1} sm={1}>
                 <ReportarPublicacion esDePerfil={esDePerfil} solicitud={DatosPagina}/>
               </Grid>
@@ -132,7 +135,6 @@ export default function PublicacionInfo({esDePerfil, datosPagina, abrirAlerta}) 
             </Grid>
         </Grid>
       </Paper>
-
     </div>
   );
 }

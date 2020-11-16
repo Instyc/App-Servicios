@@ -15,6 +15,7 @@ import AlertaMensaje from '../AlertaMensaje.js';
 
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
+//Componente utilizado para registrar un nuevo usuario o para modificar los datos de un usuario
 export default function Registrar({registrar}){
     const classes = Estilos()
     //Variables de la página
@@ -46,6 +47,7 @@ export default function Registrar({registrar}){
     //Proveedor
     const [soyProveedor, setSoyProveedor] = useState(false);
 
+    //Si se quiere modificar los datos, entonces seteamos los datos del usuario en los campos
     useEffect(()=>{
         if(state.jwt!=="" || state.publico===true){
             if(!registrar){            
@@ -69,6 +71,7 @@ export default function Registrar({registrar}){
         }
     },[state.jwt, state.publico])
 
+    //Cada vez que se escribe algo en un campo, lo capturamos y lo seteamos en los datos
     const cambiarInput = (e) =>{
         if(mensaje!=="")
             setmensaje("")
@@ -81,6 +84,7 @@ export default function Registrar({registrar}){
         })
     }
 
+    //Función para setear las imágenes
     const funcionSetImagen = (file, cantidad, tipo, subidas) =>{
         setimagenesSubidas(subidas)
         //Si es 0, entonces se agrega la imagen a su respectiva variable, si es 1 entonces se desea eliminar
@@ -93,6 +97,7 @@ export default function Registrar({registrar}){
         }
     }
 
+    //Función para subir las imágenes
     function subirImagen(datos){
         let archivosNuevos = []
         let auth = 'Bearer '+datos.jwt;
@@ -104,7 +109,6 @@ export default function Registrar({registrar}){
                 archivosNuevos.push(imagen)
             }
         })
-
         //archivosBorrados es el arreglo que contiene los archivos que han sido subidos al servidor pero que han sido eliminados en el frontend
         let archivosBorrados = []
         imagenesBorradas.map((imagen) => {
@@ -123,9 +127,9 @@ export default function Registrar({registrar}){
                 'Authorization': auth
             },})
             .then(response => {
-                console.log("Borrando imagenes", response)            
+               
             }).catch(error => {
-                alert("Error al borrar las imagenes")
+                console.log("Error al borrar las imagenes")
                 console.log(error.response)
             })
         }
@@ -177,26 +181,27 @@ export default function Registrar({registrar}){
         if(datos.email.search('[.][a-z][a-z]')=== -1 || datos.email.search('[.].*[0-9].*')!== -1 ){
             setmensaje("El email se encuentra escrito incorrectamente");
         }else{
-        if(registrar){
-            if(datos.contrasena!==datos.contrasena_rep){
-                setmensaje("Las contraseñas no coinciden")
-            }else if(datos.contrasena.length < 8){
-                setmensaje("La contraseña debe tener al menos 8 caracteres");
+            if(registrar){
+                if(datos.contrasena!==datos.contrasena_rep){
+                    setmensaje("Las contraseñas no coinciden")
+                }else if(datos.contrasena.length < 8){
+                    setmensaje("La contraseña debe tener al menos 8 caracteres");
+                }else{
+                    //Si se entra a acá, significa que se quiere crear un nuevo usuario
+                    enviarPost()
+                }
             }else{
-                //Si se entra a acá, significa que se quiere crear un nuevo usuario
-                enviarPost()
+                if(datos.email.search('[.][a-z][a-z]')=== -1 || datos.email.search('[.].*[0-9].*')!== -1 ){
+                    setmensaje("El email se encuentra escrito incorrectamente");
+                }else{
+                    //Si se entra a acá, significa que se quiere modificar el usuario                
+                    enviarPut()
+                }
             }
-        }else{
-            if(datos.email.search('[.][a-z][a-z]')=== -1 || datos.email.search('[.].*[0-9].*')!== -1 ){
-                setmensaje("El email se encuentra escrito incorrectamente");
-            }else{
-                //Si se entra a acá, significa que se quiere modificar el usuario                
-                enviarPut()
-            }
-        }}
-    
+        }
     }
 
+    //Función que se ejecuta si se quieren modificar datos de usuario
     function enviarPut(){
         let auth = 'Bearer '+state.jwt;
         setcargando(true)
@@ -219,16 +224,14 @@ export default function Registrar({registrar}){
             }
         )
         .then(response => {
+            //Seteamos los datos de la sesión actual con los nuevos datos
             dispatch({type:"setDatos", value: response.data})
             dispatch({type:"setJwt", value: state.jwt})
-
             subirImagen({usuario: response.data, jwt: state.jwt})
-
             localStorage.setItem('datosLocal', JSON.stringify({
                 jwt: state.jwt,
                 datosSesion: response.data
             }));
-
             setcargando(false)
             setmensajeAlerta("¡Cambios guardados!")
             setabrir(true)
@@ -248,6 +251,7 @@ export default function Registrar({registrar}){
         })
     }
 
+    //Función que se ejecuta si se quiere crear un usuario nuevo
     function enviarPost(){
         setcargando(true)
         axios
@@ -269,17 +273,14 @@ export default function Registrar({registrar}){
             bloqueado: false
         })
         .then(response => {
-            
+            //Seteamos los datos de la sesión actual con los nuevos datos
             dispatch({type:"setDatos", value: response.data.user})
-            dispatch({type:"setJwt", value: response.data.jwt})                        
-            
+            dispatch({type:"setJwt", value: response.data.jwt})         
             localStorage.setItem('datosLocal', JSON.stringify({
                 jwt: response.data.jwt,
                 datosSesion: response.data.user
             }));
-
             subirImagen({usuario: response.data.user, jwt: response.data.jwt})
-            
             setcargando(false)
             setmensajeAlerta("Usuario creado. ¡Bienvenido a Servia!")
             setabrir(true)
@@ -294,7 +295,6 @@ export default function Registrar({registrar}){
                 setmensaje('El usuario ya está en uso.');
             else
                 setmensaje(err)
-
             setcargando(false)
         });
     }
@@ -419,7 +419,7 @@ export default function Registrar({registrar}){
                         </Hidden>
 
                         <Grid item xs={12}>
-                            <Hidden xlDown={state.datosSesion.tipo===2}>
+                            <Hidden xlDown={state.datosSesion.tipo>1}>
                                 <OkProveedor soyProveedor={soyProveedor} setSoyProveedor={setSoyProveedor}/>
                             </Hidden>
                         </Grid>

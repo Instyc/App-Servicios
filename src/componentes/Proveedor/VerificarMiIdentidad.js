@@ -1,20 +1,17 @@
 import React,{useState, useEffect, useContext} from 'react';
 import {useHistory } from 'react-router-dom'
-
+//Libreria para consultar la API del servidor
+import axios from 'axios';
 //Material UI
 import {Typography, TextField, Button, Paper, Grid} from '@material-ui/core/';
 import Cargando from '@material-ui/core/LinearProgress';
-
-//Libreria para consultar la API del servidor
-import axios from 'axios';
-
 //Componentes creados
 import Estilos from '../Estilos.js';
 import SubirImagen from '../SubirImagen.js';
 import AlertaMensaje from '../AlertaMensaje.js';
-
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
+//Componente que se utiliza por el usuario cuando quiere verificar su identidad
 export default function VerificarMiIdentidad(){
     const classes = Estilos()
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
@@ -22,8 +19,6 @@ export default function VerificarMiIdentidad(){
     //Variables de la página
     const [cargando, setcargando] = useState(false)
     const [abrir, setabrir] = useState(false);
-    //   
-    
     //Variables de los campos   
     const [DNI, setDNI] = useState("")
     const [imagenes, setimagenes] = useState([])
@@ -44,6 +39,7 @@ export default function VerificarMiIdentidad(){
         setimagenesSubidas(subidas)
     }
 
+    //Si ya se tiene cargado el número de dni y/o imágenes del documento, se los setea en los campos
     useEffect(()=>{
         if(state.jwt!==""){
             setDNI(state.datosSesion.dni)
@@ -52,6 +48,7 @@ export default function VerificarMiIdentidad(){
         }
     },[state.jwt])
     
+    //Función ejecutada al enviar los datos
     const enviarDatos = (e) =>{
         e.preventDefault()
         setcargando(true)
@@ -67,8 +64,6 @@ export default function VerificarMiIdentidad(){
                 archivosNuevos.push(imagen)
             }
         })
-        console.log("imagenes dni:", ImagenDNI)
-        console.log("nuevos:", archivosNuevos)
 
         //archivosBorrados es el arreglo que contiene los archivos que han sido subidos al servidor pero que han sido eliminados en el frontend
         let archivosBorrados = []
@@ -78,7 +73,6 @@ export default function VerificarMiIdentidad(){
                 archivosBorrados.push(imagen)
             }
         })
-        console.log("borrados:", archivosBorrados)
         
         //Si existen elementos dentro del arreglo imagenesBorradas, significa que se quieren borrar imágenes de la publicación
         for(let indx = 0; indx < imagenesBorradas.length; indx++){
@@ -90,10 +84,9 @@ export default function VerificarMiIdentidad(){
                 headers: {
                 'Authorization': auth
             },})
-            .then(response => {
-                console.log("Borrando imagenes", response)            
+            .then(response => {       
             }).catch(error => {
-                alert("Error al borrar las imagenes")
+                console.log("Error al borrar las imagenes")
                 console.log(error.response)
             })
         }
@@ -125,11 +118,10 @@ export default function VerificarMiIdentidad(){
                     },
                 })
             .then(response => {
-                console.log("Respuesta imagen: ",response.data)
                 guardarDatos()
             })
             .catch(error => {
-                alert("Error al cargar las imágenes.")
+                console.log("Error al cargar las imágenes.")
                 console.log("Error: ", error.response)
             })
         }else{
@@ -139,6 +131,7 @@ export default function VerificarMiIdentidad(){
         
     }
 
+    //Función que se ejecuta para guardar los datos del usuario
     function guardarDatos(){
         let auth = 'Bearer '+state.jwt;
         //Se modifica el perfil del usuario incluyendo los nuevos datos.

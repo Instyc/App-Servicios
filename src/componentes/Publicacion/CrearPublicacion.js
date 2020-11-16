@@ -1,19 +1,19 @@
 import React,{useState, useEffect, useContext} from 'react';
 import axios from 'axios'
-import {useHistory } from 'react-router-dom'
-
-import {Typography, TextField, FormControl, Button, Paper, Grid, Select, MenuItem, InputLabel, Hidden} from '@material-ui/core';
-import SubirImagenes from '../SubirImagen.js';
-import {useParams} from 'react-router-dom'
+import {useParams, useHistory} from 'react-router-dom'
+//Material-UI
+import {Typography, TextField, FormControl, Button, Paper, Grid, Select, MenuItem, InputLabel} from '@material-ui/core';
 import Cargando from '@material-ui/core/LinearProgress';
-import AlertaMensaje from '../AlertaMensaje.js';
 
+import AlertaMensaje from '../AlertaMensaje.js';
+import SubirImagenes from '../SubirImagen.js';
 import Estilos from '../Estilos.js';
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
+//Componente utilizado para crear o modificar publicaciones o solicitudes de servicios
 export default function CrearPublicacion({tipoPublicacion, modificar}) {
     const classes = Estilos();
-    const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+    const { state } = useContext(ObtenerEstadoAplicacion);
     let { id } = useParams();
     let history = useHistory();
     const [precioPresupuesto, setPrecioPresupuesto] = useState("");
@@ -51,26 +51,32 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
         }
         if (state.jwt!=="" || state.publico===true){
             setcargando(true)
+            //Traemos las categorías que tiene el sistema
             axios.get(state.servidor+"/api/categorias")
             .then(response => {
                 setcategorias(response.data)
                 setcargando(false)
             })
             .catch(error => {
-                alert("Un error ha ocurrido al cargar las categorías.")
+                console.log("Un error ha ocurrido al cargar las categorías.")
                 console.log(error.response)
             })
         }
     },[state.jwt, state.publico, tipoPublicacion, modificar])
 
     useEffect(()=>{
+        //Si se quiere modificar una publicación...
         if(modificar && categorias.length!==0){
             setcargando(true)
+            //Traemos la publicación que se quiere modificar
             axios.get(state.servidor+"/api/solicitud/"+id)
-            .then(response => {             
+            .then(response => {    
+                //Solamente se permite modificar si se es el dueño de la publicación         
                 if (state.datosSesion.id===response.data.Usuario_id.id){
+                    //Seteamos los datos de la publicación
                     response.data["imagenes"] = response.data.imagenes.map((imagen)=>(imagen.id))
                     setdatosPagina(response.data)
+                    //Si es una publicación, entonces también seteamos los servicios
                     if (tipoPublicacion)
                         categorias.map(cat =>{
                             if(cat.id===response.data.Servicio_id.categoria){
@@ -81,10 +87,9 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                     history.push(state.ruta+"/")
                 }
                 setcargando(false)
-                
             })
             .catch(error => {
-                alert("Un error ha ocurrido al cargar la solicitud.")
+                console.log("Un error ha ocurrido al cargar la solicitud.")
                 console.log(error.response)
             })
         }
@@ -108,10 +113,10 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
             let aux = imagenes.filter(f => f !== file)
             setimagenes(aux)
         }
-        
         setimagenesSubidas(subidas)
     }
 
+    //Se ejecuta al presionar el botón de guardar
     const guardarDatos = (e) => {
         e.preventDefault()
         setcargando(true)
@@ -147,10 +152,9 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                 headers: {
                 'Authorization': auth
             },})
-            .then(response => {
-                console.log("Borrando imagenes", response)            
+            .then(response => {         
             }).catch(error => {
-                alert("Error al borrar las imagenes")
+                console.log("Error al borrar las imagenes")
                 console.log(error.response)
             })
         }
@@ -170,7 +174,6 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
             tipo: tipoPublicacion
         }))
 
-
         let auth = 'Bearer '+state.jwt;
         //Si se está creando una publicación, se procede a la creación del la entrada en la tabla correspondiente.
         if (!modificar){
@@ -184,13 +187,11 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                     },
             })
             .then(response => {
-                console.log("Respuesta subir solicitud: ",response.data)
                 let estaServicio = state.datosSesion.servicios.some(servicio=>(servicio.id===datosPagina.Servicio_id.id))
-
+                //Procedemos a asociar el nuevo servicio (si es que es nuevo) al arreglo de servicios del proveedor
                 if (tipoPublicacion && !estaServicio){
                     let servicios_id = state.datosSesion.servicios.map(servicio_=>(servicio_.id))
                     servicios_id.push(datosPagina.Servicio_id.id)
-
                     axios.put(
                         state.servidor+"/users/"+state.datosSesion.id,{
                             servicios: servicios_id
@@ -202,7 +203,7 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                     })
                     .catch(error => {
                         console.log(error.response)
-                        alert("Ha ocurrido un error al guardar los datos")
+                        console.log("Ha ocurrido un error al guardar los datos")
                         setcargando(false)
                     })
                 }
@@ -210,7 +211,6 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                 setmensaje("¡Publicación creada!")
                 setabrir(true)
                 setTimeout(() => {  history.push(state.ruta+"/"); }, 3000);
-
             })
             .catch(error => {
                 console.log("Error, no se ha podido crear la solicitud.", error.response)
@@ -227,7 +227,7 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                 },
             })
             .then(response => {
-                console.log("Respuesta modificar solicitud: ",response.data)
+                //Si la publicación estaba bloqueada por un administrador, entonces se ejecuta el método
                 if (response.data.bloqueado)
                     modificarBloqueadoReporte()
                 setcargando(false)
@@ -242,9 +242,10 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
         }
     }
 
+    //Función utilizada para modificar el reporte asociado al bloqueo, de tal manera de que vuelva a aparecer en la lista de reportes a moderar
     function modificarBloqueadoReporte(){
         let auth = 'Bearer '+state.jwt;
-
+        //Traemos el reporte asociado a la publicación
         axios.get(
             state.servidor+"/api/reportes?Solicitud_id="+datosPagina.id,
             {
@@ -253,9 +254,8 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
             },
         })
         .then(response => {
-            console.log("Set bloqueado false: ",response.data)
             let reportes_ = response.data.filter((reporte)=>reporte.estado === 1)
-
+            //Modificamos el reporte y le asignamos el esto "en espera"
             reportes_.map(report => {
                 axios.put(
                     state.servidor+"/api/reportes/"+report.id,{
@@ -265,16 +265,15 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                             'Authorization': auth
                     },
                 })
-                .then(response => {
-                    console.log("estado -1: ",response.data)                    
+                .then(response => {               
                 })
                 .catch(error => {
-                    console.log("1.", error.response)
+                    console.log("Error: ", error.response)
                 })
             })
         })
         .catch(error => {
-            console.log("2.", error.response)
+            console.log("Error: ", error.response)
         })
     }
 
@@ -289,6 +288,7 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
         })
     }
 
+    //Seteamos el servicio seleccionado
     function seleccionarServicio(e){
         let servicioSeleccionado
         categorias.map((cat) =>{
@@ -296,13 +296,13 @@ export default function CrearPublicacion({tipoPublicacion, modificar}) {
                 servicioSeleccionado = cat.servicios.filter((serv) => serv.nombre === e.target.value)
             }
         })
-        console.log(servicioSeleccionado[0])
         setdatosPagina({
             ...datosPagina,
             Servicio_id: servicioSeleccionado[0]   
         })
     }
 
+    //Si se presiona en cancelar, se vuelve al inicio
     function cancelar(){
         history.push(state.ruta+"/")    
     }

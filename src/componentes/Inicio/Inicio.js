@@ -6,13 +6,18 @@ import {Typography, Paper, Avatar, Grid, IconButton} from '@material-ui/core/'
 import Cargando from '@material-ui/core/LinearProgress';
 
 import Estilos from '../Estilos';
+//Estado global de la aplicación
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
+
+//Este componente es el que se muestra al inicio del sistema, permite seleccionar una categoría para ver publicaciones
 export default function Inicio({tipo}) {
   const classes = Estilos();
+  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+  //Variables del componente
   const [categorias, setcategorias] = useState([])
   const [cargando, setcargando] = useState(false)
-  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
   
+  //Función que se ejecuta en el primer renderizado del componente, ejecuta buscarCategorias() para establecer todas las categorias
   useEffect(()=>{
     if (state.jwt!=="" || state.publico===true){
       setcargando(true)
@@ -20,6 +25,7 @@ export default function Inicio({tipo}) {
     }
   },[state.jwt, state.publico])
   
+  //Esta función busca todas las categorías del sistema para poder mostrarlas en pantalla
   function buscarCategorias(){
     axios.get(state.servidor+"/api/categorias")
     .then(response => {
@@ -27,7 +33,7 @@ export default function Inicio({tipo}) {
       setcargando(false)
     })
     .catch(error => {
-      alert("Un error ha ocurrido al cargar las categorías.")
+      console.log("Un error ha ocurrido al cargar las categorías.")
       console.log(error.response)
     }) 
   }
@@ -66,4 +72,4 @@ export default function Inicio({tipo}) {
         </Paper>
     </div>
   );
-}
+}c

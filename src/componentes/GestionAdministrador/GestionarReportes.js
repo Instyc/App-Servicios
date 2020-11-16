@@ -11,9 +11,16 @@ import Aceptar from '@material-ui/icons/Check';
 import Rechazar from '@material-ui/icons/Clear';
 import Alerta from '@material-ui/lab/Alert';
 
-import Estilos from '../Estilos.js';
+//Variables globales de la aplicación
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
+import Estilos from '../Estilos.js';
 
+//Este es un subcomponente que se utiliza en PestanaReporte.js, se utiliza para administrar los reportes de publicaciones
+//y de perfiles. Solo un administrador tiene acceso a este componente.
+//Aquí se visualizaran 3 secciones de reportes: reportes nuevos, son reportes que pueden ser administrados (aceptados
+//o rechazados); reportes en espera, estos reportes ya han sido administrados, y se encuentran en espera de que el
+//usuario modifique la publicación o perfil; historial de reportes, estos reportes ya han sido conluidos, aquí se
+//muestra información de la acción que han tomado los administradores
 export default function GestionarReportes({estadoReporte, reportes, modificarReporte, cargando}) {
     const classes = Estilos();
     const [titulo, setTitulo] = useState("");
@@ -61,6 +68,7 @@ function Reporte({datos, modificarReporte}) {
     const classes = Estilos();
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
     let color;
+    //Cada reporte tiene un color asignado según el estado en el que se encuentra. 
     switch (datos.estado) {
         case -1:
             color = "#5d9b9b"
@@ -147,17 +155,19 @@ function Reporte({datos, modificarReporte}) {
 
   
 function DesplegarInformacion({datos, modificarReporte}) {
+    const classes = Estilos();
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+    //Variables del componente
     const [open, setOpen] = useState(false);
     const [accion, setaccion] = useState(false);
     const [cargando, setcargando] = useState(false);
 
-    const classes = Estilos();
-
+    //Función que se ejecuta cada vez que se despliega la información, sirve para mostrar los elementos desplegados
     const handleClick = () => {
         setOpen(!open);
     };
 
+    //Funcion que se ejecuta cada vez que un administrador acepta o rechaza un reporte
     function enviarDatos(descripcion, aceptado){
         setcargando(true)
         let auth = 'Bearer '+state.jwt;
@@ -211,13 +221,11 @@ function DesplegarInformacion({datos, modificarReporte}) {
                     headers: {'Authorization': auth},
             })
             .then(response => {
-                console.log("Se ha podido crear la notificacion: ",response.data)
                 if (datos.estado!==-1)
                     actualizarReporte(response.data.id, estado)
             })
             .catch(error => {
                 console.log("Error, no se ha podido crear la notificacion.", error.response)
-                alert("Error, no se ha podido crear la notificacion.")
             })
         }else{
             //Si aceptado es false, entonces el reporte es descartado, luego se actualiza el estado del reporte
@@ -225,8 +233,10 @@ function DesplegarInformacion({datos, modificarReporte}) {
         }
     }
 
+    //Función que se ejecuta cuando se desea actualizar la información de un determinado reporte
     function actualizarReporte(notificacion, estado){
         let auth = 'Bearer '+state.jwt;
+        //Se establecen los datos actualizados
         axios.put(
             state.servidor+"/api/reportes/"+datos.id,{
                 accion: accion,
@@ -236,34 +246,36 @@ function DesplegarInformacion({datos, modificarReporte}) {
             },{headers: {'Authorization': auth},
         })
         .then(response => {
-            console.log("Se ha podido crear el reporte: ",response.data)
             setcargando(false)
-
             /*El siguiente método actualiza el arreglo de objetos de reporte del componente pestanaReportes, 
             con el objetivo de que el reporte cambie de estado y se muestre en su respectivo tab*/
             modificarReporte(response.data)
         })
         .catch(error => {
             console.log("Error, no se ha podido crear el reporte.", error.response)
-            alert("Error, no se ha podido crear el reporte.")
+            console.log("Error, no se ha podido crear el reporte.")
         })
     }
     
+    //Cuando un administrador decide pausar una publicación o despausar, entonces se debe actualizar la información
+    //de esa publicación.
     function cambiarVariableBloqueado(datos, bool){
         let auth = 'Bearer '+state.jwt;
+        //Si el reporte no tiene información de solicitud, significa que es un reporte a un perfil, por lo que
+        //debemos establecer la ruta y el id respectivo a cada uno de los casos
         let ruta = datos.Solicitud_id===null?"users/":"api/solicitud/"
         let _id = datos.Solicitud_id===null?datos.Usuario_id.id:datos.Solicitud_id.id
-        console.log(state.servidor+"/"+ruta+_id)
+
+        //Se actualizan los datos
         axios.put(
             state.servidor+"/"+ruta+_id,{
                 bloqueado: bool,
             },{headers: {'Authorization': auth},})
         .then(response => {
-            console.log("Se ha podido bloquear",response.data)
         })
         .catch(error => {
             console.log("Error, no se ha podido bloquear.", error.response)
-            alert("Error, no se ha podido bloquear .")
+            console.log("Error, no se ha podido bloquear .")
         })
     }
 
@@ -283,8 +295,7 @@ function DesplegarInformacion({datos, modificarReporte}) {
                                     {mensaje}
                                 </Typography>
                             ))
-                        }
-                        
+                        } 
                     </Grid>
                     <hr/>
                     
@@ -319,7 +330,7 @@ function DesplegarInformacion({datos, modificarReporte}) {
                         {
                             datos.estado===-1 && <ParteEspera_Historial datos={datos.notificacion}/>
                         }
-                        <ParteNuevos enviarDatos={enviarDatos} cargando={cargando} esRespuesta={datos.estado===-1}/>
+                        <ParteNuevos enviarDatos={enviarDatos} datos={datos} cargando={cargando} esRespuesta={datos.estado===-1}/>
                     </div>
                     
                     <div hidden={datos.estado<=0}>
@@ -331,7 +342,8 @@ function DesplegarInformacion({datos, modificarReporte}) {
     )
 }
 
-const ParteNuevos = ({enviarDatos, cargando, esRespuesta}) =>{
+//Componente que se utiliza para mostrar los reportes de la sección "Gestionar nuevos reportes"
+const ParteNuevos = ({enviarDatos, datos, cargando, esRespuesta}) =>{
     const [descripcion, setdescripcion] = useState("")
     return(
         <div>
@@ -361,6 +373,7 @@ const ParteNuevos = ({enviarDatos, cargando, esRespuesta}) =>{
     )
 }
 
+//Componente que se utiliza para mostrar los reportes de la sección "Reportes en espera"
 const ParteEspera_Historial = ({datos}) =>{
     return(
         datos.map((notif, i)=>(

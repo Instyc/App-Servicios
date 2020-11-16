@@ -1,31 +1,40 @@
 import React, { useState, Component, useEffect, useContext } from 'react';
 import axios from 'axios'
 
+//Componentes del chat (es una librería que se encontró)
 import './EstiloChat.css'
 import {
-    ChatItem,
+    ChatItem, 
     ChatList,
     MessageList,
     Input,
     Button,
     SideBar,
 } from './ComponentesChat'; 
+//Material UI
 import {IconButton, Button as Boton, LinearProgress as Cargando} from '@material-ui/core/';
 import Alerta from '@material-ui/lab/Alert';
-import {KeyboardReturn as Atras, StarRate} from '@material-ui/icons/';
+import {KeyboardReturn as Atras, StarRate, TramRounded} from '@material-ui/icons/';
+
+//Componentes
 import AlertaSi_No from '../AlertaSi_No.js';
 import AlertaMensaje from '../AlertaMensaje.js';
 import you from './Miniatura.png'
-
-
-//import loremIpsum from 'lorem-ipsum';
-//import Identicon from './identicon.js';  
-import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 import Estilos from '../Estilos.js'
 
+//Obtenemos el estado global de la aplicación
+import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
+
+//Este componente nos permite implementar la interfaz de un chat en el sistema.
+//Aquí se mostrarán los chats que un usuario (proveedor o cliente) posee. Estos chats se generan cada vez que un
+//cliente contacta a un proveedor por medio de una publicación o cada vez que un proveedor contacta por medio de
+//una solicitud a un cliente
+//En cada chat se podrán enviar solamente mensajes. Si un usuario es proveedor de servicio, podrá enviar al cliente
+//(por medio de su chat) una solicitud para que este haga una reseña sobre sus servicios 
 export function Chat(){
     const classes = Estilos();
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+    //Declaramos las viarables que se utilizarán en el componente
     const [cargando, setcargando] = useState(false)
     const [chats, setchats] = useState([])
     const [chatsOrdenados, setchatsOrdenados] = useState([])
@@ -34,14 +43,16 @@ export function Chat(){
     const [confirmacion, setconfirmacion] = useState(false);
     const [abrir, setabrir] = useState(false);
     const [deshabilitado, setdeshabilitado] = useState(false);
-    
     const [contenido, setcontenido] = useState("");
     const [atras, setatras] = useState(false);
     
+    //Cuando se renderiza por primera vez el componente Chat.js, se ejecuta la siguiente función
     useEffect(()=>{
         let auth = 'Bearer '+state.jwt;
         setcargando(true)
         if(state.jwt!==""){
+            //Se obtienen todos lso chats del sistema y se filtran según el usuario que está logueado en el sistema,
+            //de forma tal que  podemos listar los chats de este
             axios.get(state.servidor+"/api/chats/",{
                 headers: {'Authorization': auth},
               })
@@ -50,8 +61,10 @@ export function Chat(){
                 let chats_ = response.data.filter(chat => (chat.receptor.id === state.datosSesion.id || chat.emisor.id === state.datosSesion.id))
                 
                 setchats(chats_.map((chat)=>{
+                    //Obtenemos en una sola variable el nombre y apellido concatenados
                     let emisor = `${chat.emisor.nombre} ${chat.emisor.apellido}`
                     let receptor = `${chat.receptor.nombre} ${chat.receptor.apellido}`
+                    //Si el emisor o receptor no tienen imagenes de perfil, entonces mostramos una predeterminada (el logo de Servia)
                     let img_emisor = chat.emisor.imagen_perfil===null?state.imagen_predeterminada:state.servidor+chat.emisor.imagen_perfil.url
                     let img_receptor = chat.receptor.imagen_perfil===null?state.imagen_predeterminada:state.servidor+chat.receptor.imagen_perfil.url
                     
@@ -81,6 +94,9 @@ export function Chat(){
                     ))
                     let img_categoria = null
                     let img_solicitud = null
+                    //Como la generación de un chat puede estar referido al contacto por medio de una solicitud,
+                    //o por medio de un perfil, necesitamos saber cual es la situación, entonces, sabiendo que si
+                    //solicitud es null, entonces el chat se ha generado por medio de un perfil y viceversa.
                     if (chat.solicitud===null){
                         img_categoria = chat.categoria.imagen===null?state.imagen_predeterminada:state.servidor+chat.categoria.imagen.url
                     }else{
@@ -113,89 +129,98 @@ export function Chat(){
                 setcargando(false)
             })
             .catch(error => {
-                alert("Un error ha ocurrido al cargar los chats.")
+                console.log("Un error ha ocurrido al cargar los chats.")
                 console.log(error.response)
             }) 
         }
     },[state.jwt])
 
+    //Cuando obtenemos todos los chats del usuario logueado, para no dejar un espacio vacío en el lugar donde
+    //se encuentran los mensajes de un chat, seleccionamos el primer chat para mostrar su contenido.
+    //Esto es mejor cambiarlo, mostrando otra cosa en lugar de un chat.
     useEffect(()=>{
         if(chats.length!==0){
-            //console.log(chats)
             setchatSeleccionado(chats[0].chat)
             setmensajes(chats[0].chat.mensajes)
         }
     },[chats])
 
+    //Cuando se envia una petición de reseña, entonces se pone desabilitado en true
     useEffect(() => {
         if (chatSeleccionado!==null && chatSeleccionado.peticion)
             setdeshabilitado(true)
     }, [chatSeleccionado])
 
+    //Cuando se selecciona un chat, hay que actualizar los mensajes con los del chat seleccionado, el siguiente método hace eso.
     function actualizarMensajes(chat){
-        setmensajes(chat.mensajes)
-        setchatSeleccionado(chat)
-        setatras(false)
-        let auth = 'Bearer '+state.jwt;
+        if(!cargando){
+            setcargando(true)
+            setmensajes(chat.mensajes)//Se setean los mensajes del chat seleccioando
+            setchatSeleccionado(chat)//Se setea el chat seleccionado en una nueva variable para poder utilizar su información en otros lugares
+            setatras(false)
+            let auth = 'Bearer '+state.jwt;
 
-        //Si abrimos el chat debemos actualizar el valor de los mensajes no leidos a 0
-        let obj_leido = {}
-        if(state.datosSesion.id===chat.emisor.id){
-            obj_leido["noleido_emisor"]= 0
-        }else{
-            obj_leido["noleido_receptor"] = 0
-        }
-        axios.put(state.servidor+"/api/chats/"+chat.id,obj_leido,{
-            headers: {'Authorization': auth},
-        }).then(response => {
-            console.log(response.data)
-        })
-        //////////////////////////////////////////////////////////////////////////////////
-
-        //Buscamos todos los mensajes del chat seleccionado
-        axios.get(state.servidor+"/api/chats/"+chat.id,{
-            headers: {'Authorization': auth},
-          })
-        .then(response => {
-            let emisor = `${response.data.emisor.nombre} ${response.data.emisor.apellido}`
-            let receptor = `${response.data.receptor.nombre} ${response.data.receptor.apellido}`
-            let img_emisor = response.data.emisor.imagen_perfil===null?state.imagen_predeterminada:state.servidor+response.data.emisor.imagen_perfil.url
-            let img_receptor = response.data.receptor.imagen_perfil===null?state.imagen_predeterminada:state.servidor+response.data.receptor.imagen_perfil.url
-            
-            //Establecemos el objeto de mensaje (de la interfaz), con los mensajes del respectivo chat
-            let msjs = response.data.mensajes.map((mensaje, i)=>({
-                position: mensaje.enviado_por?'right':'left',
-                forwarded: false,
-                replyButton: false,
-                reply: null,
-                meeting: null,
-                type: "text",
-                theme: 'white',
-                view: 'list',
-                title: mensaje.enviado_por?emisor:receptor,
-                titleColor: "#EB7887",
-                text: mensaje.contenido,
-                onLoad: () => {
-                    console.log('Photo loaded');
-                },
-                status: null,
-                date: new Date(mensaje.created_at),
-                onReplyMessageClick: () => {
-                    console.log('onReplyMessageClick');
-                },
-                avatar: mensaje.enviado_por?img_emisor:img_receptor,
+            //Si abrimos el chat debemos actualizar el valor de los mensajes no leidos a 0
+            let obj_leido = {}
+            if(state.datosSesion.id===chat.emisor.id){
+                obj_leido["noleido_emisor"] = 0
+            }else{
+                obj_leido["noleido_receptor"] = 0
             }
-            ))
-            setmensajes(msjs)
-            setdeshabilitado(response.data.peticion)
-            console.log("Mensaje:",msjs)
-        })
-        .catch(error => {
-            alert("Un error ha ocurrido al cargar los mensajes.")
-            console.log(error.response)
-        }) 
+            axios.put(state.servidor+"/api/chats/"+chat.id,obj_leido,{
+                headers: {'Authorization': auth},
+            }).then(response => {
+            })
+            //-----------------------------------------------------------------------------------//
+
+            //Buscamos todos los mensajes del chat seleccionado
+            axios.get(state.servidor+"/api/chats/"+chat.id,{
+                headers: {'Authorization': auth},
+            })
+            .then(response => {
+                //Obtenemos en una sola variable el nombre y apellido concatenados
+                let emisor = `${response.data.emisor.nombre} ${response.data.emisor.apellido}`
+                let receptor = `${response.data.receptor.nombre} ${response.data.receptor.apellido}`
+                //Si el emisor o receptor no tienen imagenes de perfil, entonces mostramos una predeterminada (el logo de Servia)
+                let img_emisor = response.data.emisor.imagen_perfil===null?state.imagen_predeterminada:state.servidor+response.data.emisor.imagen_perfil.url
+                let img_receptor = response.data.receptor.imagen_perfil===null?state.imagen_predeterminada:state.servidor+response.data.receptor.imagen_perfil.url
+                
+                //Establecemos el objeto de mensaje (de la interfaz), con los mensajes del respectivo chat
+                let msjs = response.data.mensajes.map((mensaje, i)=>({
+                    position: mensaje.enviado_por?'right':'left',
+                    forwarded: false,
+                    replyButton: false,
+                    reply: null,
+                    meeting: null,
+                    type: "text",
+                    theme: 'white',
+                    view: 'list',
+                    title: mensaje.enviado_por?emisor:receptor,
+                    titleColor: "#EB7887",
+                    text: mensaje.contenido,
+                    onLoad: () => {
+                        console.log('Photo loaded');
+                    },
+                    status: null,
+                    date: new Date(mensaje.created_at),
+                    onReplyMessageClick: () => {
+                        console.log('onReplyMessageClick');
+                    },
+                    avatar: mensaje.enviado_por?img_emisor:img_receptor,
+                }
+                ))
+                setmensajes(msjs)//Actualizamos los mensajes y demás variables
+                setdeshabilitado(response.data.peticion)
+                setcargando(false)
+            })
+            .catch(error => {
+                console.log("Un error ha ocurrido al cargar los mensajes.")
+                console.log(error.response)
+            }) 
+        }
     }
 
+    //Función que se ejecuta cuando se envia un mensaje a un chat
     function agregarMensaje() {
         let auth = 'Bearer '+state.jwt;
         if(chatSeleccionado!==null){
@@ -227,7 +252,6 @@ export function Chat(){
                 },
                 avatar: state.datosSesion.id===chatSeleccionado.emisor.id?img_emisor:img_receptor,
             }])
-            console.log("Mensajes", mensajes)
             //Se envía un nuevo mensaje al emisor o receptor
             axios.post(state.servidor+"/api/mensajes/",{
                 chat: chatSeleccionado.id,
@@ -237,23 +261,23 @@ export function Chat(){
                 headers: {'Authorization': auth},
             })
             .then(response => {
-                console.log(response.data)
             })
             .catch(error => {
-                alert("Un error ha ocurrido al cargar los mensajes.")
+                console.log("Un error ha ocurrido al cargar los mensajes.")
                 console.log(error.response)
             }) 
 
-            /////////////////////////////////////////////////////////////////////////////////
-            //Si se envia un mensaje, entonces aumentamos la cantidad de mensajes no leidos, ya sea del receptor como emisor
+            //------------------------------------------------------------------------
             let obj_noleido = {}
-            console.log(chatSeleccionado)
+            //Si se envia un mensaje, entonces aumentamos la cantidad de mensajes no leidos, ya sea del receptor como emisor
             if(state.datosSesion.id===chatSeleccionado.emisor.id){
+                //Si el emisor es el usuario logueado, entonces aumentamos la cantidad de mensajes no leidos al receptor
                 obj_noleido["noleido_receptor"] = chatSeleccionado.noleido_receptor+1
                 let vari = chatSeleccionado
                 vari.noleido_receptor++
                 setchatSeleccionado(vari)
             }else{
+                //Si el receptor es el usuario logueado, entonces aumentamos la cantidad de mensajes no leidos al emisor
                 obj_noleido["noleido_emisor"]= chatSeleccionado.noleido_emisor+1
                 let vari = chatSeleccionado
                 vari.noleido_receptor++
@@ -262,17 +286,18 @@ export function Chat(){
             axios.put(state.servidor+"/api/chats/"+chatSeleccionado.id,obj_noleido,{
                 headers: {'Authorization': auth},
             }).then(response => {
-                console.log(response.data)
             })
         }
     }
 
+    //Cuando la variable chats cambia, entonces reordenamos los chats según el tiempo
     useEffect(() => {
         if (chats.length!==0){
             console.log(chats.sort((a, b) => a.chat.mensajes[a.chat.mensajes.length-1].date.getTime() > b.chat.mensajes[b.chat.mensajes.length-1].date.getTime()))
         }
     }, [chats])
 
+    //Se envia una notificación a un usuario indicando de que un proveedor le está solicitando una reseña de un servicio
     function enviarNotificacion(boole){
         setconfirmacion(false)
         if (boole){
@@ -289,6 +314,7 @@ export function Chat(){
                 }
             }
             axios.post(
+                //Se establecen los datos de la notificación
                 state.servidor+"/api/notificaciones/",{
                     tipo: 2,
                     emisor: emisor,
@@ -299,21 +325,21 @@ export function Chat(){
                 },
                 {headers: {'Authorization': auth},})
             .then(response => {
-                console.log("Se ha podido crear la notificacion: ",response.data)
                 let auth = 'Bearer '+state.jwt;
+
+                //Actualizamos el estado de la petición del chat, para que el botón de enviar solicitud esté bloqueado
                 axios.put(state.servidor+"/api/chats/"+chatSeleccionado.id,{
                     peticion: true
                 },{
                     headers: {'Authorization': auth},
                 }).then(response => {
-                    console.log(response.data)
                     setdeshabilitado(true)
                 })
                 setabrir(true)
             })
             .catch(error => {
                 console.log("Error, no se ha podido crear la notificacion.", error.response)
-                alert("Error, no se ha podido crear la notificacion.")
+                console.log("Error, no se ha podido crear la notificacion.")
             })
         }
     }
@@ -353,7 +379,7 @@ export function Chat(){
                     cargando && <Cargando/>
                 }
                 {
-                    !cargando && chats.length===0 && (<Alerta className={classes.inputAncho} style={{marginBottom:"10px"}} variant="outlined" severity="info">
+                    !cargando && chats.length===0 && (<Alerta className={classes.inputAncho} style={{marginTop:"15px"}} variant="outlined" severity="info">
                         No tienes ningún chat aún.
                     </Alerta>)                    
                 }
@@ -371,7 +397,10 @@ export function Chat(){
                         />
                 }
                 {
-                    chatSeleccionado!==null && !atras &&
+                    //Se hacen un conjunto de condiciones para mostrar o no el botón de solicitud de reseña
+                    //Si el chat no esta relacionado a una solicitud el botón no se muestra, tampoco se muestra el botón al propio
+                    //proveedor de servicios, tampoco si la publicación es de tipo solicitud,
+                    !cargando && chatSeleccionado!==null && !atras &&
                     (chatSeleccionado.solicitud===null?(chatSeleccionado.receptor.id===state.datosSesion.id):
                     (chatSeleccionado.solicitud.tipo?chatSeleccionado.receptor.id===state.datosSesion.id:chatSeleccionado.emisor.id===state.datosSesion.id)) &&
                         <div>
@@ -405,7 +434,6 @@ export function Chat(){
                     onChange={(e)=>{setcontenido(e.target.value)}}
                     //ref='input'
                     multiline={true}
-                    // buttonsFloat='left'
                     onKeyPress={(e) => {
                         if (e.shiftKey && e.charCode === 13) {
                             return true;

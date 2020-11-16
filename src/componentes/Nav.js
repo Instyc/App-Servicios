@@ -1,17 +1,11 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {BrowserRouter as Router, Switch, Route, Link, useHistory} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import axios from 'axios'
 //Material-UI
-import {Avatar, makeStyles, ListItemIcon, Grid, AppBar, Toolbar, IconButton, Typography, Badge, MenuItem, Menu, Button} from '@material-ui/core/';
-import {Person as Perfil, Create as ModificarPerfil, HowToReg as VerificarIdentidadIcono, FeaturedPlayList as Explorar, Chat, AccountCircle, Menu as MenuIcon, Notifications as NotificationsIcon, PriorityHigh as PriorityHighIcon} from '@material-ui/icons'
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
-import PersonIcon from '@material-ui/icons/Person';
+import {Avatar, ListItemIcon, Grid, AppBar, Toolbar, IconButton, Typography, Badge, MenuItem, Menu, Button} from '@material-ui/core/';
+import {Person as Perfil, ExitToApp as ExitToAppIcon, Create as ModificarPerfil, Chat, AccountCircle, Menu as MenuIcon, Notifications as NotificationsIcon, PriorityHigh as PriorityHighIcon} from '@material-ui/icons'
 
 //Importamos componentes (Logica)
-import Inicio from "./Inicio/Inicio.js";
-import Publicacion from "./Publicacion/Publicacion.js";
 import InicioSesion from "./Sesion/InicioSesion.js";
 import Estilos from './Estilos.js';
 import NotificacionesNav from './Notificaciones/NotificacionesNav.js';
@@ -26,20 +20,19 @@ export default function PrimarySearchAppBar() {
   const [despMenu, setdespMenu] = useState(null);
   const [despNoti, setdespNoti] = useState(null);
   const [traerNotificaciones, settraerNotificaciones] = useState(false);
+  //Seteamos el tipo de usuario según el tipo de usuario de la sesión actual
   const [tipoUsuario, setTipoUsuario] = useState(state.datosSesion.tipo);
   const [notificaciones, setnotificaciones] = useState([])
   const [mensajesnoleidos, setmensajesnoleidos] = useState(0)
   
   //Código de guardado del estado de la sesión
-  React.useEffect(()=>{
+  useEffect(()=>{
     let sesion = localStorage.getItem('datosLocal') || null;
     let sesionObjeto = JSON.parse(sesion)
     if(sesionObjeto!==null){
       dispatch({type:"setDatos", value: sesionObjeto.datosSesion})
       dispatch({type:"setJwt", value: sesionObjeto.jwt})
       let auth = 'Bearer '+sesionObjeto.jwt;
-      //dispatch({type:"setDatos", value: sesionObjeto.datosSesion});
-      //dispatch({type:"setJwt", value: sesionObjeto.jwt});
       axios
       .get(state.servidor+"/users/"+sesionObjeto.datosSesion.id,{
         headers: {
@@ -48,7 +41,6 @@ export default function PrimarySearchAppBar() {
       })
       .then(response => {
           // Se registró el usuario correctamente
-          console.log('Se ha iniciado sesion correctamente.', response.data)
           dispatch({type:"setDatos", value: response.data})
           dispatch({type:"setJwt", value: sesionObjeto.jwt})
           
@@ -62,57 +54,55 @@ export default function PrimarySearchAppBar() {
         console.log("Error: ",error.response)
       });
 
+      //Traemos las notificaciones sin leer del usuario
       axios.get(state.servidor+"/api/notificaciones?receptor="+sesionObjeto.datosSesion.id+"&leido=false",{
         headers: {'Authorization': auth},
       })
       .then(response => {
-        console.log(response.data)
         setnotificaciones(response.data.reverse())
       })
       .catch(error => {
-        alert("Un error ha ocurrido al buscar las notificaciones.")
         console.log(error.response)
       })
-      
     }else{
+      //Si no se está logueado, seteamos el valor de público como true
       dispatch({type:"setPublico", value: true});
     }
   },[])
   
+  //Función que nos sirve para establecer la cantidad de mensajes sin leer del usuario
   function mensajesNoleidos(jwt, user){
     let auth = 'Bearer '+jwt;
-
-    
-      axios.get(state.servidor+"/api/chats/",{
-          headers: {'Authorization': auth},
-        })
-      .then(response => {
-        //Obtenemos todos los chats del sistema y filtramos segun el id de receptor o emisor
-        let chats_ = response.data.filter(chat => (chat.receptor.id === user.id || chat.emisor.id === user.id))
-        let cantidad = 0
-        chats_.map(chat_=>{
-          if(chat_.emisor.id===user.id){
-            cantidad+= chat_.noleido_emisor
-          }
-
-          if(chat_.receptor.id===user.id){
-            cantidad+= chat_.noleido_receptor
-          }
-        })
-        
-        setmensajesnoleidos(cantidad)
+    axios.get(state.servidor+"/api/chats/",{
+        headers: {'Authorization': auth},
       })
-      .catch(error => {
-        console.log("Un error ha ocurrido al buscar las notificaciones.")
-        console.log(error.response)
+    .then(response => {
+      //Obtenemos todos los chats del sistema y filtramos segun el id de receptor o emisor
+      let chats_ = response.data.filter(chat => (chat.receptor.id === user.id || chat.emisor.id === user.id))
+      let cantidad = 0
+      //Aumentamos la cantidad de mensajes sin leer
+      chats_.map(chat_=>{
+        if(chat_.emisor.id===user.id){
+          cantidad+= chat_.noleido_emisor
+        }
+        if(chat_.receptor.id===user.id){
+          cantidad+= chat_.noleido_receptor
+        }
       })
-    
+      setmensajesnoleidos(cantidad)
+    })
+    .catch(error => {
+      console.log("Un error ha ocurrido al buscar las notificaciones.")
+      console.log(error.response)
+    })
   }
   
+  //Seteamos el tipo de usuario
   useEffect(()=>{
     setTipoUsuario(state.datosSesion.tipo)
   },[state.datosSesion.tipo])
 
+  //Función que setea los datos de la sesión como si fuese un usuario sin loguear, ejecutado al cerrar la sesión
   const cerrarSesion = () => {
     setdespPerf(null);
     dispatch({type:"setDatos", value: {
@@ -148,6 +138,7 @@ export default function PrimarySearchAppBar() {
     history.push(state.ruta+"/")
   };
 
+  //Métodos utilizados cuando se despliegan y pliegan los menúes de la barrad de navegación
   const desplegarPerfil = (event) => {
     setdespPerf(event.currentTarget);
   };
@@ -167,6 +158,7 @@ export default function PrimarySearchAppBar() {
   const plegarNoti = () => {
     setdespNoti(null);
   };
+
   return (
     <div style={{ flexGrow: 1 }}>
       <AppBar position="relative" style={{padding: "0% 7% 0% 7%"}}>
@@ -196,8 +188,6 @@ export default function PrimarySearchAppBar() {
                 <Link to={state.ruta+"/"} className={classes.botonesNav}>
                   <Button style={{padding:"20px"}}>Explorar servicios</Button>
                 </Link>
-
-                {/*<Link to={state.ruta+"/proveedores"} className={classes.botonesNav}><Button style={{padding:"20px"}}>Proveedores</Button></Link>*/}
 
                 <Link to={state.ruta+"/solicitar-servicio"} hidden={tipoUsuario!==1} className={tipoUsuario===1?classes.botonesNav:classes.EstiloVacio}>
                   <Button style={{padding:"20px"}}>Solicitar servicio</Button>
@@ -316,7 +306,7 @@ export default function PrimarySearchAppBar() {
             </Menu>
           </div>
           
-          {/*Hamburguesa */}
+          {/*Menú desplegable */}
           <div className={tipoUsuario===0?classes.EstiloMovil:classes.EstiloVacio}>
             <IconButton className={classes.hambur} onClick={desplegarMenu} color="inherit" edge="end" aria-label="menu hamburguesa">
               <MenuIcon/>

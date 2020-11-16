@@ -1,4 +1,6 @@
 import React,{useState, useEffect, useContext} from 'react';
+import {Link} from "react-router-dom";
+
 import axios from 'axios'
 //Material-UI
 import {Card, Hidden, Typography, Chip, Button, Grid, Tooltip, IconButton, Container } from '@material-ui/core/';
@@ -10,23 +12,28 @@ import Alerta from '@material-ui/lab/Alert';
 import Verificado from '@material-ui/icons/CheckCircleOutline';
 import AlertaSi_No from '../AlertaSi_No.js';
 
+//Componentes
 import Estrellas from '../Estrellas.js';
 import Estilos from '../Estilos';
 import {BotonContratar} from '../ContactarProveedor.js'
 
-import {Link} from "react-router-dom";
+//Estados globales que utilizaremos en este componente
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 import { FormatListBulletedRounded } from '@material-ui/icons';
 
+//Esto es un subcomponente que se utiliza en componente Categoria.js, permite dar un breve resumen de la publicación en cuestión
+//informando así el titulo, descripcion, precio estimado, valoración, una imagen y el tipo de servicio.
+//Permite tambien ver a la dicha publicación o contactar directamente al proveedor de la publicación
+//El componente recibe un conjunto de parámetros que son derivados del supercomponente que lo utiliza
 export default function FilaPublicacion({tipoPublicacion, datos, contactar, buscarSolicitudes, resenas}) {
   const classes = Estilos();
+  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+  //Variables para el manejo del componente
   const [precioPresupuesto, setPrecioPresupuesto] = useState("");
   const [noMostrar, setnoMostrar] = useState(true);
-  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
   const [preguntarPausa, setpreguntarPausa] = useState(false);
   const [preguntarEliminar, setpreguntarEliminar] = useState(false);
   const [promedio, setpromedio] = useState(0);
-
   const [datosPagina, setdatosPagina] = useState({
     id: null,
     titulo: "",
@@ -35,11 +42,13 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
     imagenes: [],
     servicio: "",
     estrellas:0,
+    tipo: false,
     Usuario_id: {id: null, nombre:"", apellido: "", imagen_perfil:null},
     Servicio_id: {nombre:""},
     pausado: false
   });
 
+  //Funcion que se ejecuta por única vez cuando el componente se renderiza.
   useEffect(()=>{
     //Dependiendo de si se quiere crear una publicación o solicitar un servicio, se muestra la pantalla correspodiente
     if(tipoPublicacion){
@@ -49,18 +58,20 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
     }
   },[])
 
+  //Cuando la variable datos cambia, es decir, cuando el supercomponente cambia el valor de la variable, el siguiente
+  //método se va a ejecutar, éste lo que hace setear una variable para mostrar u ocultar los botones para editar
+  //borrar o pausar una determinada publicación
   useEffect(()=>{
     if(datos.Usuario_id!==null){
       setdatosPagina(datos)
       let x = datos.Usuario_id.id===state.datosSesion.id
       setnoMostrar(!x)
-      //console.log(datos.Usuario_id.imagen_perfil.url)
     }
   },[datos])
 
+  //Funcion que se ejecuta cuando la variable resenas cambia, permite calcular el promedio de las reseñas de la publicación
   useEffect(()=>{
     if(resenas!==null && resenas!==undefined ){
-      
       let total = 0, i = 0
       resenas.resenas.map((resena)=>{
         if(resena.proveedor.id===datos.Usuario_id.id){
@@ -73,16 +84,18 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
   },[resenas])
 
 
+  //Cuando se aprieta el boton eliminar publicación se ejecuta este método, lo que hace es eliminar la publicación
+  //seleccionada de la base de datos
   const eliminarPublicacion = (boole) =>{
     let auth = 'Bearer '+state.jwt;
     if(boole){
+      //Si boole es true, entonce significa que se ha puesto "Aceptar" en el dialogo emergente, por consecuente se envia la orden de eliminar la publicación
       axios.delete(
         state.servidor+"/api/solicitud/"+datosPagina.id,{
           headers: {'Authorization': auth},
         }
         )
         .then(response => {
-          console.log("Respuesta eliminar: ",response.data)
           buscarSolicitudes()
         })
         .catch(error => {
@@ -91,10 +104,13 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
       }
     setpreguntarEliminar(false)
   } 
-  
+
+  //Cuando se aprieta el boton eliminar publicación se ejecuta este método, lo que hace es pausar la publicación seleccionada
   const pausarPublicacion = (boole) =>{
     let auth = 'Bearer '+state.jwt;
     if(boole){
+      //Si boole es true, entonce significa que se ha puesto "Aceptar" en el dialogo emergente, por consecuente se envia la orden de pausar la publicación
+
       let Pausa = !datosPagina.pausado
       axios.put(
       state.servidor+"/api/solicitud/"+datosPagina.id,{
@@ -103,7 +119,6 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
         headers: {'Authorization': auth},
       })
       .then(response => {
-        console.log("Respuesta pausa: ",response.data)
       })
       .catch(error => {
         console.log("Error, no se ha podido pausar la publicación.", error.response)
@@ -208,6 +223,7 @@ export default function FilaPublicacion({tipoPublicacion, datos, contactar, busc
           
           {
             datosPagina.Usuario_id.id!==state.datosSesion.id &&
+            (datosPagina.tipo?true:state.datosSesion.tipo!==1) &&
             <Grid item xs={6} sm={6} md={6} lg={3} align="center" hidden={!contactar}>
               <BotonContratar
               fijo={false}

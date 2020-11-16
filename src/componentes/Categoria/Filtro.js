@@ -1,13 +1,19 @@
 import React,{useState, useEffect} from 'react';
+//Material UI
 import {Chip, Grid, TextField, Typography, Button, Card, FormControlLabel, Checkbox, CardContent} from '@material-ui/core/';
 import {Done as Done, Clear as Clear} from '@material-ui/icons';
 
 import Estilos from '../Estilos.js'
 
+//Este es un subcomponente que se utiliza en el supercomponente Categoria.js, sirve para establecer un conjunto de filtros
+//para buscar publicaciones.
+//El componente acepta un conjunto de parámetros que son pasados por Categoria.js
 export default function Filtro({tipoPublicacion, settipoPublicacion, servicios, agregarSeleccionado, buscarServicios, inputBusqueda, setinputBusqueda}) {
   const classes = Estilos();
   const [tipo,settipo] = useState(false)
 
+  //Cuando la variable tipo cambia, se cambia la variable tipoPublicacion, esto para que repercuta en Categoria.js
+  //indicando que se ha cambiado de tipo publicación a tipo solicitud
   useEffect(()=>{
     settipoPublicacion(!tipo)
   },[tipo])
@@ -54,8 +60,12 @@ export default function Filtro({tipoPublicacion, settipoPublicacion, servicios, 
   );
 }
 
+//Subcomponente de Filtro.js que permite seleccionar o deseleccionar un servicio.
+//Se separa como un componente unico, ya que pueden existir mas de un servicio para seleccionar, por lo tanto
+//se puede simplificar el codigo separandolos.
 function SeleccionarServicio({servicio, agregarSeleccionado}) {
   const classes = Estilos();
+  //Variables del componente
   const [hecho_noHecho, setHecho_noHecho] = useState(false);
   const [seleccion, setSeleccion] = useState(false);
 

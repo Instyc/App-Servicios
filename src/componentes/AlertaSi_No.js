@@ -2,10 +2,11 @@ import React, {useState} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@material-ui/core';
 import Cargando from '@material-ui/core/LinearProgress';
 
+//Alerta que utilizamos cuando se necesita confirmar alguna acción
 export default function Alerta({titulo, funcionAceptar, mensaje}) {
   const [open, setOpen] = useState(true);
   const [cargando, setcargando] = useState(false)
-  
+  //Ejecutamos la función que se pasa como parámetro
   const handleClose = (boole) => {
     setcargando(true)
     funcionAceptar(boole)

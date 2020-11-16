@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles';
-
+//Componente que contiene todos los estilos que se utilizan en la página
 const Estilos = makeStyles((theme) => ({
     mostrarFlex: {
         display: 'flex',

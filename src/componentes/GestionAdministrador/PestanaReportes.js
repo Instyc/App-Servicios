@@ -1,21 +1,22 @@
 import React, {useState, useEffect, useContext} from 'react';
 import axios from 'axios'
-
 import PropTypes from 'prop-types';
+
+//Material UI
 import { makeStyles } from '@material-ui/core/styles';
 import {Container, AppBar, Backdrop, CircularProgress, Box, Tab, Tabs} from '@material-ui/core';
-
-import GestionarReportes from './GestionarReportes.js'
-
 import Nuevo from '@material-ui/icons/Announcement';
 import Reloj from '@material-ui/icons/QueryBuilder';
 import Check from '@material-ui/icons/AssignmentTurnedIn';
 
+
+import GestionarReportes from './GestionarReportes.js'
+//Variables globales de la aplicación
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
+//Función extraída de Material UI para mostrar las secciones del Tab
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-
   return (
     <div
       role="tabpanel"
@@ -32,20 +33,20 @@ function TabPanel(props) {
     </div>
   );
 }
-
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired,
 };
-
 function a11yProps(index) {
   return {
     id: `scrollable-force-tab-${index}`,
     'aria-controls': `scrollable-force-tabpanel-${index}`,
   };
 }
+//Hasta aquí código copiado para el Tab
 
+//Estilos para PestanaReportes
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -64,22 +65,25 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function PestanaReportes() {
-  const [cargando, setcargando] = useState(false);
   const classes = useStyles();
+  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+
+  //Variables del componente
+  const [cargando, setcargando] = useState(false);
   const [value, setValue] = useState(0);
   const [reportes, setreportes] = useState([]);
 
-  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
-
+  //Función que sirve para manejar el cambio de la sección del Tab
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  //Funcion que se ejecuta en el primer renderizado del componente, trae todos los reportes que existen
   useEffect(()=>{
     if (state.jwt!=="" || state.publico===true){
         setcargando(true)
         let auth = 'Bearer '+state.jwt;
-
+        //Solicitamos a la API todos los reportes
         axios.get(state.servidor+"/api/reportes",{
           headers: {'Authorization': auth}})
         .then(response => {
@@ -87,12 +91,13 @@ export default function PestanaReportes() {
           setcargando(false)
         })
         .catch(error => {
-            alert("Un error ha ocurrido al cargar las categorías.")
-            console.log(error.response)
+          console.log("Un error ha ocurrido al cargar las categorías.")
+          console.log(error.response)
         })
     }
   },[state.jwt, state.publico])
 
+  //Función que sirve para modificar un determinado reporte y actualizarlo en la lista actual de reportes
   function modificarReporte(report){
     setreportes(
       reportes.map((reporte)=>{

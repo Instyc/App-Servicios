@@ -1,21 +1,19 @@
 import React,{useState, useContext, useEffect} from 'react';
 import {useHistory } from 'react-router-dom'
-
+import axios from 'axios';
 //Material-UI
 import {Hidden, Typography, TextField, FormControl, Button, Paper, Grid, Checkbox, FormControlLabel} from '@material-ui/core/';
 import BarraDeCarga from '@material-ui/core/LinearProgress'
 //Componentes
 import SubirImagenes from '../SubirImagen.js';
-import CategoriaSeleccion from '../CategoriaSeleccion.js';
 import Estilos from '../Estilos.js';
 import SeleccionarServicio from '../SeleccionarServicio.js';
-
-import axios from 'axios';
 import AlertaMensaje from '../AlertaMensaje.js';
-
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
-export default function Registrar() {
+//Componente utilizado para modificar el perfil de proveedor
+export default function ModificarPerfilProveedor() {
+    //Variables de la página
     const classes = Estilos();
     let history = useHistory();
     const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
@@ -25,17 +23,15 @@ export default function Registrar() {
     const [serviciosSeleccionados, setserviciosSeleccionados] = useState([])
     const [mensaje, setmensaje] = useState(false)
     const [abrir, setabrir] = useState(false)
-
+    const [imagenes, setimagenes] = useState([])
+    const [imagenesBorradas, setimagenesBorradas] = useState([]);
+    const [imagenesSubidas, setimagenesSubidas] = useState([]);
     const [datos, setdatos] = useState({
         descripcion: "",
         estado: false,
         mostrar_telefono: false,
         pasarImagenes: [] 
     });
-
-    const [imagenes, setimagenes] = useState([])
-    const [imagenesBorradas, setimagenesBorradas] = useState([]);
-    const [imagenesSubidas, setimagenesSubidas] = useState([]);
 
     const funcionSetImagen = (file, cantidad, tipo, subidas) =>{
         setimagenesSubidas(subidas)
@@ -48,7 +44,7 @@ export default function Registrar() {
             setimagenes(aux)
         }
     }
-
+    //Se ejecuta para traer los datos que el usuario ya tiene, si es que los tiene
     useEffect(()=>{
         if(state.jwt!=="" || state.publico===true){
             //Asignamos el estado a las variables de los componentes
@@ -93,12 +89,13 @@ export default function Registrar() {
                 setcategorias(response.data)
             })
             .catch(error => {
-                alert("Un error ha ocurrido al cargar las categorías.")
+                console.log("Un error ha ocurrido al cargar las categorías.")
                 console.log(error.response)
             }) 
         }
     },[state.jwt, state.publico])
 
+    //Función que registra los cambios en los checkboxes
     const cambiarCheckbox = (e) =>{  
         if(!controlGuardar)
             setcontrolGuardar(true)
@@ -111,10 +108,7 @@ export default function Registrar() {
         })
     }
 
-    useEffect(() => {
-        console.log("img nuevas:", imagenesSubidas)
-    }, [imagenesSubidas])
-
+    //Ejecutado al guardar los datos
     const guardarDatos = () => {
         let aux = [];
         categorias.map((categoria)=>{
@@ -125,18 +119,15 @@ export default function Registrar() {
                         if(!controlGuardar){
                             setcontrolGuardar(true)
                         }
-                        console.log("control", controlGuardar)
                     }
                 })
             }
         })
-
         if(aux.length!==0){
             setmensaje(false)
         }else{
             setmensaje(true)
         }
-
         setserviciosSeleccionados(aux)
     }
     
@@ -149,8 +140,6 @@ export default function Registrar() {
                 archivosNuevos.push(imagen)
             }
         })
-        console.log("imagenes perfil:", imagenes)
-        console.log("nuevos:", archivosNuevos)
 
         //archivosBorrados es el arreglo que contiene los archivos que han sido subidos al servidor pero que han sido eliminados en el frontend
         let archivosBorrados = []
@@ -160,7 +149,6 @@ export default function Registrar() {
                 archivosBorrados.push(imagen)
             }
         })
-        console.log("borrados:", archivosBorrados)
 
         //Si existen elementos dentro del arreglo imagenesBorradas, significa que se quieren borrar imágenes de la publicación
         for(let indx = 0; indx < imagenesBorradas.length; indx++){
@@ -172,10 +160,9 @@ export default function Registrar() {
                 headers: {
                 'Authorization': auth
             },})
-            .then(response => {
-                console.log("Borrando imagenes", response)            
+            .then(response => {         
             }).catch(error => {
-                alert("Error al borrar las imagenes")
+                console.log("Error al borrar las imagenes")
                 console.log(error.response)
             })
         }
@@ -206,7 +193,6 @@ export default function Registrar() {
                     },
                 })
             .then(response => {
-                console.log("Respuesta imagen: ",response.data)
                 let usr = state.datosSesion
                 usr.imagenes_proveedor = response.data
 
@@ -219,12 +205,13 @@ export default function Registrar() {
                 }));
             })
             .catch(error => {
-                alert("Error al cargar las imágenes.")
+                console.log("Error al cargar las imágenes.")
                 console.log("Error: ", error.response)
             })
         }
     }
 
+    //Se ejecuta al enviar los datos y tener algún servicio seleccionado
     useEffect(()=>{
         if(serviciosSeleccionados.length!==0){
             let auth = 'Bearer '+state.jwt;
@@ -232,7 +219,7 @@ export default function Registrar() {
             setcargando(true)
             subirImagenes(state.datosSesion.id)
 
-            console.log("Se envian los datos")
+            //Se modifican los datos del proveedor con los nuevos datos
             axios.put(
                 state.servidor+"/users/"+state.datosSesion.id
                 ,{
@@ -248,8 +235,6 @@ export default function Registrar() {
                 }
             )
             .then(response => {
-                console.log("Respuesta cambio: ",response.data)
-                
                 let datos_ayuda = response.data
 
                 dispatch({type:"setDatos", value: response.data})
@@ -257,15 +242,13 @@ export default function Registrar() {
                     jwt: state.jwt,
                     datosSesion: datos_ayuda
                 }));
-
-                console.log("Sus datos se han modificado correctamente!")
                 setabrir(true)
                 setcargando(false)
-                //history.push("/")
+                setTimeout(() => {  history.push(state.ruta+"/"); }, 3000);
             })
             .catch(error => {
+                console.log("Ha ocurrido un error al guardar los datos")
                 console.log(error.response)
-                alert("Ha ocurrido un error al guardar los datos")
                 setcargando(false)
             })
         }

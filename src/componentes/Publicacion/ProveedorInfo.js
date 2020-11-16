@@ -1,20 +1,20 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Hidden, Paper, Grid, Typography, Avatar, Divider, Button, ListSubheader, List, ListItem, ListItemText, Tooltip, Collapse, IconButton} from '@material-ui/core';
 import axios from 'axios'
 import { Link  } from 'react-router-dom';
-
+//Material-UI
+import {Hidden, Paper, Grid, Typography, Avatar, Divider, Button, ListSubheader, List, ListItem, ListItemText, Tooltip, Collapse, IconButton} from '@material-ui/core';
 import {Phone as PhoneIcon, FileCopy as Copiar, ExpandLess, ExpandMore, CheckCircleOutline as Verificado} from '@material-ui/icons/';
 import Alerta from '@material-ui/lab/Alert';
 
 import Estilos from '../Estilos.js';
-import Estrellas from '../Estrellas.js';
 import AlertaMensaje from '../AlertaMensaje.js';
 
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
+//Subcomponente que contiene la información del perfil de un proveedor
 export default function ProveedorInfo({esDePerfil, datosPerfil}) {
   const classes = Estilos();
-  const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+  const { state } = useContext(ObtenerEstadoAplicacion);
   const [categorias, setcategorias] = useState([])
   const [copiado, setcopiado] = useState(false)
 
@@ -28,18 +28,18 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
     servicios: [],
     pausado: false,
     bloqueado: false,
-
   })
 
+  //Seteamos los datos del perfil del proveedor
   useEffect(()=>{
   if (state.jwt!=="" || state.publico===true)
     if(datosPerfil!==null){
       setDatosPerfil(datosPerfil)
       buscarCategorias(datosPerfil)
     }
-    console.log("Datos: ", datosPerfil)
   },[datosPerfil])
 
+  //Función que trae las categorías que el proveedor tiene asociadas a los servicios que ofrece
   function buscarCategorias(perfil){
     let ids_categorias = perfil.servicios.map((servicio) =>(servicio.categoria))
     let ids_consultas = ""
@@ -56,7 +56,7 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
         setcategorias(response.data)
       })
       .catch(error => {
-        alert("Un error ha ocurrido al cargar las categorías.")
+        console.log("Un error ha ocurrido al cargar las categorías.")
         console.log(error.response)
       }) 
     }
@@ -165,8 +165,8 @@ export default function ProveedorInfo({esDePerfil, datosPerfil}) {
   );
 }
 
+//Subcomponente que muestra los datos de la categoría y servicios que ofrece el proveedor
 function Categorias({categoria, DatosPerfil}) {
-    const classes = Estilos();
     const [open, setOpen] = useState(true);
 
     const handleClick = () => {
@@ -196,7 +196,6 @@ function Categorias({categoria, DatosPerfil}) {
                     <Divider/>
                 </List>
             </Collapse>
-            
         </div>
     )
 }

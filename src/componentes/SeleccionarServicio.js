@@ -1,18 +1,17 @@
-import React from 'react';
-import {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Chip from '@material-ui/core/Chip';
-import DoneIcon from '@material-ui/icons/Done';
-import ClearIcon from '@material-ui/icons/Clear';
+import {Done as DoneIcon, Clear as ClearIcon} from '@material-ui/icons';
 
 import Estilos from './Estilos.js';
 
+//Componente utilizado para el proceso de selección de servicios de la página por un determinado proveedor
 export default function SeleccionarServicio({servicio, agregarSeleccionado}) {
   const classes = Estilos();
   const [hecho_noHecho, setHecho_noHecho] = useState((<div><ClearIcon/></div>));
   const [seleccion, setSeleccion] = useState(servicio.seleccionado);
 
-
-  React.useEffect(()=>{
+  //Si el servicio está seleccionado, entonces se cambia el icono al correspondiente, y viceversa
+  useEffect(()=>{
     if(servicio.seleccionado===true){
       setSeleccion(true);
       setHecho_noHecho(<div><DoneIcon/></div>);
@@ -22,6 +21,7 @@ export default function SeleccionarServicio({servicio, agregarSeleccionado}) {
     }
   },[])
 
+  //Dependiendo si se selecciona o no el servicio, se agrega o quita del arreglo de servicios seleccionados
   const handleClick = () => {
     agregarSeleccionado(!seleccion)
     if(seleccion===false){

@@ -1,22 +1,20 @@
 import React, {useEffect, useState, useContext} from 'react';
 
 //Material-UI
-import {Grid} from '@material-ui/core/';
+import {Grid, Container} from '@material-ui/core/';
 import {useParams} from 'react-router-dom'
 import axios from 'axios'
 //Componentes
 import ProveedorInfo from './ProveedorInfo.js';
 import PublicacionInfo from './PublicacionInfo.js';
 import Opiniones from './Opiniones.js';
-import Estilos from '../Estilos.js';
 import {BotonContratar} from '../ContactarProveedor.js'
-import {Container} from '@material-ui/core/';
 
 import { ObtenerEstadoAplicacion } from '../../Estados/AplicacionEstado'
 
+//Componente que llama a los subcomponentes que debería tener una publicación, para mostrarlos
 export default function Publicacion() {
-    const classes = Estilos();
-    const { state, dispatch } = useContext(ObtenerEstadoAplicacion);
+    const { state } = useContext(ObtenerEstadoAplicacion);
     let { id } = useParams();
     const [datosPerfil, setdatosPerfil] = useState({
         id: null,
@@ -43,6 +41,7 @@ export default function Publicacion() {
         Usuario_id: null
     })
 
+    //Traemos los datos de la publicación
     useEffect(()=>{
         if (state.jwt!=="" || state.publico===true){            
             axios.get(state.servidor+"/api/solicitud/"+id)
@@ -50,12 +49,13 @@ export default function Publicacion() {
                 obtenerUsuario(response.data)
             })
             .catch(error => {
-                alert("Un error ha ocurrido al buscar la solicitud.")
+                console.log("Un error ha ocurrido al buscar la solicitud.")
                 console.log(error.response)
             }) 
         }
     },[state.jwt, state.publico])
 
+    //Función que setea los datos de la publicación y del proveedor en variables que luego serán pasadas a los subcomponentes
     function obtenerUsuario(data){
         setdatosPagina({
             id: data.id,
@@ -95,7 +95,7 @@ export default function Publicacion() {
                 })
             })
             .catch(error => {
-                alert("Un error ha ocurrido al buscar el usuario.")
+                console.log("Un error ha ocurrido al buscar el usuario.")
                 console.log(error.response)
             }) 
     }
@@ -116,8 +116,10 @@ export default function Publicacion() {
                     )
                 }
                 {
-                    //Si no es el dueño de la publicación, y si el proveedor o la publicación no se encuentrar pausada o bloqueada, entonces ofrecemos la posibilidad de contactarlo 
+                    //Si no es el dueño de la publicación, si no es un usuario en una solicitud de servicio
+                    //y si el proveedor o la publicación no se encuentra pausada o bloqueada, entonces ofrecemos la posibilidad de contactarlo 
                     datosPerfil.id!==state.datosSesion.id && !datosPagina.pausado && !datosPagina.bloqueado && !datosPerfil.pausado && !datosPerfil.bloqueado &&
+                    (datosPagina.tipo?true:state.datosSesion.tipo!==1) &&
                     <BotonContratar fijo={true} esDePerfil={false} datos={{idS: datosPagina.id, idP: datosPerfil.id, nombre: datosPerfil.titulo, imagen_perfil: datosPerfil.imagen_perfil}} />
                 }
             </Grid>

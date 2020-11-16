@@ -1,8 +1,9 @@
 import React from 'react';
-import {Container, Typography, Paper, Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core/';
+import { Typography, Paper, Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core/';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Estilos from '../Estilos';
 
+//Componente que se muestra en la sección de preguntas frecuentes
 export default function PreguntasFrecuentes() {
   const classes = Estilos();
   const [informacion, setinformacion] = React.useState([
@@ -21,6 +22,10 @@ export default function PreguntasFrecuentes() {
     {
       pregunta: "Si soy un proveedor de servicios, ¿Cómo verifico mi identidad en Servia?",
       respuesta: 'Para verificar tu identidad, debes ir a la opcion "Verificar mi identidad", allí podrás cargar tu número de DNI y las fotos del mismo. Luego un administrador validará tus datos y te notificará los resultados.'
+    },
+    {
+      pregunta: "¿De qué me sirve verificar mi identidad?",
+      respuesta: 'Verificar tu identidad te sirve para mostrar un distintivo al lado de tu nombre que indica que tu perfil se encuentra verificado y que pertenece a una persona real.'
     },
     {
       pregunta: "¿Cómo me publicito en Servia?",
