@@ -221,11 +221,11 @@ function DesplegarInformacion({datos, modificarReporte}) {
                     headers: {'Authorization': auth},
             })
             .then(response => {
-                if (datos.estado!==-1)
-                    actualizarReporte(response.data.id, estado)
+                actualizarReporte(response.data.id, estado)
             })
             .catch(error => {
                 console.log("Error, no se ha podido crear la notificacion.", error.response)
+                setcargando(false)
             })
         }else{
             //Si aceptado es false, entonces el reporte es descartado, luego se actualiza el estado del reporte
@@ -254,6 +254,7 @@ function DesplegarInformacion({datos, modificarReporte}) {
         .catch(error => {
             console.log("Error, no se ha podido crear el reporte.", error.response)
             console.log("Error, no se ha podido crear el reporte.")
+            setcargando(false)
         })
     }
     
@@ -272,10 +273,12 @@ function DesplegarInformacion({datos, modificarReporte}) {
                 bloqueado: bool,
             },{headers: {'Authorization': auth},})
         .then(response => {
+            setcargando(false)
         })
         .catch(error => {
             console.log("Error, no se ha podido bloquear.", error.response)
             console.log("Error, no se ha podido bloquear .")
+            setcargando(false)
         })
     }
 

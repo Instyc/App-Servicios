@@ -159,7 +159,7 @@ export default function IniciarSesion({mensaje}) {
                   </Hidden>
                   
                   {
-                    false &&
+                    /*
                     <Grid item xs={12}>
                       {
                         !pwd_olvidada && <LinkMUI color="secondary" className={classes.margenArriba} href="#" onClick={()=>{setpwd_olvidada(true)}}>
@@ -167,6 +167,7 @@ export default function IniciarSesion({mensaje}) {
                         </LinkMUI>
                       }
                     </Grid>
+                    */
                   }
                   
                   <Grid item xs={12}>
