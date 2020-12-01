@@ -157,22 +157,18 @@ export default function IniciarSesion({mensaje}) {
                         {alerta}
                     </Typography>
                   </Hidden>
-                  
-                  {
-                    /*
-                    <Grid item xs={12}>
-                      {
-                        !pwd_olvidada && <LinkMUI color="secondary" className={classes.margenArriba} href="#" onClick={()=>{setpwd_olvidada(true)}}>
-                          Olvidé mi contraseña
-                        </LinkMUI>
-                      }
-                    </Grid>
-                    */
-                  }
-                  
-                  <Grid item xs={12}>
+
+                  <Grid item xs={12} align="center">
                     {
-                      pwd_olvidada && <LinkMUI className={classes.margenArriba} href="#" onClick={()=>{setpwd_olvidada(false)}}>
+                      !pwd_olvidada && <LinkMUI color="black" className={classes.margenArriba} href="#" onClick={()=>{setpwd_olvidada(true)}}>
+                        Olvidé mi contraseña
+                      </LinkMUI>
+                    }
+                  </Grid>
+                  
+                  <Grid item xs={12} align="center">
+                    {
+                      pwd_olvidada && <LinkMUI color="error" className={classes.margenArriba} href="#" onClick={()=>{setpwd_olvidada(false)}}>
                         Cancelar
                       </LinkMUI>
                     }
@@ -182,7 +178,7 @@ export default function IniciarSesion({mensaje}) {
                     <LinearProgress />
                   </div>
 
-                  <Grid item xs={12}>
+                  <Grid item xs={12} align="center">
                     <Button
                       onClick={iniciarSesion}
                       size="large"

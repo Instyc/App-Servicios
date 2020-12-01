@@ -53,16 +53,17 @@ export default function Categoria() {
         axios.get(state.servidor+"/api/solicitud?Categoria_id="+id+"&pausado=false&bloqueado=false&tipo="+tipoPublicacion)
         .then(response => {
             let hoy = Date.now()
-            let filtro = response.data.map((solicitud)=>{
+            let filtro = []
+            response.data.map((solicitud)=>{
                 let modificado = new Date(solicitud.updated_at)
                 let dias = parseInt((hoy-modificado)/1000/60/60/24)
                
                 let diasTipo = tipoPublicacion?30:15
                 if(dias <= diasTipo){
-                    return solicitud
+                    filtro.push(solicitud)
                 }
             })
-
+            
             //Filtramos las publicaciones donde sus proveedores no estén pausados
             setcargando(false)
             if (tipoPublicacion){
@@ -116,13 +117,17 @@ export default function Categoria() {
         axios.get(state.servidor+"/api/solicitud?"+IDS+"pausado=false&bloqueado=false&tipo="+tipoPublicacion+"&titulo_contains="+inputBusqueda)
         .then(response => {
             let hoy = Date.now()
-            let filtro = response.data.map((solicitud)=>{
+            let filtro = []
+            response.data.map((solicitud)=>{
                 let modificado = new Date(solicitud.updated_at)
                 let dias = parseInt((hoy-modificado)/1000/60/60/24)
-                if(dias <= 15){
-                    return solicitud
+               
+                let diasTipo = tipoPublicacion?30:15
+                if(dias <= diasTipo){
+                    filtro.push(solicitud)
                 }
             })
+            
             if (tipoPublicacion){
                 //Descartamos las solicitudes que tienen usuarios pausados y bloqueados
                 filtro = filtro.filter((solicitud)=>(solicitud.Usuario_id.estado === false && solicitud.Usuario_id.bloqueado===false))
