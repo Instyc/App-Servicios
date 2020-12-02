@@ -43,6 +43,7 @@ export default function RealizarOpinion({eliminarNotificacion, datos}) {
   //si el cliente contactó por medio de una solicitud, sacamos el id de la categoria por medio de la solicitud,
   // si lo hizo por medio del perfil del proveedor, entonces el id de la categoría va a estar en datos_notificación
   useEffect(() => {
+    setValorEstrella(0)
     //El objetivo de todo esto es que el usuario pueda seleccionar servicios adicionales, en el caso de que el proveedor los haya hecho
     let _id = datos.solicitud!==null?datos.solicitud.Categoria_id:Number(datos.datos_notificacion.split("_")[0])
     let auth = 'Bearer '+state.jwt;
@@ -67,6 +68,21 @@ export default function RealizarOpinion({eliminarNotificacion, datos}) {
       console.log(error.response)
     }) 
   },[datos])
+
+  //Funcion de ayuda para la seleccion de servicios
+  function ayudaSelec(servicio){
+    let ayuda = datos.solicitud===null?true:false
+    if(ayuda){
+      return true
+    }else{
+      if(datos.solicitud.Servicio_id!==servicio.id
+      ){
+        return true
+      }else{
+        return false
+      }
+    }
+  }
 
   //El usuario genera la opinión del servicio dado por el proveedor
   function enviarOpinion(e){
@@ -193,7 +209,7 @@ export default function RealizarOpinion({eliminarNotificacion, datos}) {
                         </Grid>
                         {
                           servicios.map((servicio,k) => (
-                            datos.solicitud!==null?(datos.solicitud.Servicio_id!==servicio.id):true &&
+                            ayudaSelec(servicio) &&
                             <Grid item xs={6} sm={4} md={3} lg={2} key={k}>
                               <SeleccionarServicio
                                 servicio={servicio} 

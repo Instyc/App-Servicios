@@ -204,7 +204,7 @@ export function BotonContratar({fijo, esDePerfil, datos}) {
                           color="primary"
                           type="submit"
                           >
-                            Contactar proveedor
+                            Contactar
                         </Button>
                       </Grid>
                     </FormControl>

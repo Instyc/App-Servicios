@@ -148,8 +148,8 @@ export default function VerificarIdentidad() {
                                                 /*
                                                     Se mostrarán diferentes títulos según el tipo de notificación
                                                     tipo:0 -> La notificación hace referencia a un reporte de publicación o de perfil
-                                                    tipo:1 -> La notificación hace referencia a un reporte de solicitud de verificación de identidad
-                                                    tipo:2 -> La notificación hace referencia a un reporte de solicitud de reseña
+                                                    tipo:1 -> La notificación hace referencia a una solicitud de verificación de identidad
+                                                    tipo:2 -> La notificación hace referencia a una solicitud de reseña
                                                 */
                                             }
                                             {noti.tipo===0 && (noti.solicitud!==null?
@@ -170,7 +170,7 @@ export default function VerificarIdentidad() {
                                             ('Tienes una nueva petición de reseña al servicio ofrecido por el proveedor '+
                                             `${noti.emisor.nombre} ${noti.emisor.apellido}`+' por tu solicitud "'+noti.solicitud.titulo+'". ¡Cuéntanos tu experiencia haciendo click en el botón!')):
                                             ('Tienes una nueva petición de reseña a la categoría "'+noti.datos_notificacion.split("_")[1]))}
-                                            {noti.tipo===2 && noti.solicitud.tipo && '" realizada por el proveedor '+`${noti.emisor.nombre} ${noti.emisor.apellido}`+'. ¡Cuéntanos tu experiencia haciendo click en el botón!'}
+                                            {noti.tipo===2 && ('" realizada por el proveedor '+`${noti.emisor.nombre} ${noti.emisor.apellido}`+'. ¡Cuéntanos tu experiencia haciendo click en el botón!')}
                                         </Typography>
                                         {
                                             //Si la notificación es de tipo 2, entonces es necesario mostrar un boton en el cuerpo de la notificación

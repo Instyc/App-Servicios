@@ -160,7 +160,7 @@ export default function IniciarSesion({mensaje}) {
 
                   <Grid item xs={12} align="center">
                     {
-                      !pwd_olvidada && <LinkMUI color="black" className={classes.margenArriba} href="#" onClick={()=>{setpwd_olvidada(true)}}>
+                      !pwd_olvidada && <LinkMUI className={classes.margenArriba} href="#" onClick={()=>{setpwd_olvidada(true)}}>
                         Olvidé mi contraseña
                       </LinkMUI>
                     }
@@ -196,7 +196,7 @@ export default function IniciarSesion({mensaje}) {
                     {
                       !pwd_olvidada && <Typography onClick={handleClose} variant="body1" align="center">
                         {`¿Eres nuevo en el sitio? `}
-                        <Link to="/registrar">Crear cuenta</Link>
+                        <Link to={state.ruta+"/registrar"}>Crear cuenta</Link>
                       </Typography>
                     }
                   </Grid>

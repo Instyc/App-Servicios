@@ -284,7 +284,7 @@ export default function Registrar({registrar}){
             setcargando(false)
             setmensajeAlerta("Usuario creado. ¡Bienvenido a Servia!")
             setabrir(true)
-            setTimeout(() => {  history.push(state.ruta+"/"); }, 6000);
+            setTimeout(() => {  history.push(state.ruta+"/"); }, 2000);
         })
         .catch(error => {
             // Ocurrió un error

@@ -290,13 +290,6 @@ export function Chat(){
         }
     }
 
-    //Cuando la variable chats cambia, entonces reordenamos los chats según el tiempo
-    useEffect(() => {
-        if (chats.length!==0){
-            console.log(chats.sort((a, b) => a.chat.mensajes[a.chat.mensajes.length-1].date.getTime() > b.chat.mensajes[b.chat.mensajes.length-1].date.getTime()))
-        }
-    }, [chats])
-
     //Se envia una notificación a un usuario indicando de que un proveedor le está solicitando una reseña de un servicio
     function enviarNotificacion(boole){
         setconfirmacion(false)
